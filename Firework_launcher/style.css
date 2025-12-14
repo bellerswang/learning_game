@@ -1,0 +1,220 @@
+:root {
+    --bg-color: #0f0f23;
+    --card-bg: #1a1a3a;
+    --text-color: #ffffff;
+    --accent-color: #ff0066;
+    --highlight-color: #00ccff;
+    --font-heading: 'Fredoka One', cursive;
+    --font-body: 'Nunito', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    user-select: none; /* Prevent text selection for app-like feel */
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-body);
+    overflow: hidden; /* Prevent scrolling */
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#app {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.stage {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.5s ease;
+}
+
+.hidden {
+    opacity: 0;
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Typography */
+h1.title {
+    font-family: var(--font-heading);
+    font-size: 3rem;
+    color: var(--highlight-color);
+    text-shadow: 0 0 10px rgba(0, 204, 255, 0.5);
+    margin-bottom: 20px;
+    text-align: center;
+    animation: float 3s ease-in-out infinite;
+}
+
+h2 {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: #ffcc00;
+}
+
+/* Controls Container */
+.controls-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    background: var(--card-bg);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    max-width: 800px;
+    width: 90%;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.options {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* Buttons */
+.option-btn {
+    background: #2a2a5a;
+    border: 3px solid transparent;
+    border-radius: 15px;
+    padding: 10px 20px;
+    color: white;
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-width: 100px;
+}
+
+.option-btn:hover {
+    transform: scale(1.05);
+    background: #3a3a6a;
+}
+
+.option-btn.selected {
+    border-color: var(--highlight-color);
+    background: #3a3a6a;
+    box-shadow: 0 0 15px var(--highlight-color);
+}
+
+/* Color Buttons specific styles */
+.color-btn {
+    border-color: var(--btn-color, white);
+    color: var(--btn-color, white);
+    background: transparent;
+}
+
+.color-btn.selected {
+    background: var(--btn-color, white);
+    color: #000; /* Contrast text for light backgrounds */
+    box-shadow: 0 0 20px var(--btn-color, white);
+}
+/* Special case for rainbow button selected state text color */
+.color-btn[data-value="rainbow"].selected {
+    color: white;
+    text-shadow: 0 1px 2px black;
+}
+
+
+/* Launch Button */
+.launch-btn {
+    margin-top: 30px;
+    background: linear-gradient(to bottom, #ff0066, #cc0052);
+    border: none;
+    border-radius: 50px;
+    padding: 20px 60px;
+    font-family: var(--font-heading);
+    font-size: 2.5rem;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 10px 0 #990041, 0 20px 20px rgba(0,0,0,0.4);
+    transition: all 0.1s;
+}
+
+.launch-btn:active {
+    transform: translateY(10px);
+    box-shadow: 0 0 0 #990041, 0 10px 10px rgba(0,0,0,0.4);
+}
+
+/* Animation Stage */
+#firework-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at bottom, #1b2735 0%, #090a0f 100%);
+}
+
+.overlay-controls {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    gap: 20px;
+    z-index: 10;
+}
+
+.icon-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+    padding: 10px 20px;
+    color: white;
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    cursor: pointer;
+    backdrop-filter: blur(5px);
+    transition: all 0.2s;
+}
+
+.icon-btn:hover {
+    background: rgba(255, 255, 255, 0.4);
+    transform: scale(1.1);
+}
+
+/* Animations */
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .controls-container {
+        grid-template-columns: 1fr;
+        padding: 15px;
+    }
+    
+    h1.title {
+        font-size: 2rem;
+    }
+    
+    .launch-btn {
+        font-size: 1.8rem;
+        padding: 15px 40px;
+    }
+}

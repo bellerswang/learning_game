@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>May的快乐养蜂场 (May's Bee Farm)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Noto+Sans+SC:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Fredoka', 'Noto Sans SC', sans-serif;
+            background-color: #fefce8;
+            /* Yellow-50 */
+            /* Honeycomb background pattern */
+            background-image: radial-gradient(#eab308 1.5px, transparent 1.5px), radial-gradient(#eab308 1.5px, #fefce8 1.5px);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+            touch-action: manipulation;
+            user-select: none;
+        }
+
+        /* --- Bee Styles --- */
+        .block-one {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            z-index: 20;
+        }
+
+        .bee-svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(1px 3px 2px rgba(0, 0, 0, 0.15));
+            animation: buzz 2s infinite ease-in-out;
+        }
+
+        @keyframes buzz {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0);
+            }
+
+            25% {
+                transform: translateY(-3px) rotate(-5deg);
+            }
+
+            75% {
+                transform: translateY(3px) rotate(5deg);
+            }
+        }
+
+        /* --- Beehive (Ten Block) --- */
+        .block-ten {
+            width: 60px;
+            height: 70px;
+            /* Shorter, stouter for a hive */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 4px;
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            z-index: 10;
+        }
+
+        .hive-svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(2px 4px 3px rgba(0, 0, 0, 0.2));
+            transform-origin: top center;
+            animation: swing 4s infinite ease-in-out;
+        }
+
+        @keyframes swing {
+
+            0%,
+            100% {
+                transform: rotate(2deg);
+            }
+
+            50% {
+                transform: rotate(-2deg);
+            }
+        }
+
+        /* --- Room Styles --- */
+        .room {
+            min-height: 400px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 24px;
+            border: 6px solid #d97706;
+            /* Wood/Amber color */
+            position: relative;
+            box-shadow: 0 8px 0px rgba(180, 83, 9, 0.2);
+            overflow: hidden;
+        }
+
+        /* Wooden Header Style */
+        .room-header {
+            background-color: #f59e0b;
+            color: white;
+            padding: 12px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            border-bottom: 4px solid #d97706;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-left: 20px;
+            padding-right: 20px;
+            text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        /* The Honeycomb Grid (Ten Frame) */
+        .ten-frame-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(5, 1fr);
+            gap: 8px;
+            padding: 24px 30px;
+            /* More padding to center hexagons */
+            justify-items: center;
+            align-items: center;
+            height: 340px;
+            position: relative;
+        }
+
+        /* Hexagonal Cells */
+        .frame-slot {
+            width: 50px;
+            height: 58px;
+            /* Hexagon aspect ratio */
+            background-color: #fef3c7;
+            /* Very light amber */
+            position: relative;
+            /* Create Hexagon Shape */
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            border: none;
+            /* clip-path hides borders, so we rely on background contrast */
+            box-shadow: inset 0 0 10px rgba(217, 119, 6, 0.2);
+            /* Inner shadow for depth */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Fake border for hexagon using a pseudo-element behind (optional, keeping simple for now) */
+        .frame-slot::before {
+            content: '';
+            position: absolute;
+            inset: 2px;
+            background-color: rgba(251, 191, 36, 0.1);
+            /* Inner cell color */
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            z-index: 1;
+        }
+
+        /* Number inside cell */
+        .frame-slot::after {
+            content: attr(data-index);
+            position: absolute;
+            color: #d97706;
+            font-size: 14px;
+            font-weight: bold;
+            opacity: 0.5;
+            z-index: 2;
+        }
+
+        .flex-tens {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 20px;
+            align-content: flex-start;
+            /* Stack from top like hanging hives */
+            justify-content: center;
+            height: 100%;
+            gap: 2px;
+        }
+
+        /* --- Waiting Zone (Flower Patch) --- */
+        .waiting-zone {
+            display: flex;
+            gap: 8px;
+            padding: 12px;
+            background-color: #ecfccb;
+            /* Lime-100 */
+            border: 3px dashed #84cc16;
+            /* Lime-500 */
+            border-radius: 16px;
+            min-height: 70px;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+            position: relative;
+        }
+
+        .waiting-label {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #65a30d;
+            color: white;
+            font-size: 12px;
+            padding: 2px 12px;
+            border-radius: 99px;
+            font-weight: bold;
+            box-shadow: 0 2px 0 #365314;
+        }
+
+        /* --- Animations --- */
+        @keyframes popIn {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-60px) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        .full-alert {
+            animation: pulse-honey 1s infinite;
+            background-color: #fffbeb !important;
+            /* Warm alert */
+        }
+
+        @keyframes pulse-honey {
+            0% {
+                box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
+                border-color: #f59e0b;
+            }
+
+            50% {
+                border-color: #d97706;
+            }
+
+            100% {
+                box-shadow: 0 0 0 10px rgba(245, 158, 11, 0);
+                border-color: #f59e0b;
+            }
+        }
+
+        .floating-text {
+            position: absolute;
+            color: #d97706;
+            font-weight: bold;
+            font-size: 1.8rem;
+            pointer-events: none;
+            animation: floatUp 1.5s forwards;
+            z-index: 100;
+            white-space: nowrap;
+            text-shadow: 2px 2px 0px white;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 4px 12px;
+            border-radius: 12px;
+        }
+
+        /* --- UI Elements --- */
+        .btn {
+            transition: all 0.1s;
+            border-bottom-width: 4px;
+            font-family: 'Fredoka', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn:active:not(:disabled) {
+            transform: translateY(4px);
+            border-bottom-width: 0px;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            filter: grayscale(1);
+            cursor: not-allowed;
+            transform: none;
+            border-bottom-width: 4px;
+        }
+
+        .btn-green {
+            @apply bg-lime-500 border-lime-700 text-white;
+        }
+
+        .btn-red {
+            @apply bg-rose-500 border-rose-700 text-white;
+        }
+
+        .btn-purple {
+            @apply bg-violet-500 border-violet-700 text-white;
+        }
+
+        .btn-yellow {
+            @apply bg-amber-400 border-amber-600 text-white;
+        }
+
+        .tab-btn {
+            @apply px-4 py-3 rounded-t-xl font-bold text-amber-700 bg-amber-100 cursor-pointer flex-1 text-center transition-colors select-none border-t-2 border-x-2 border-amber-200;
+        }
+
+        .tab-btn.active {
+            @apply bg-white text-orange-600 border-amber-400 shadow-[0_-4px_0_rgba(251, 191, 36, 0.2)];
+            transform: translateY(-2px);
+        }
+
+        .ai-story-box {
+            background: #fff;
+            border: 3px solid #fcd34d;
+            border-radius: 16px;
+            padding: 16px;
+            margin-top: 8px;
+            font-size: 1rem;
+            color: #78350f;
+            box-shadow: 0 4px 0 rgba(217, 119, 6, 0.2);
+            display: none;
+            position: relative;
+            z-index: 50;
+        }
+
+        .step-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #fed7aa;
+            transition: 0.3s;
+            border: 2px solid white;
+        }
+
+        .step-dot.filled {
+            background: #f97316;
+            transform: scale(1.2);
+            border-color: #fefce8;
+        }
+
+        /* Custom scrollbar for better feel */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #fcd34d;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body class="h-screen flex flex-col items-center overflow-hidden">
+
+    <!-- Top Nav -->
+    <div class="w-full max-w-2xl mt-2 px-4 flex gap-2 z-50 items-end">
+        <button id="tab-count" onclick="switchTab('count')" class="tab-btn active">1: 数数 (Count)</button>
+        <button id="tab-calc" onclick="switchTab('calc')" class="tab-btn">2: 演示 (Demo)</button>
+        <button id="tab-quiz" onclick="switchTab('quiz')" class="tab-btn">3: 挑战 (Quiz)</button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 w-full max-w-2xl flex flex-col px-4 py-2 relative">
+
+        <!-- Title / AI Story Area -->
+        <div class="min-h-[3rem] flex flex-col items-center justify-center relative mb-2">
+            <h1 id="mainTitle" class="text-3xl font-bold text-amber-700 transition-all duration-300 drop-shadow-sm">
+                快乐养蜂场</h1>
+            <div id="aiStoryDisplay" class="ai-story-box w-full">
+                <div id="aiStoryContent"></div>
+                <button onclick="closeStory()"
+                    class="absolute top-1 right-2 text-amber-400 hover:text-red-500 text-2xl font-bold leading-none">&times;</button>
+            </div>
+        </div>
+
+        <!-- The Farm (Game Board) -->
+        <div class="flex gap-4 h-[420px]">
+
+            <!-- Tens Room (Hives) -->
+            <div class="flex-1 flex flex-col">
+                <div class="room flex flex-col flex-1" id="tensRoom">
+                    <div class="room-header bg-orange-500 border-orange-700">
+                        <span>蜂巢 (Hives)</span>
+                        <span id="tensCountDisplay" class="text-3xl font-bold drop-shadow-md">0</span>
+                    </div>
+                    <div class="flex-tens" id="tensContainer"></div>
+                </div>
+            </div>
+
+            <!-- Ones Room (Honeycomb) -->
+            <div class="flex-1 flex flex-col">
+                <div class="room flex flex-col flex-1" id="onesRoom">
+                    <div class="room-header bg-yellow-500 border-yellow-700">
+                        <span>工蜂 (Bees)</span>
+                        <span id="onesCountDisplay" class="text-3xl font-bold drop-shadow-md">0</span>
+                    </div>
+
+                    <!-- The Honeycomb Grid -->
+                    <div class="ten-frame-grid" id="onesContainer">
+                        <!-- Slots generated by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Waiting Zone (Flower Patch) -->
+        <div id="waitingArea" class="hidden relative w-full mt-2">
+            <div class="waiting-zone" id="waitingContainer">
+                <!-- Bees wait here -->
+            </div>
+            <div class="waiting-label">🌸 采蜜区 (Waiting)</div>
+        </div>
+
+        <!-- Total Display -->
+        <div class="absolute top-[460px] left-1/2 transform -translate-x-1/2 pointer-events-none z-20">
+            <div
+                class="text-3xl font-bold text-amber-800 bg-yellow-100/95 px-8 py-2 rounded-full shadow-lg border-2 border-yellow-400 backdrop-blur flex items-center gap-2">
+                <span>🍯</span> <span id="totalDisplay">0</span>
+            </div>
+        </div>
+
+        <!-- Controls Area -->
+        <div class="mt-auto h-24 w-full relative z-30">
+
+            <!-- Count Mode Controls -->
+            <div id="controls-count"
+                class="absolute inset-0 flex justify-center items-center gap-4 transition-opacity duration-300">
+                <button onclick="resetGame()"
+                    class="btn btn-red px-6 py-4 rounded-2xl font-bold text-lg shadow-md w-28">
+                    重来
+                </button>
+                <button id="addBtn" onclick="userAddOne()"
+                    class="btn btn-green px-8 py-4 rounded-2xl font-bold text-xl shadow-md flex-1 max-w-xs flex items-center justify-center gap-2">
+                    <span>🐝 飞来一只</span>
+                </button>
+            </div>
+
+            <!-- Demo/Quiz Calculation Controls -->
+            <div id="controls-calc"
+                class="absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-300 opacity-0 pointer-events-none">
+
+                <!-- Setup Phase -->
+                <div id="calc-setup"
+                    class="flex items-center gap-3 bg-white/80 backdrop-blur p-3 rounded-2xl shadow-xl border-2 border-amber-200">
+                    <div class="flex flex-col items-center">
+                        <label class="text-[10px] text-amber-700 font-bold uppercase">现有</label>
+                        <input type="number" id="inputStart" value="7" min="0" max="99"
+                            class="w-16 text-center text-2xl font-bold text-amber-800 border-2 border-amber-200 rounded-xl p-1 outline-none focus:border-orange-500 bg-white">
+                    </div>
+                    <span class="text-2xl text-amber-400 font-black">➕</span>
+                    <div class="flex flex-col items-center">
+                        <label class="text-[10px] text-amber-700 font-bold uppercase">飞来</label>
+                        <input type="number" id="inputChange" value="4" min="1" max="9"
+                            class="w-16 text-center text-2xl font-bold text-amber-800 border-2 border-amber-200 rounded-xl p-1 outline-none focus:border-orange-500 bg-white">
+                    </div>
+
+                    <button onclick="generateStory()"
+                        class="btn w-14 h-14 rounded-2xl flex items-center justify-center ml-2 shadow-lg bg-gradient-to-br from-violet-400 to-fuchsia-500 text-white text-2xl border-b-4 border-violet-700 active:border-b-0"
+                        title="魔法故事">✨</button>
+
+                    <button onclick="startCalculationMode()"
+                        class="btn btn-blue bg-sky-500 border-sky-700 text-white px-6 py-2 rounded-2xl font-bold shadow-lg ml-2 h-14 text-lg">
+                        开始
+                    </button>
+                </div>
+
+                <!-- Action Phase -->
+                <div id="calc-action" class="hidden w-full flex flex-col items-center gap-2">
+                    <div id="step-dots" class="flex gap-2 mb-1"></div>
+                    <div class="flex gap-4 w-full justify-center">
+                        <button onclick="exitCalcMode()"
+                            class="btn btn-red px-6 py-3 rounded-2xl font-bold shadow w-28">退出</button>
+                        <button id="stepBtn" onclick="manualStep()"
+                            class="btn btn-purple px-6 py-3 rounded-2xl font-bold text-xl shadow flex-1 max-w-sm relative overflow-hidden flex items-center justify-center">
+                            <span class="relative z-10 drop-shadow" id="stepBtnText">飞进 1 只</span>
+                            <div id="stepBtnProgress"
+                                class="absolute left-0 top-0 bottom-0 bg-violet-700 transition-all duration-300 w-0 z-0 opacity-30">
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Start Button -->
+            <div id="controls-quiz"
+                class="absolute inset-0 flex items-center justify-center opacity-0 pointer-events-none">
+                <button onclick="nextQuestion()"
+                    class="btn btn-yellow px-10 py-5 rounded-2xl font-bold text-2xl shadow-xl flex items-center gap-3 animate-bounce text-amber-900 border-amber-600">
+                    🎲 随机出题
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        // --- Configuration ---
+        const apiKey = ""; // System provides this
+
+        // --- SVGs ---
+
+        // Standard Bee (Yellow/Black stripes)
+        const svgBeeStandard = `
+        <svg viewBox="0 0 100 100" class="bee-svg">
+            <g>
+                <!-- Wings -->
+                <ellipse cx="70" cy="35" rx="20" ry="12" fill="#e0f2fe" stroke="#93c5fd" stroke-width="2" transform="rotate(-30 70 35)" opacity="0.8"/>
+                <ellipse cx="30" cy="35" rx="20" ry="12" fill="#e0f2fe" stroke="#93c5fd" stroke-width="2" transform="rotate(30 30 35)" opacity="0.8"/>
+                <!-- Body -->
+                <ellipse cx="50" cy="55" rx="22" ry="28" fill="#facc15" stroke="#854d0e" stroke-width="2"/>
+                <!-- Stripes -->
+                <path d="M30 50 Q50 55 70 50" stroke="#451a03" stroke-width="4" fill="none"/>
+                <path d="M30 60 Q50 65 70 60" stroke="#451a03" stroke-width="4" fill="none"/>
+                <path d="M35 70 Q50 75 65 70" stroke="#451a03" stroke-width="4" fill="none"/>
+                <!-- Eyes -->
+                <circle cx="42" cy="40" r="3" fill="#000"/>
+                <circle cx="58" cy="40" r="3" fill="#000"/>
+                <!-- Smile -->
+                <path d="M45 45 Q50 48 55 45" stroke="#000" stroke-width="2" fill="none"/>
+            </g>
+        </svg>`;
+
+        // Added Bee (With a red flower hat/decoration to distinguish)
+        const svgBeeAdded = `
+        <svg viewBox="0 0 100 100" class="bee-svg">
+            <g>
+                <!-- Wings -->
+                <ellipse cx="70" cy="35" rx="20" ry="12" fill="#e0f2fe" stroke="#93c5fd" stroke-width="2" transform="rotate(-30 70 35)" opacity="0.8"/>
+                <ellipse cx="30" cy="35" rx="20" ry="12" fill="#e0f2fe" stroke="#93c5fd" stroke-width="2" transform="rotate(30 30 35)" opacity="0.8"/>
+                <!-- Body (Slightly more orange) -->
+                <ellipse cx="50" cy="55" rx="22" ry="28" fill="#fbbf24" stroke="#854d0e" stroke-width="2"/>
+                <!-- Stripes -->
+                <path d="M30 50 Q50 55 70 50" stroke="#451a03" stroke-width="4" fill="none"/>
+                <path d="M30 60 Q50 65 70 60" stroke="#451a03" stroke-width="4" fill="none"/>
+                <path d="M35 70 Q50 75 65 70" stroke="#451a03" stroke-width="4" fill="none"/>
+                <!-- Eyes -->
+                <circle cx="42" cy="40" r="3" fill="#000"/>
+                <circle cx="58" cy="40" r="3" fill="#000"/>
+                <!-- Flower Hat -->
+                <circle cx="50" cy="28" r="8" fill="#f43f5e" />
+                <circle cx="50" cy="28" r="3" fill="#fef08a" />
+            </g>
+        </svg>`;
+
+        // Hive SVG
+        const svgHive = `
+        <svg viewBox="0 0 100 100" class="hive-svg">
+            <g transform="translate(10, 10) scale(0.8)">
+                <!-- Branch -->
+                <path d="M50 0 L50 20" stroke="#5D4037" stroke-width="6" stroke-linecap="round"/>
+                <!-- Hive Layers -->
+                <path d="M30 20 Q50 15 70 20 L75 30 Q50 35 25 30 Z" fill="#FBC02D" stroke="#E65100" stroke-width="2"/>
+                <path d="M25 30 Q50 25 75 30 L80 45 Q50 50 20 45 Z" fill="#FDD835" stroke="#E65100" stroke-width="2"/>
+                <path d="M20 45 Q50 40 80 45 L85 60 Q50 65 15 60 Z" fill="#FBC02D" stroke="#E65100" stroke-width="2"/>
+                <path d="M15 60 Q50 55 85 60 L80 75 Q50 80 20 75 Z" fill="#FDD835" stroke="#E65100" stroke-width="2"/>
+                <path d="M20 75 Q50 70 80 75 L70 90 Q50 95 30 90 Z" fill="#FBC02D" stroke="#E65100" stroke-width="2"/>
+                <!-- Door -->
+                <circle cx="50" cy="60" r="8" fill="#3E2723"/>
+            </g>
+        </svg>`;
+
+        // --- State ---
+        let ones = 0;
+        let tens = 0;
+        let isAnimating = false;
+        let currentMode = 'count';
+        let calcTarget = 0;
+        let calcProgress = 0;
+        let waitingButterflies = 0;
+
+        // --- DOM ---
+        const els = {
+            onesContainer: document.getElementById('onesContainer'),
+            tensContainer: document.getElementById('tensContainer'),
+            onesRoom: document.getElementById('onesRoom'),
+            tensRoom: document.getElementById('tensRoom'),
+            tensCountDisplay: document.getElementById('tensCountDisplay'),
+            onesCountDisplay: document.getElementById('onesCountDisplay'),
+            totalDisplay: document.getElementById('totalDisplay'),
+            waitingArea: document.getElementById('waitingArea'),
+            waitingContainer: document.getElementById('waitingContainer'),
+            mainTitle: document.getElementById('mainTitle'),
+            stepBtn: document.getElementById('stepBtn'),
+            stepBtnText: document.getElementById('stepBtnText'),
+            stepBtnProgress: document.getElementById('stepBtnProgress'),
+            inputStart: document.getElementById('inputStart'),
+            inputChange: document.getElementById('inputChange'),
+            aiStoryDisplay: document.getElementById('aiStoryDisplay'),
+            aiStoryContent: document.getElementById('aiStoryContent')
+        };
+
+        // --- Core Logic ---
+        function initTenFrame() {
+            els.onesContainer.innerHTML = '';
+            for (let i = 0; i < 10; i++) {
+                const slot = document.createElement('div');
+                slot.className = 'frame-slot';
+                slot.dataset.index = i + 1;
+                slot.id = `slot-${i}`;
+                els.onesContainer.appendChild(slot);
+            }
+        }
+        initTenFrame();
+
+        function updateDisplay() {
+            els.tensCountDisplay.innerText = tens;
+            els.onesCountDisplay.innerText = ones;
+            els.totalDisplay.innerText = (tens * 10) + ones;
+        }
+
+        function renderBeeInCell(index, type = 'standard') {
+            const slot = document.getElementById(`slot-${index}`);
+            if (!slot) return;
+            slot.innerHTML = '';
+
+            const div = document.createElement('div');
+            div.className = 'block-one w-full h-full';
+            div.innerHTML = type === 'added' ? svgBeeAdded : svgBeeStandard;
+
+            slot.appendChild(div);
+        }
+
+        function addWaitingBee() {
+            const div = document.createElement('div');
+            div.className = 'block-one';
+            div.innerHTML = svgBeeAdded; // Waiting bees are always the "added" type
+            els.waitingContainer.appendChild(div);
+        }
+
+        async function addOne(type = 'standard', animateFromWaiting = false) {
+            if (ones >= 10) return;
+            const targetIndex = ones;
+
+            if (animateFromWaiting) {
+                const waiter = els.waitingContainer.firstElementChild;
+                if (waiter) waiter.remove();
+            }
+
+            renderBeeInCell(targetIndex, type);
+            ones++;
+            updateDisplay();
+
+            if (ones === 10) {
+                await performRegrouping();
+            }
+        }
+
+        async function performRegrouping() {
+            isAnimating = true;
+            updateGlobalButtons();
+
+            els.onesRoom.classList.add('full-alert');
+            showFloatingText("满员啦! (Hive Full!)", els.onesRoom);
+            await sleep(1000);
+
+            if (!isAnimating) { els.onesRoom.classList.remove('full-alert'); return; }
+
+            initTenFrame(); // Clear ones
+            ones = 0;
+            updateDisplay();
+            els.onesRoom.classList.remove('full-alert');
+
+            // Add Hive
+            tens++;
+            const hive = document.createElement('div');
+            hive.className = 'block-ten';
+            hive.innerHTML = svgHive;
+            els.tensContainer.appendChild(hive);
+
+            showFloatingText("变蜂巢! (+1 Hive)", els.tensRoom, '#d97706');
+            updateDisplay();
+
+            await sleep(600);
+            isAnimating = false;
+            updateGlobalButtons();
+        }
+
+        function resetGame() {
+            isAnimating = false;
+            document.body.style.cursor = 'default';
+            updateGlobalButtons();
+
+            ones = 0;
+            tens = 0;
+            waitingButterflies = 0;
+            els.tensContainer.innerHTML = '';
+            els.waitingContainer.innerHTML = '';
+            initTenFrame();
+            updateDisplay();
+            closeStory();
+            els.onesRoom.classList.remove('full-alert');
+        }
+
+        async function userAddOne() {
+            if (isAnimating) return;
+            await addOne('standard');
+        }
+
+        async function startCalculationMode() {
+            if (isAnimating) return;
+
+            const startVal = parseInt(els.inputStart.value) || 0;
+            const changeVal = parseInt(els.inputChange.value) || 0;
+
+            ones = 0;
+            tens = 0;
+            els.tensContainer.innerHTML = '';
+            initTenFrame();
+
+            // Fill Tens (Hives)
+            const startTens = Math.floor(startVal / 10);
+            for (let i = 0; i < startTens; i++) {
+                tens++;
+                const hive = document.createElement('div');
+                hive.className = 'block-ten';
+                hive.innerHTML = svgHive;
+                els.tensContainer.appendChild(hive);
+            }
+            // Fill Ones (Standard Bees)
+            const startOnes = startVal % 10;
+            for (let i = 0; i < startOnes; i++) {
+                renderBeeInCell(i, 'standard');
+                ones++;
+            }
+            updateDisplay();
+
+            els.waitingContainer.innerHTML = '';
+            for (let i = 0; i < changeVal; i++) {
+                addWaitingBee();
+            }
+            els.waitingArea.classList.remove('hidden');
+
+            calcTarget = changeVal;
+            calcProgress = 0;
+
+            document.getElementById('calc-setup').classList.add('hidden');
+            document.getElementById('calc-action').classList.remove('hidden');
+            updateStepUI();
+        }
+
+        async function manualStep() {
+            if (isAnimating) return;
+
+            if (calcProgress >= calcTarget) {
+                if (currentMode === 'quiz') nextQuestion();
+                else exitCalcMode();
+                return;
+            }
+
+            await addOne('added', true);
+            calcProgress++;
+            updateStepUI();
+        }
+
+        function updateStepUI() {
+            const dotsContainer = document.getElementById('step-dots');
+            dotsContainer.innerHTML = '';
+            const limit = Math.min(calcTarget, 10);
+            for (let i = 0; i < limit; i++) {
+                const dot = document.createElement('div');
+                dot.className = `step-dot ${i < calcProgress ? 'filled' : ''}`;
+                dotsContainer.appendChild(dot);
+            }
+
+            const remaining = calcTarget - calcProgress;
+            const pct = calcTarget > 0 ? (calcProgress / calcTarget) * 100 : 0;
+            els.stepBtnProgress.style.width = `${pct}%`;
+
+            if (remaining === 0) {
+                els.stepBtnText.innerText = "完成! (Done)";
+                els.stepBtn.classList.remove('btn-purple');
+                els.stepBtn.classList.add('btn-green');
+            } else {
+                els.stepBtnText.innerText = `飞进 1 只 (剩 ${remaining})`;
+                els.stepBtn.classList.add('btn-purple');
+                els.stepBtn.classList.remove('btn-green');
+            }
+        }
+
+        function exitCalcMode() {
+            els.waitingArea.classList.add('hidden');
+            document.getElementById('calc-action').classList.add('hidden');
+            if (currentMode === 'quiz') resetGame();
+            else {
+                document.getElementById('calc-setup').classList.remove('hidden');
+                resetGame();
+            }
+        }
+
+        function nextQuestion() {
+            const start = Math.floor(Math.random() * 24) + 5;
+            const ones = start % 10;
+            const neededForTen = 10 - ones;
+            let change = Math.random() > 0.5 ? neededForTen + Math.floor(Math.random() * 2) : Math.floor(Math.random() * 6) + 1;
+            if (change === 0) change = 1;
+
+            els.inputStart.value = start;
+            els.inputChange.value = change;
+
+            document.getElementById('controls-quiz').style.opacity = '0';
+            document.getElementById('controls-quiz').style.pointerEvents = 'none';
+            document.getElementById('controls-calc').style.opacity = '1';
+            document.getElementById('controls-calc').style.pointerEvents = 'auto';
+
+            document.getElementById('calc-setup').classList.add('hidden');
+            els.mainTitle.innerText = `${start} + ${change} = ?`;
+            startCalculationMode();
+        }
+
+        function showFloatingText(text, container, color = '#d97706') {
+            const el = document.createElement('div');
+            el.className = 'floating-text';
+            el.style.color = color;
+            el.innerText = text;
+            el.style.top = '50%';
+            el.style.left = '50%';
+            el.style.transform = 'translate(-50%, -50%)';
+            container.appendChild(el);
+            setTimeout(() => el.remove(), 1500);
+        }
+
+        function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+        function updateGlobalButtons() {
+            const disabled = isAnimating;
+            document.querySelectorAll('button').forEach(b => {
+                if (!b.classList.contains('tab-btn') && !b.classList.contains('absolute')) {
+                    b.disabled = disabled;
+                }
+            });
+        }
+
+        function switchTab(mode) {
+            currentMode = mode;
+            ['count', 'calc', 'quiz'].forEach(m => {
+                document.getElementById(`tab-${m}`).classList.toggle('active', m === mode);
+            });
+
+            document.getElementById('controls-count').style.opacity = '0';
+            document.getElementById('controls-count').style.pointerEvents = 'none';
+            document.getElementById('controls-calc').style.opacity = '0';
+            document.getElementById('controls-calc').style.pointerEvents = 'none';
+            document.getElementById('controls-quiz').style.opacity = '0';
+            document.getElementById('controls-quiz').style.pointerEvents = 'none';
+
+            resetGame();
+
+            if (mode === 'count') {
+                document.getElementById('controls-count').style.opacity = '1';
+                document.getElementById('controls-count').style.pointerEvents = 'auto';
+                els.mainTitle.innerText = "快乐养蜂场";
+                els.waitingArea.classList.add('hidden');
+            } else if (mode === 'calc') {
+                document.getElementById('controls-calc').style.opacity = '1';
+                document.getElementById('controls-calc').style.pointerEvents = 'auto';
+                document.getElementById('calc-setup').classList.remove('hidden');
+                document.getElementById('calc-action').classList.add('hidden');
+                els.mainTitle.innerText = "进位演示";
+            } else {
+                document.getElementById('controls-quiz').style.opacity = '1';
+                document.getElementById('controls-quiz').style.pointerEvents = 'auto';
+                els.mainTitle.innerText = "挑战时间";
+            }
+        }
+
+        async function generateStory() {
+            const start = els.inputStart.value;
+            const change = els.inputChange.value;
+            const prompt = `为6岁孩子写个一句话故事: ${start}只小蜜蜂在采蜜，又飞来了${change}只。如果相加超过10，提到"装满了一个大蜂巢"。用中文。`;
+
+            els.aiStoryDisplay.style.display = 'block';
+            els.aiStoryContent.innerHTML = "正在听蜜蜂说话...";
+
+            try {
+                if (!apiKey) throw new Error("No Key");
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+                const data = await res.json();
+                els.aiStoryContent.innerText = data.candidates[0].content.parts[0].text;
+            } catch (e) {
+                const sum = parseInt(start) + parseInt(change);
+                let text = `花园里有 ${start} 只小蜜蜂，又飞来了 ${change} 只。`;
+                if (start % 10 + parseInt(change) >= 10) text += " 蜂巢好像要装不下了！";
+                els.aiStoryContent.innerText = text;
+            }
+        }
+        function closeStory() { els.aiStoryDisplay.style.display = 'none'; }
+
+    </script>
+</body>
+
+</html>

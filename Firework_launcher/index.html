@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Firework Launcher</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div id="app">
+        <!-- Stage 1: Parameter Settings -->
+        <div id="settings-stage" class="stage">
+            <h1 class="title">✨ Firework Launcher ✨</h1>
+
+            <div class="controls-container">
+                <!-- Size Control -->
+                <div class="control-group">
+                    <h2>Size</h2>
+                    <div class="options" id="size-options">
+                        <button class="option-btn selected" data-value="small">Small 🐭</button>
+                        <button class="option-btn" data-value="medium">Medium 🐱</button>
+                        <button class="option-btn" data-value="large">Big 🐘</button>
+                    </div>
+                </div>
+
+                <!-- Speed Control -->
+                <div class="control-group">
+                    <h2>Speed</h2>
+                    <div class="options" id="speed-options">
+                        <button class="option-btn" data-value="slow">Slow 🐢</button>
+                        <button class="option-btn selected" data-value="medium">Normal 🚶</button>
+                        <button class="option-btn" data-value="fast">Fast 🐆</button>
+                    </div>
+                </div>
+
+                <!-- Type Control -->
+                <div class="control-group">
+                    <h2>Shapes (Pick your mix!)</h2>
+                    <div class="options" id="type-options">
+                        <button class="option-btn selected" data-value="circle">Circle ⚪</button>
+                        <button class="option-btn" data-value="star">Star ⭐</button>
+                        <button class="option-btn" data-value="heart">Heart ❤️</button>
+                        <button class="option-btn" data-value="ring">Ring 🪐</button>
+                        <button class="option-btn" data-value="flower">Flower 🌸</button>
+                        <button class="option-btn" data-value="random">Surprise 🎁</button>
+                    </div>
+                </div>
+
+                <!-- Colour Control -->
+                <div class="control-group">
+                    <h2>Colour</h2>
+                    <div class="options" id="color-options">
+                        <button class="option-btn color-btn selected" data-value="red"
+                            style="--btn-color: #ff4d4d;">Red</button>
+                        <button class="option-btn color-btn" data-value="blue"
+                            style="--btn-color: #4d4dff;">Blue</button>
+                        <button class="option-btn color-btn" data-value="green"
+                            style="--btn-color: #4dff4d;">Green</button>
+                        <button class="option-btn color-btn" data-value="gold"
+                            style="--btn-color: #ffd700;">Gold</button>
+                        <button class="option-btn color-btn" data-value="rainbow"
+                            style="background: linear-gradient(45deg, red, orange, yellow, green, blue, indigo, violet); color: white;">Rainbow</button>
+                    </div>
+                </div>
+            </div>
+
+            <button id="launch-btn" class="launch-btn">🚀 LAUNCH! 🚀</button>
+        </div>
+
+        <!-- Stage 2: Animation -->
+        <div id="animation-stage" class="stage hidden">
+            <canvas id="firework-canvas"></canvas>
+            <div class="overlay-controls">
+                <button id="back-btn" class="icon-btn">⬅️ Back</button>
+                <button id="fire-btn" class="icon-btn">🎆 POP!</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

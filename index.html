@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>May's Learning Toolbox</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background-color: #fff1f2;
+        }
+
+        /* Rose-50 bg */
+        .app-btn {
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .app-btn:active {
+            transform: scale(0.96) translateY(4px);
+            border-bottom-width: 0px;
+            margin-top: 8px;
+            /* Offset the missing border to keep alignment roughly same or bounce */
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col items-center p-6 selection:bg-pink-200">
+    <header class="w-full text-center mt-4 mb-8 space-y-2">
+        <h1 class="text-4xl font-bold text-pink-500 drop-shadow-sm tracking-wide">May's Learning Toolbox 🌈</h1>
+        <p class="text-pink-300 font-medium text-lg">Pick a fun activity!</p>
+    </header>
+
+    <main class="w-full max-w-md grid grid-cols-1 gap-6 pb-12">
+
+        <a href="./Prob_game/index.html"
+            class="app-btn group flex items-center justify-between p-6 rounded-3xl shadow-lg border-b-8 h-32 w-full text-2xl font-bold bg-sky-400 border-sky-600 text-white hover:bg-sky-300">
+            <span class="drop-shadow-md">Probability Games</span>
+            <span class="text-6xl group-hover:scale-110 transition-transform">🎲</span>
+        </a>
+
+        <a href="./Math/index.html"
+            class="app-btn group flex items-center justify-between p-6 rounded-3xl shadow-lg border-b-8 h-32 w-full text-2xl font-bold bg-amber-400 border-amber-600 text-amber-900 hover:bg-amber-300">
+            <span class="drop-shadow-md">Bee Farm Math</span>
+            <span class="text-6xl group-hover:scale-110 transition-transform">🐝</span>
+        </a>
+
+        <a href="./Learning_dict/index.html"
+            class="app-btn group flex items-center justify-between p-6 rounded-3xl shadow-lg border-b-8 h-32 w-full text-2xl font-bold bg-emerald-400 border-emerald-600 text-white hover:bg-emerald-300">
+            <span class="drop-shadow-md">Magic Dictionary</span>
+            <span class="text-6xl group-hover:scale-110 transition-transform">📖</span>
+        </a>
+
+        <a href="./Firework_launcher/index.html"
+            class="app-btn group flex items-center justify-between p-6 rounded-3xl shadow-lg border-b-8 h-32 w-full text-2xl font-bold bg-violet-400 border-violet-600 text-white hover:bg-violet-300">
+            <span class="drop-shadow-md">Fireworks!</span>
+            <span class="text-6xl group-hover:scale-110 transition-transform">🎆</span>
+        </a>
+
+    </main>
+
+    <footer class="mt-auto text-pink-300 text-sm font-bold opacity-60">
+        Made with ❤️ for May
+    </footer>
+</body>
+
+</html>

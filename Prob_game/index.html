@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Probability Games</title>
+  <style>
+    :root {
+      --primary: #FF6B6B;
+      --secondary: #4ECDC4;
+      --success: #95E77D;
+      --warning: #FFE66D;
+      --info: #6C5CE7;
+      --background: #F7F7F7;
+      --text: #2D3436;
+      --danger: #e74c3c;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background: var(--background);
+      color: var(--text);
+    }
+
+    header {
+      padding: 16px;
+      text-align: center;
+      background: white;
+      border-bottom: 1px solid #ddd;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    .container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 16px 20px;
+      border-radius: 12px;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      transition: transform .05s ease, box-shadow .2s ease;
+      min-height: 60px;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-secondary {
+      background: var(--secondary);
+      color: #053b34;
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: #0f3b13;
+    }
+
+    .btn-warning {
+      background: var(--warning);
+      color: #5a4a00;
+    }
+
+    .btn-info {
+      background: var(--info);
+      color: white;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 2px solid #ccc;
+      color: var(--text);
+    }
+
+    .row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .center {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .title {
+      font-size: 24px;
+      margin: 8px 0 16px;
+    }
+
+    .subtitle {
+      font-size: 18px;
+      opacity: .8;
+    }
+
+    .score {
+      font-weight: 700;
+    }
+
+    .panel {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    }
+
+    .bar {
+      height: 16px;
+      background: #eee;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .bar>span {
+      display: block;
+      height: 100%;
+      background: var(--primary);
+    }
+
+    .pill {
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: #eee;
+    }
+
+    .big {
+      font-size: 22px;
+    }
+
+    .menu-grid button {
+      width: 100%;
+    }
+
+    .footer-actions {
+      margin-top: 12px;
+    }
+
+    .bag {
+      width: min(100%, 480px);
+      min-height: 220px;
+      border: 4px solid #333;
+      border-radius: 18px;
+      background: #fafafa;
+      position: relative;
+      padding: 12px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(42px, 1fr));
+      gap: 8px;
+    }
+
+    .ball {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+      box-shadow: inset 0 0 0 4px rgba(255, 255, 255, 0.6);
+    }
+
+    .red {
+      background: #ff4d4d;
+    }
+
+    .blue {
+      background: #4d7cff;
+    }
+
+    .yellow {
+      background: #ffd54d;
+    }
+
+    .green {
+      background: #58d68d;
+    }
+
+    .purple {
+      background: #6C5CE7;
+    }
+
+    .result {
+      font-size: 20px;
+      margin-top: 8px;
+    }
+
+    .result.ok {
+      color: #1b5e20;
+    }
+
+    .result.bad {
+      color: var(--danger);
+    }
+
+    .confetti {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .confetti span {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      animation: drop 1200ms ease-in forwards;
+    }
+
+    @keyframes drop {
+      0% {
+        transform: translateY(-50px) rotate(0deg);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    .celebrate-text {
+      position: relative;
+      font-weight: 900;
+      color: #ff2d55;
+      text-shadow: 0 0 18px rgba(255, 255, 255, .9), 0 10px 28px rgba(0, 0, 0, .35);
+      font-size: clamp(48px, 10vw, 140px);
+      letter-spacing: 1px;
+      animation: pop 900ms ease-out;
+    }
+
+    .celebrate-box {
+      position: fixed;
+      left: 50%;
+      top: 40%;
+      transform: translate(-50%, -50%);
+      background: #fff;
+      border: 6px solid #333;
+      border-radius: 24px;
+      padding: clamp(16px, 3vw, 32px) clamp(24px, 4vw, 48px);
+      box-shadow: 0 10px 32px rgba(0, 0, 0, .25);
+      animation: popBox 900ms ease-out;
+      z-index: 1000;
+    }
+
+    .celebrate-box::before {
+      content: "";
+      position: absolute;
+      left: 22px;
+      bottom: -26px;
+      width: 0;
+      height: 0;
+      border-left: 24px solid transparent;
+      border-right: 24px solid transparent;
+      border-top: 26px solid #333;
+    }
+
+    .celebrate-box::after {
+      content: "";
+      position: absolute;
+      left: 24px;
+      bottom: -22px;
+      width: 0;
+      height: 0;
+      border-left: 22px solid transparent;
+      border-right: 22px solid transparent;
+      border-top: 22px solid #fff;
+    }
+
+    @keyframes popBox {
+      0% {
+        transform: translate(-50%, -50%) scale(.85);
+        opacity: 0;
+      }
+
+      40% {
+        transform: translate(-50%, -50%) scale(1.08);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes pop {
+      0% {
+        transform: translateX(-50%) scale(.7);
+        opacity: 0;
+      }
+
+      40% {
+        transform: translateX(-50%) scale(1.2);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateX(-50%) scale(1);
+        opacity: 1;
+      }
+    }
+
+    .burst {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      border: 6px solid #FF6B6B;
+      border-radius: 50%;
+      width: 12px;
+      height: 12px;
+      animation: boom 1000ms ease-out forwards;
+      opacity: .9;
+    }
+
+    @keyframes boom {
+      0% {
+        transform: translate(-50%, -50%) scale(.2);
+        opacity: .9;
+      }
+
+      100% {
+        transform: translate(-50%, -50%) scale(16);
+        opacity: 0;
+      }
+    }
+
+    .flash {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle, rgba(255, 255, 255, .6), rgba(255, 255, 255, 0));
+      animation: flashout 500ms ease-out forwards;
+    }
+
+    @keyframes flashout {
+      0% {
+        opacity: .8;
+      }
+
+      100% {
+        opacity: 0;
+      }
+    }
+
+    .spinner {
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      border: 6px solid #333;
+      position: relative;
+      background: conic-gradient(#6C5CE7 0 75%, #FFD54D 75% 100%);
+    }
+
+    .spinner .needle {
+      position: absolute;
+      width: 4px;
+      height: 130px;
+      background: #333;
+      left: calc(50% - 2px);
+      top: 0;
+      transform-origin: bottom center;
+    }
+
+    .spin {
+      animation: rotate 1500ms cubic-bezier(.35, .82, .28, 1.12);
+    }
+
+    @keyframes rotate {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(1440deg);
+      }
+    }
+
+    .jar {
+      width: 280px;
+      height: 240px;
+      border: 4px solid #333;
+      border-radius: 24px;
+      background: #fff;
+      position: relative;
+      padding: 8px;
+    }
+
+    .cookie {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin: 6px;
+      display: inline-block;
+    }
+
+    .choc {
+      background: #8D5A2B;
+    }
+
+    .van {
+      background: #F6D6A5;
+      border: 2px dotted #b99967;
+    }
+
+    .tally {
+      display: inline-block;
+      width: 18px;
+      height: 28px;
+      border-left: 4px solid #333;
+      margin-right: 6px;
+    }
+
+    .sky {
+      width: 280px;
+      height: 200px;
+      border-radius: 16px;
+      background: linear-gradient(#87CEFA, #E0F7FA);
+      position: relative;
+      overflow: hidden;
+      border: 4px solid #333;
+    }
+
+    .cloud {
+      position: absolute;
+      width: 80px;
+      height: 50px;
+      background: #fff;
+      border-radius: 50px;
+      box-shadow: 30px 0 0 #fff, -30px 0 0 #fff;
+    }
+
+    .rain {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-image: radial-gradient(circle, rgba(0, 0, 255, 0.6) 2px, transparent 2px);
+      background-size: 20px 20px;
+      animation: rain 800ms linear infinite;
+      opacity: 0;
+    }
+
+    @keyframes rain {
+      from {
+        background-position: 0 0;
+      }
+
+      to {
+        background-position: 0 20px;
+      }
+    }
+
+    .pond {
+      width: 320px;
+      height: 220px;
+      border-radius: 24px;
+      background: radial-gradient(circle at 30% 30%, #a0e7ff, #57c9f5);
+      position: relative;
+      border: 4px solid #333;
+    }
+
+    .duck {
+      width: 44px;
+      height: 34px;
+      background: #ffd54d;
+      border-radius: 24px;
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      border: 2px solid rgba(0, 0, 0, 0.2);
+    }
+
+    .duck::after {
+      content: "";
+      position: absolute;
+      width: 16px;
+      height: 12px;
+      background: #ff8f00;
+      border-radius: 12px;
+      right: -8px;
+      top: 12px;
+    }
+
+    @media (max-width: 640px) {
+
+      .bag,
+      .spinner,
+      .jar,
+      .sky,
+      .pond {
+        transform: scale(0.9);
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+
+    #game1 {
+      border: 6px solid #333;
+      border-radius: 24px;
+      background: linear-gradient(180deg, #fffaf0, #fdf6e3);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, .08);
+    }
+
+    #game1 .bag {
+      border: 6px solid #333;
+      border-radius: 24px;
+      background: radial-gradient(circle at 30% 30%, #ffffff, #f8f1f1);
+      box-shadow: 0 8px 0 rgba(0, 0, 0, .08);
+    }
+
+    #game1 .ball {
+      border: 3px solid #222;
+      box-shadow: 0 4px 0 rgba(0, 0, 0, .12), inset 0 0 0 4px rgba(255, 255, 255, 0.6);
+    }
+
+    #game1 .ball:hover {
+      animation: wiggle 280ms ease-in-out;
+    }
+
+    @keyframes wiggle {
+      0% {
+        transform: rotate(0deg)
+      }
+
+      33% {
+        transform: rotate(6deg)
+      }
+
+      66% {
+        transform: rotate(-6deg)
+      }
+
+      100% {
+        transform: rotate(0deg)
+      }
+    }
+
+    #g1-question {
+      position: relative;
+    }
+
+    #g1-question::before {
+      content: "\2B50";
+      position: absolute;
+      left: -28px;
+      top: -6px;
+      transform: rotate(-12deg);
+    }
+
+    #game1 .row button {
+      border: 3px solid #333;
+      border-radius: 20px;
+      box-shadow: 0 6px 0 rgba(0, 0, 0, .1);
+    }
+
+    .pack-area {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 60vh;
+      background: radial-gradient(circle at 30% 30%, #f3f7ff, #e9eefc);
+      border: 6px solid #333;
+      border-radius: 24px;
+    }
+
+    .pack-area.fullscreen {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      border: none;
+      border-radius: 0;
+      background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+    }
+
+    .star-container {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .star {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 0 6px 2px rgba(255, 255, 200, 0.8);
+      animation: starfall 1500ms ease-in forwards;
+    }
+
+    @keyframes starfall {
+      from {
+        transform: translateY(-20px) scale(1.2);
+        opacity: 1;
+      }
+
+      to {
+        transform: translateY(100vh) scale(0.5);
+        opacity: 0;
+      }
+    }
+
+    .cards-row {
+      display: flex;
+      gap: 48px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .gcard {
+      width: 180px;
+      height: 260px;
+      border-radius: 18px;
+      border: 6px solid #222;
+      box-shadow: 0 8px 0 rgba(0, 0, 0, .12);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      transform-origin: center bottom;
+    }
+
+    .legendary-text {
+      position: absolute;
+      top: 25%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.8);
+      font-size: 100px;
+      font-weight: 900;
+      color: #FFD700;
+      text-shadow: 0 0 10px #FFD700, 0 0 20px #FF8C00, 0 0 30px #FF4500, 2px 2px 2px rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 1020;
+    }
+
+    .legendary-text.play {
+      animation: legendary-pop 2500ms ease-out forwards;
+    }
+
+    @keyframes legendary-pop {
+      0% {
+        transform: translate(-50%, -50%) scale(0.8);
+        opacity: 0;
+      }
+
+      20% {
+        transform: translate(-50%, -50%) scale(1.2);
+        opacity: 1;
+      }
+
+      80% {
+        transform: translate(-50%, -50%) scale(1.1);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0;
+      }
+    }
+
+    .gcard.enter {
+      animation: cardEnter 400ms ease-out forwards;
+    }
+
+    @keyframes cardEnter {
+      from {
+        opacity: 0;
+        transform: translateY(24px) scale(.92)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1)
+      }
+    }
+
+    .gcard.white {
+      background: linear-gradient(180deg, #ffffff, #ecf0f1);
+    }
+
+    .gcard.blue {
+      background: linear-gradient(180deg, #6fa3ff, #4d7cff);
+    }
+
+    .gcard.purple {
+      background: linear-gradient(180deg, #a592ff, #6C5CE7);
+    }
+
+    .gcard.orange {
+      background: linear-gradient(180deg, #ffcd7a, #ff9f0a);
+      animation: glow 1100ms ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from {
+        box-shadow: 0 8px 0 rgba(0, 0, 0, .12), 0 0 20px 6px rgba(255, 159, 10, .3)
+      }
+
+      to {
+        box-shadow: 0 8px 0 rgba(0, 0, 0, .12), 0 0 34px 10px rgba(255, 159, 10, .6)
+      }
+    }
+
+    .rarity {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .85);
+      border: 3px solid #222;
+      font-weight: 800;
+    }
+
+    .legendary-ring {
+      position: absolute;
+      inset: -6px;
+      border-radius: 20px;
+      border: 6px solid transparent;
+      background: conic-gradient(from 0deg, rgba(255, 159, 10, .2), rgba(255, 255, 255, .2), rgba(255, 159, 10, .2));
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      animation: spinring 1600ms linear infinite;
+    }
+
+    @keyframes spinring {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Probability Games</h1>
+    <div class="subtitle">Pick a game and play</div>
+  </header>
+  <div class="container">
+    <section id="screen-menu" class="card">
+      <div class="title">Game Menu</div>
+      <div class="grid menu-grid">
+        <button class="btn btn-primary" onclick="show('game1')">Color Picker</button>
+        <button class="btn btn-info" onclick="show('game2')">Spinner Safari</button>
+        <button class="btn btn-success" onclick="show('game3')">Cookie Jar</button>
+        <button class="btn btn-secondary" onclick="show('game4')">Weather Wizard</button>
+        <button class="btn btn-warning" onclick="show('game5')">Lucky Duck Pond</button>
+        <button class="btn btn-primary" style="background:#ff9f0a" onclick="show('game6')">Card Pack</button>
+      </div>
+    </section>
+
+    <section id="game1" class="card hidden">
+      <div class="title">Color Picker</div>
+      <div id="g1-progress" class="pill"></div>
+      <div class="row" style="margin-top:8px">
+        <label class="pill">Balls in bag</label>
+        <input id="g1-total" type="number" min="1" max="100" value="20"
+          style="padding:10px;border-radius:8px;border:1px solid #ccc;width:100px" />
+        <button class="btn btn-outline" onclick="g1.setTotal()">Apply</button>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <div class="bag" id="g1-bag"></div>
+        <div style="flex:1">
+          <div id="g1-question" class="big" style="margin-bottom:8px"></div>
+          <div class="row">
+            <button class="btn btn-danger" style="background: var(--danger); color: #fff"
+              onclick="g1.answer('Impossible')">Impossible</button>
+            <button class="btn btn-warning" onclick="g1.answer('Very unlikely')">Very unlikely</button>
+            <button class="btn btn-outline" onclick="g1.answer('Unlikely')">Unlikely</button>
+            <button class="btn btn-info" onclick="g1.answer('Maybe')">Maybe</button>
+            <button class="btn btn-secondary" onclick="g1.answer('Likely')">Likely</button>
+            <button class="btn btn-success" onclick="g1.answer('Certain')">Certain</button>
+          </div>
+          <div class="footer-actions row">
+            <button id="g1-next" class="btn btn-outline" onclick="g1.next()" disabled>Next</button>
+            <button id="g1-pick-ball" class="btn btn-primary" onclick="g1.pickBall()" disabled>Pick a ball</button>
+            <button class="btn btn-outline" onclick="resetAll()">Back to Menu</button>
+          </div>
+          <div id="g1-result" class="result"></div>
+          <div id="g1-score" class="score" style="margin-top:6px"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="game2" class="card hidden">
+      <div class="title">Spinner Safari</div>
+      <div class="row">
+        <div class="spinner center" id="g2-spinner">
+          <div class="needle" id="g2-needle"></div>
+        </div>
+        <div style="flex:1">
+          <div class="big" style="margin-bottom:8px">Which color is more likely?</div>
+          <div class="row">
+            <button class="btn btn-info" onclick="g2.choose('Purple')">Purple</button>
+            <button class="btn btn-warning" onclick="g2.choose('Yellow')">Yellow</button>
+          </div>
+          <div class="footer-actions row">
+            <button id="g2-spin" class="btn btn-primary" onclick="g2.spinMany()" disabled>Spin 10 Times</button>
+            <button class="btn btn-outline" onclick="resetAll()">Back to Menu</button>
+          </div>
+          <div id="g2-result" class="result"></div>
+          <div class="panel" style="margin-top:8px">
+            <div class="row" style="gap:24px">
+              <div>
+                <div>Purple</div>
+                <div class="bar"><span id="g2-bar-purple" style="width:0;background:#6C5CE7"></span></div>
+              </div>
+              <div>
+                <div>Yellow</div>
+                <div class="bar"><span id="g2-bar-yellow" style="width:0;background:#FFD54D"></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="game3" class="card hidden">
+      <div class="title">Cookie Jar</div>
+      <div id="g3-progress" class="pill"></div>
+      <div class="row" style="margin-top:12px">
+        <div class="jar" id="g3-jar"></div>
+        <div style="flex:1">
+          <div class="big" style="margin-bottom:8px">Which will you probably get?</div>
+          <div class="row">
+            <button class="btn btn-primary" onclick="g3.choose('Chocolate')">Chocolate</button>
+            <button class="btn btn-secondary" onclick="g3.choose('Vanilla')">Vanilla</button>
+          </div>
+          <div class="footer-actions row">
+            <button id="g3-pick" class="btn btn-success" onclick="g3.pick()" disabled>Pick One</button>
+            <button class="btn btn-outline" onclick="resetAll()">Back to Menu</button>
+          </div>
+          <div id="g3-result" class="result"></div>
+          <div id="g3-tally" style="margin-top:6px"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="game4" class="card hidden">
+      <div class="title">Weather Wizard</div>
+      <div id="g4-progress" class="pill"></div>
+      <div class="row" style="margin-top:12px">
+        <div class="sky" id="g4-sky">
+          <div class="rain" id="g4-rain"></div>
+        </div>
+        <div style="flex:1">
+          <div id="g4-question" class="big" style="margin-bottom:8px"></div>
+          <div class="row">
+            <button class="btn btn-success" onclick="g4.answer('Very likely to rain')">Very likely to rain</button>
+            <button class="btn btn-warning" onclick="g4.answer('Unlikely to rain')">Unlikely to rain</button>
+            <button class="btn btn-secondary" onclick="g4.answer('Won\'t rain')">Won't rain</button>
+          </div>
+          <div class="footer-actions row">
+            <button id="g4-next" class="btn btn-primary" onclick="g4.next()" disabled>Next</button>
+            <button class="btn btn-outline" onclick="resetAll()">Back to Menu</button>
+          </div>
+          <div id="g4-result" class="result"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="game5" class="card hidden">
+      <div class="title">Lucky Duck Pond</div>
+      <div id="g5-progress" class="pill"></div>
+      <div class="row" style="margin-top:12px">
+        <div class="pond" id="g5-pond"></div>
+        <div style="flex:1">
+          <div class="big" style="margin-bottom:8px">Pick a duck</div>
+          <div class="footer-actions row">
+            <button id="g5-pick" class="btn btn-primary" onclick="g5.pick()">Pick</button>
+            <button id="g5-keep" class="btn btn-success" onclick="g5.keep()" disabled>Keep</button>
+            <button id="g5-try" class="btn btn-warning" onclick="g5.tryAgain()" disabled>Try again</button>
+            <button class="btn btn-outline" onclick="resetAll()">Back to Menu</button>
+          </div>
+          <div id="g5-result" class="result"></div>
+          <div id="g5-score" class="score" style="margin-top:6px"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="game6" class="card hidden">
+      <div class="title">Card Pack Opening</div>
+      <div id="g6-progress" class="pill"></div>
+      <div class="row" style="margin-top:8px">
+        <label class="pill">Packs</label>
+        <input id="g6-count" type="number" min="1" max="20" value="20"
+          style="padding:10px;border-radius:8px;border:1px solid #ccc;width:100px" />
+        <label class="pill">Probabilities % (W/B/P/O)</label>
+        <input id="g6-white" type="number" min="0" max="100" value="70"
+          style="padding:10px;border-radius:8px;border:1px solid #ccc;width:80px" />
+        <input id="g6-blue" type="number" min="0" max="100" value="20"
+          style="padding:10px;border-radius:8px;border:1px solid #ccc;width:80px" />
+        <input id="g6-purple" type="number" min="0" max="100" value="8"
+          style="padding:10px;border-radius:8px;border:1px solid #ccc;width:80px" />
+        <input id="g6-orange" type="number" min="0" max="100" value="2"
+          style="padding:10px;border-radius:8px;border:1px solid #ccc;width:80px" />
+        <button class="btn btn-outline" onclick="g6.apply()">Apply</button>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <div id="g6-area" class="pack-area" style="flex:1"></div>
+        <div style="flex:1; min-width:280px">
+          <div class="row">
+            <button id="g6-open" class="btn btn-primary" onclick="g6.start()">Open</button>
+            <button id="g6-next" class="btn btn-secondary" onclick="g6.next()" disabled>Next</button>
+            <button class="btn btn-outline" onclick="resetAll()">Back to Menu</button>
+          </div>
+          <div id="g6-result" class="result"></div>
+          <div id="g6-summary" class="panel" style="margin-top:8px"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="confetti" class="confetti"></div>
+
+  <script>
+    var screens = ['screen-menu', 'game1', 'game2', 'game3', 'game4', 'game5', 'game6']
+    function show(id) { screens.forEach(s => document.getElementById(s).classList.toggle('hidden', s !== id)); location.hash = id }
+    window.show = show
+    function resetAll() { screens.forEach(s => document.getElementById(s).classList.add('hidden')); document.getElementById('screen-menu').classList.remove('hidden'); g1.reset(); g2.reset(); g3.reset(); g4.reset(); g5.reset(); g6.reset(); location.hash = 'screen-menu' }
+    window.resetAll = resetAll
+    window.addEventListener('hashchange', () => { var id = location.hash.replace('#', ''); if (screens.includes(id)) show(id) })
+    function celebrate() { var root = document.getElementById('confetti'); root.innerHTML = ''; var colors = ['#FF6B6B', '#4ECDC4', '#95E77D', '#FFE66D', '#6C5CE7']; var pieces = 80; for (var i = 0; i < pieces; i++) { var e = document.createElement('span'); var size = 8 + Math.random() * 12; e.style.width = size + 'px'; e.style.height = size + 'px'; e.style.left = Math.random() * 100 + '%'; e.style.top = (-30 - Math.random() * 40) + 'px'; e.style.background = colors[Math.floor(Math.random() * colors.length)]; e.style.borderRadius = Math.random() < 0.5 ? '2px' : '50%'; e.style.transform = 'rotate(' + (Math.random() * 180) + 'deg)'; e.style.animationDuration = (1000 + Math.random() * 800) + 'ms'; e.style.animationDelay = (Math.random() * 400) + 'ms'; root.appendChild(e) } var box = document.createElement('div'); box.className = 'celebrate-box'; var text = document.createElement('div'); text.className = 'celebrate-text'; text.textContent = '太棒了！'; box.appendChild(text); root.appendChild(box); for (var j = 0; j < 3; j++) { var b = document.createElement('div'); b.className = 'burst'; b.style.borderColor = colors[j % colors.length]; b.style.animationDuration = (1000 + j * 150) + 'ms'; b.style.animationDelay = (j * 70) + 'ms'; root.appendChild(b) } var fl = document.createElement('div'); fl.className = 'flash'; root.appendChild(fl); setTimeout(function () { root.innerHTML = '' }, 2200) }
+
+    var g1 = (() => {
+      const colors = ['red', 'blue', 'yellow', 'green', 'purple'];
+      let score = 0, chosen = null, total = 20, currentScenario = null;
+      var bag = document.getElementById('g1-bag'), q = document.getElementById('g1-question'), res = document.getElementById('g1-result'), nextBtn = document.getElementById('g1-next'), pickBtn = document.getElementById('g1-pick-ball'), prog = document.getElementById('g1-progress'), scoreEl = document.getElementById('g1-score'), totalInput = document.getElementById('g1-total');
+      prog.style.display = 'none'; // Hide progress bar
+
+      function generateScenario() {
+        let numColors = Math.floor(Math.random() * 3) + 1; // 1 to 3 colors
+        let availableColors = [...colors].sort(() => 0.5 - Math.random());
+        let scenarioColors = availableColors.slice(0, numColors);
+
+        let balls = scenarioColors.map(c => ({ c, n: Math.floor(Math.random() * 10) + 1 }));
+        let askColor = scenarioColors[Math.floor(Math.random() * scenarioColors.length)];
+
+        currentScenario = { balls, ask: askColor.toUpperCase() };
+        return currentScenario;
+      }
+
+      function scaled(balls) { var sum = balls.reduce(function (a, b) { return a + b.n }, 0); if (sum === 0) return []; var raw = balls.map(function (b) { return { c: b.c, val: total * b.n / sum } }); var flo = raw.map(function (x) { return Math.floor(x.val) }); var rem = total - flo.reduce(function (a, b) { return a + b }, 0); var frac = raw.map(function (x, i) { return { i: i, f: x.val - flo[i] } }).sort(function (a, b) { return b.f - a.f }); for (var k = 0; k < rem; k++) { flo[frac[k % frac.length].i]++ } return balls.map(function (b, i) { return { c: b.c, n: flo[i] } }) }
+
+      function drawBag(scenario) {
+        bag.innerHTML = '';
+        var counts = scaled(scenario.balls);
+        counts.forEach(function (b) { for (var i = 0; i < b.n; i++) { var d = document.createElement('div'); d.className = 'ball ' + b.c; bag.appendChild(d) } });
+        q.textContent = 'Will you get a ' + scenario.ask + ' ball?';
+        scoreEl.textContent = 'Score: ' + score;
+        res.textContent = '';
+        res.className = 'result';
+        pickBtn.disabled = false;
+      }
+
+      function classify(totalWanted) { var p = totalWanted / total; if (p === 0) return 'Impossible'; if (p <= 0.10) return 'Very unlikely'; if (p <= 0.33) return 'Unlikely'; if (p < 0.67) return 'Maybe'; if (p < 1) return 'Likely'; return 'Certain' }
+
+      function answer(a) {
+        chosen = a;
+        var s = currentScenario;
+        var counts = scaled(s.balls);
+        var wanted = s.ask.toLowerCase();
+        var totalWanted = counts.reduce(function (x, b) { return x + (b.c === wanted ? b.n : 0) }, 0);
+        var correct = classify(totalWanted);
+        var ok = a === correct;
+        res.textContent = ok ? 'Great! That\'s right!' : "Let\'s try again. The answer is " + correct;
+        res.className = 'result ' + (ok ? 'ok' : 'bad');
+        if (ok) { score++; celebrate() }
+        nextBtn.disabled = false;
+        pickBtn.disabled = true;
+      }
+
+      function next() {
+        chosen = null;
+        nextBtn.disabled = true;
+        pickBtn.disabled = true;
+        generateScenario();
+        drawBag(currentScenario);
+      }
+
+      function reset() {
+        score = 0;
+        chosen = null;
+        nextBtn.disabled = true;
+        pickBtn.disabled = true;
+        total = Number(totalInput.value) || 20;
+        generateScenario();
+        drawBag(currentScenario);
+      }
+
+      function pickBall() {
+        var counts = scaled(currentScenario.balls);
+        var ballPool = [];
+        counts.forEach(b => { for (var i = 0; i < b.n; i++) ballPool.push(b.c); });
+        var randomBall = ballPool[Math.floor(Math.random() * ballPool.length)];
+        res.textContent = 'You picked a ' + randomBall.toUpperCase() + ' ball!';
+        res.className = 'result ok';
+      }
+
+      function setTotal() {
+        total = Math.max(1, Math.min(100, Number(totalInput.value) || 20));
+        drawBag(currentScenario);
+      }
+      return { answer, next, reset, setTotal, pickBall }
+    })()
+    window.g1 = g1
+
+    var g2 = (() => {
+      var needle = document.getElementById('g2-needle'), res = document.getElementById('g2-result'), btn = document.getElementById('g2-spin'), barP = document.getElementById('g2-bar-purple'), barY = document.getElementById('g2-bar-yellow')
+      var choice = null, purple = 0, yellow = 0
+      function choose(c) { choice = c; res.textContent = ''; btn.disabled = false }
+      function spin() { needle.classList.remove('spin'); void needle.offsetWidth; needle.classList.add('spin'); var land = Math.random() < 0.75 ? 'Purple' : 'Yellow'; if (land === 'Purple') purple++; else yellow++; res.textContent = 'Landed: ' + land }
+      function spinMany() { purple = 0; yellow = 0; res.textContent = ''; for (var i = 0; i < 10; i++) { spin() } var total = purple + yellow; barP.style.width = (purple / total * 100) + '%'; barY.style.width = (yellow / total * 100) + '%'; var predict = choice === 'Purple' ? 'Correct' : 'Try again'; res.textContent = (choice ? predict : '') + (choice ? ' • Purple: ' + purple + ' Yellow: ' + yellow : '') }
+      function reset() { choice = null; purple = 0; yellow = 0; btn.disabled = true; res.textContent = ''; barP.style.width = '0'; barY.style.width = '0'; needle.classList.remove('spin') }
+      return { choose, spinMany, reset }
+    })()
+    window.g2 = g2
+
+    var g3 = (() => {
+      var jar = document.getElementById('g3-jar'), res = document.getElementById('g3-result'), pickBtn = document.getElementById('g3-pick'), tally = document.getElementById('g3-tally'), prog = document.getElementById('g3-progress')
+      var choice = null, round = 0, counts = { Chocolate: 8, Vanilla: 2 }, got = { Chocolate: 0, Vanilla: 0 }
+      function draw() { jar.innerHTML = ''; prog.textContent = 'Round ' + (round + 1) + ' of 10'; for (let i = 0; i < counts.Chocolate; i++) { var c = document.createElement('div'); c.className = 'cookie choc'; jar.appendChild(c) } for (let i = 0; i < counts.Vanilla; i++) { var v = document.createElement('div'); v.className = 'cookie van'; jar.appendChild(v) } }
+      function choose(c) { choice = c; pickBtn.disabled = false; res.textContent = '' }
+      function pick() { var pool = []; for (let i = 0; i < counts.Chocolate; i++) pool.push('Chocolate'); for (let i = 0; i < counts.Vanilla; i++) pool.push('Vanilla'); var r = pool[Math.floor(Math.random() * pool.length)]; got[r]++; round++; res.textContent = 'You got: ' + r; var bar = document.createElement('span'); bar.className = 'tally'; tally.appendChild(bar); if (round >= 10) { var better = got.Chocolate > got.Vanilla ? 'Chocolate' : (got.Vanilla > got.Chocolate ? 'Vanilla' : 'Tie'); res.textContent += ' • Total → Chocolate: ' + got.Chocolate + ' Vanilla: ' + got.Vanilla; if (choice) { res.textContent += ' • Prediction: ' + choice + (choice === better ? ' ✓' : ' ✗') } celebrate(); pickBtn.disabled = true } else { draw() } }
+      function reset() { choice = null; round = 0; got = { Chocolate: 0, Vanilla: 0 }; tally.innerHTML = ''; res.textContent = ''; pickBtn.disabled = true; draw() }
+      return { choose, pick, reset }
+    })()
+    window.g3 = g3
+
+    var g4 = (() => {
+      var scenarios = [
+        { clouds: 5, rain: true, answer: 'Very likely to rain' },
+        { clouds: 1, rain: false, answer: 'Unlikely to rain' },
+        { clouds: 0, rain: false, answer: "Won't rain" },
+        { clouds: 3, rain: false, answer: 'Unlikely to rain' },
+        { clouds: 6, rain: true, answer: 'Very likely to rain' }
+      ]
+      var idx = 0, chosen = null
+      var sky = document.getElementById('g4-sky'), rain = document.getElementById('g4-rain'), q = document.getElementById('g4-question'), res = document.getElementById('g4-result'), nextBtn = document.getElementById('g4-next'), prog = document.getElementById('g4-progress')
+      function draw() { sky.querySelectorAll('.cloud').forEach(c => c.remove()); var s = scenarios[idx]; q.textContent = 'What do you think?'; prog.textContent = 'Scenario ' + (idx + 1) + ' of ' + scenarios.length; for (let i = 0; i < s.clouds; i++) { var c = document.createElement('div'); c.className = 'cloud'; c.style.left = (i * 40 + 20) + 'px'; c.style.top = ((i % 3) * 40 + 20) + 'px'; sky.appendChild(c) } rain.style.opacity = s.rain ? 0.7 : 0; res.textContent = ''; res.className = 'result' }
+      function answer(a) { chosen = a; var correct = scenarios[idx].answer; var ok = a === correct; res.textContent = ok ? 'Great!' : 'Let\'s try again. The answer is ' + correct; res.className = 'result ' + (ok ? 'ok' : 'bad'); nextBtn.disabled = false; if (ok) celebrate() }
+      function next() { idx++; nextBtn.disabled = true; if (idx >= scenarios.length) { q.textContent = 'All done!'; res.textContent = 'Nice job'; res.className = 'result ok'; prog.textContent = ''; sky.querySelectorAll('.cloud').forEach(c => c.remove()); rain.style.opacity = 0; return } draw() }
+      function reset() { idx = 0; nextBtn.disabled = true; draw() }
+      return { answer, next, reset }
+    })()
+    window.g4 = g4
+
+    var g5 = (() => {
+      var pond = document.getElementById('g5-pond'), res = document.getElementById('g5-result'), scoreEl = document.getElementById('g5-score'), pickBtn = document.getElementById('g5-pick'), keepBtn = document.getElementById('g5-keep'), tryBtn = document.getElementById('g5-try'), prog = document.getElementById('g5-progress')
+      var dist = [{ color: 'blue', points: 1, n: 7 }, { color: 'gold', points: 5, n: 2 }, { color: 'red', points: 0, n: 1 }]
+      let turn = 0, total = 0, current = null
+      function draw() { pond.innerHTML = ''; prog.textContent = 'Turn ' + (turn + 1) + ' of 5'; for (let i = 0; i < 10; i++) { var d = document.createElement('div'); d.className = 'duck'; d.style.left = (Math.random() * 260 + 10) + 'px'; d.style.top = (Math.random() * 160 + 10) + 'px'; pond.appendChild(d) } scoreEl.textContent = 'Score: ' + total }
+      function pick() { var pool = []; dist.forEach(x => { for (let i = 0; i < x.n; i++) pool.push(x) }); var r = pool[Math.floor(Math.random() * pool.length)]; current = r; res.textContent = 'You got ' + r.color + ' duck → ' + r.points + ' points'; keepBtn.disabled = false; tryBtn.disabled = false }
+      function keep() { total += current ? current.points : 0; turn++; keepBtn.disabled = true; tryBtn.disabled = true; current = null; res.textContent = 'Total: ' + total; if (turn >= 5) { res.textContent = 'Game over • Total: ' + total; celebrate(); pickBtn.disabled = true } else { draw() } }
+      function tryAgain() { keepBtn.disabled = true; tryBtn.disabled = true; var pool = []; dist.forEach(x => { for (let i = 0; i < x.n; i++) pool.push(x) }); var r = pool[Math.floor(Math.random() * pool.length)]; current = r; res.textContent = 'Second pick → ' + r.points + ' points'; keepBtn.disabled = false }
+      function reset() { turn = 0; total = 0; current = null; keepBtn.disabled = true; tryBtn.disabled = true; pickBtn.disabled = false; res.textContent = ''; scoreEl.textContent = ''; draw() }
+      return { pick, keep, tryAgain, reset }
+    })()
+    window.g5 = g5
+
+    var g6 = (() => {
+      var area = document.getElementById('g6-area'), res = document.getElementById('g6-result'), sum = document.getElementById('g6-summary'), prog = document.getElementById('g6-progress'), openBtn = document.getElementById('g6-open'), nextBtn = document.getElementById('g6-next')
+      var inputs = { count: document.getElementById('g6-count'), w: document.getElementById('g6-white'), b: document.getElementById('g6-blue'), p: document.getElementById('g6-purple'), o: document.getElementById('g6-orange') }
+      let dist = { w: 70, b: 20, p: 8, o: 2 }, packs = 1, idx = 0, tally = { w: 0, b: 0, p: 0, o: 0 }
+      function apply() { var w = Number(inputs.w.value) || 0, b = Number(inputs.b.value) || 0, p = Number(inputs.p.value) || 0, o = Number(inputs.o.value) || 0; var total = w + b + p + o; if (total <= 0) { dist = { w: 70, b: 20, p: 8, o: 2 } } else { dist = { w: Math.round(w / total * 100), b: Math.round(b / total * 100), p: Math.round(p / total * 100), o: Math.round(o / total * 100) }; var adjust = 100 - (dist.w + dist.b + dist.p + dist.o); if (adjust !== 0) dist.w += adjust } packs = Math.max(1, Math.min(20, Number(inputs.count.value) || 1)); renderSummary() }
+      function roll() { var r = Math.random() * 100; var thresholds = [dist.w, dist.w + dist.b, dist.w + dist.b + dist.p]; if (r < thresholds[0]) return 'w'; if (r < thresholds[1]) return 'b'; if (r < thresholds[2]) return 'p'; return 'o' }
+      function cardEl(r) { var e = document.createElement('div'); e.className = 'gcard ' + ({ w: 'white', b: 'blue', p: 'purple', o: 'orange' })[r]; var badge = document.createElement('div'); badge.className = 'rarity'; badge.textContent = ({ w: 'White', b: 'Blue', p: 'Purple', o: 'Orange' })[r]; e.appendChild(badge); if (r === 'o') { var ring = document.createElement('div'); ring.className = 'legendary-ring'; e.appendChild(ring) } return e }
+      function openPack() {
+        area.classList.add('fullscreen');
+        area.innerHTML = '';
+
+        var starContainer = document.createElement('div');
+        starContainer.className = 'star-container';
+        for (var i = 0; i < 50; i++) {
+          var star = document.createElement('div');
+          star.className = 'star';
+          star.style.left = Math.random() * 100 + '%';
+          star.style.top = (Math.random() * 50 - 50) + 'px';
+          star.style.animationDelay = Math.random() * 1000 + 'ms';
+          star.style.animationDuration = (1000 + Math.random() * 800) + 'ms';
+          starContainer.appendChild(star);
+        }
+        area.appendChild(starContainer);
+
+        var row = document.createElement('div');
+        row.className = 'cards-row';
+        var finals = [roll(), roll(), roll()];
+        var done = 0;
+        nextBtn.disabled = true;
+        openBtn.disabled = true;
+
+        var legendaryText = document.createElement('div');
+        legendaryText.className = 'legendary-text';
+        legendaryText.textContent = 'LEGENDARY!';
+        area.appendChild(legendaryText);
+
+        var btnContainer = document.createElement('div');
+        btnContainer.style.cssText = 'display:none; position:absolute; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 1010; display: flex; gap: 16px;';
+        area.appendChild(btnContainer);
+
+        var backBtn = document.createElement('button');
+        backBtn.id = 'g6-back';
+        backBtn.className = 'btn btn-outline';
+        backBtn.textContent = 'Back';
+        backBtn.style.background = 'rgba(255,255,255,0.8)';
+        backBtn.onclick = reset;
+        btnContainer.appendChild(backBtn);
+
+        var againBtn = document.createElement('button');
+        againBtn.id = 'g6-again';
+        againBtn.className = 'btn btn-primary';
+        againBtn.textContent = 'Again';
+        againBtn.onclick = function () {
+          // We need to revert the tally from this pack before re-opening
+          finals.forEach(r => tally[r]--);
+          openPack();
+        };
+        btnContainer.appendChild(againBtn);
+
+        for (var i = 0; i < 3; i++) {
+          var e = document.createElement('div');
+          e.className = 'gcard neutral';
+          var badge = document.createElement('div');
+          badge.className = 'rarity';
+          badge.textContent = '...';
+          e.appendChild(badge);
+          e.classList.add('enter');
+          e.style.animationDelay = (i * 120) + 'ms';
+          row.appendChild(e);
+          (function (i, el) {
+            cycleToFinal(el, finals[i], 420 + i * 120, function () {
+              tally[finals[i]]++;
+              done++;
+              if (done === 3) {
+                res.textContent = 'Opened pack ' + (idx + 1) + ' of ' + packs;
+                prog.textContent = 'Pack ' + (idx + 1) + ' / ' + packs;
+                nextBtn.disabled = !(idx + 1 < packs);
+                renderSummary();
+                setTimeout(function () {
+                  btnContainer.style.display = 'flex';
+                  if (finals[2] === 'o') {
+                    legendaryText.classList.add('play');
+                  }
+                }, 800);
+              }
+            })
+          })(i, e);
+        }
+        area.appendChild(row);
+      }
+
+      function cycleToFinal(el, r, delay, done) { var seq = [60, 80, 100, 140, 190, 240, 320, 440, 580]; var colors = ['w', 'b', 'p', 'o']; function setCard(el, x) { var map = { w: 'white', b: 'blue', p: 'purple', o: 'orange' }; var name = { w: 'White', b: 'Blue', p: 'Purple', o: 'Orange' }; el.className = 'gcard ' + map[x]; var badge = el.querySelector('.rarity'); if (badge) badge.textContent = name[x]; var ring = el.querySelector('.legendary-ring'); if (x === 'o') { if (!ring) { ring = document.createElement('div'); ring.className = 'legendary-ring'; el.appendChild(ring) } } else { if (ring) { ring.remove() } } } var k = 0; function step() { if (k < seq.length) { var tmp = colors[Math.floor(Math.random() * colors.length)]; setCard(el, tmp); setTimeout(step, seq[k]); k++ } else { setCard(el, r); if (done) done() } } setTimeout(step, delay) }
+      function renderSummary() { sum.innerHTML = 'White: ' + tally.w + ' • Blue: ' + tally.b + ' • Purple: ' + tally.p + ' • Orange: ' + tally.o + '<br>Probabilities → W:' + dist.w + '% B:' + dist.b + '% P:' + dist.p + '% O:' + dist.o + '%'; }
+      function start() { tally = { w: 0, b: 0, p: 0, o: 0 }; idx = 0; openPack() }
+      function next() { idx++; openPack() }
+      function reset() { area.classList.remove('fullscreen'); area.innerHTML = ''; res.textContent = ''; sum.textContent = ''; prog.textContent = ''; openBtn.disabled = false; nextBtn.disabled = true; apply() }
+      return { apply, start, next, reset }
+    })()
+    window.g6 = g6
+
+    g1.reset(); g2.reset(); g3.reset(); g4.reset(); g5.reset(); g6.reset();
+  </script>
+</body>
+
+</html>

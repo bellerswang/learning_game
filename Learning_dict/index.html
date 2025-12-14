@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Magic Learning Dictionary</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Fredoka:wght@400;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>✨ Magic Dictionary ✨</h1>
+            <p>Type a word to discover its magic!</p>
+        </header>
+
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Type a word here... (e.g., Apple, Cat)" autocomplete="off">
+            <button id="searchBtn">Go!</button>
+        </div>
+
+        <div id="resultContainer" class="hidden">
+            <div class="word-card">
+                <div class="word-header">
+                    <h2 id="displayWord">Word</h2>
+                    <button class="speak-btn" id="speakEnglish" title="Listen in English">🔊</button>
+                </div>
+                <p class="meaning" id="englishMeaning">English meaning goes here.</p>
+
+                <div class="chinese-section">
+                    <div class="chinese-text-group">
+                        <h3 id="chineseMeaning">中文</h3>
+                        <button class="speak-btn" id="speakChinese" title="Listen in Chinese">🔊</button>
+                    </div>
+                    <button id="showCharBtn" class="action-btn">Show Big Character</button>
+                </div>
+            </div>
+
+            <div class="explanation-card">
+                <h3>Did you know?</h3>
+                <p id="simpleExplanation">Explanation goes here.</p>
+            </div>
+
+            <div class="image-card">
+                <img id="wordImage" src="" alt="Word illustration">
+            </div>
+        </div>
+
+        <div id="noResult" class="hidden">
+            <p>Oops! I don't know that word yet. Try "Apple", "Cat", or "Rainbow"!</p>
+        </div>
+    </div>
+
+    <!-- Modal for Large Chinese Character -->
+    <div id="charModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div id="largeCharDisplay">字</div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

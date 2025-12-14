@@ -591,67 +591,64 @@
     </div>
 
     <script>
-        // --- Configuration ---
-        const apiKey = ""; // System provides this
+        // --- Error Handling for Debugging ---
+        window.onerror = function (msg, url, line, col, error) {
+            alert("Error: " + msg + "\nLine: " + line);
+            return false;
+        };
 
-        // --- SVGs ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Configuration ---
+            const apiKey = ""; // System provides this
 
-        // Standard Bee (Yellow/Black stripes)
+            // --- SVGs ---
+            // (Keep SVGs here or move them out if they are constants. They are constants, so global is fine, but let's keep scope clean)
+            // Ideally we define constants globally.
+
+            initGame();
+        });
+
+        // --- SVGs (Global Constants) ---
         const svgBeeStandard = `
         <svg viewBox="0 0 100 100" class="bee-svg">
             <g>
-                <!-- Wings -->
                 <ellipse cx="70" cy="35" rx="20" ry="12" fill="#e0f2fe" stroke="#93c5fd" stroke-width="2" transform="rotate(-30 70 35)" opacity="0.8"/>
                 <ellipse cx="30" cy="35" rx="20" ry="12" fill="#e0f2fe" stroke="#93c5fd" stroke-width="2" transform="rotate(30 30 35)" opacity="0.8"/>
-                <!-- Body -->
                 <ellipse cx="50" cy="55" rx="22" ry="28" fill="#facc15" stroke="#854d0e" stroke-width="2"/>
-                <!-- Stripes -->
                 <path d="M30 50 Q50 55 70 50" stroke="#451a03" stroke-width="4" fill="none"/>
                 <path d="M30 60 Q50 65 70 60" stroke="#451a03" stroke-width="4" fill="none"/>
                 <path d="M35 70 Q50 75 65 70" stroke="#451a03" stroke-width="4" fill="none"/>
-                <!-- Eyes -->
                 <circle cx="42" cy="40" r="3" fill="#000"/>
                 <circle cx="58" cy="40" r="3" fill="#000"/>
-                <!-- Smile -->
                 <path d="M45 45 Q50 48 55 45" stroke="#000" stroke-width="2" fill="none"/>
             </g>
         </svg>`;
 
-        // Added Bee (With a red flower hat/decoration to distinguish)
         const svgBeeAdded = `
         <svg viewBox="0 0 100 100" class="bee-svg">
             <g>
-                <!-- Wings -->
                 <ellipse cx="70" cy="35" rx="20" ry="12" fill="#e0f2fe" stroke="#93c5fd" stroke-width="2" transform="rotate(-30 70 35)" opacity="0.8"/>
                 <ellipse cx="30" cy="35" rx="20" ry="12" fill="#e0f2fe" stroke="#93c5fd" stroke-width="2" transform="rotate(30 30 35)" opacity="0.8"/>
-                <!-- Body (Slightly more orange) -->
                 <ellipse cx="50" cy="55" rx="22" ry="28" fill="#fbbf24" stroke="#854d0e" stroke-width="2"/>
-                <!-- Stripes -->
                 <path d="M30 50 Q50 55 70 50" stroke="#451a03" stroke-width="4" fill="none"/>
                 <path d="M30 60 Q50 65 70 60" stroke="#451a03" stroke-width="4" fill="none"/>
                 <path d="M35 70 Q50 75 65 70" stroke="#451a03" stroke-width="4" fill="none"/>
-                <!-- Eyes -->
                 <circle cx="42" cy="40" r="3" fill="#000"/>
                 <circle cx="58" cy="40" r="3" fill="#000"/>
-                <!-- Flower Hat -->
                 <circle cx="50" cy="28" r="8" fill="#f43f5e" />
                 <circle cx="50" cy="28" r="3" fill="#fef08a" />
             </g>
         </svg>`;
 
-        // Hive SVG
         const svgHive = `
         <svg viewBox="0 0 100 100" class="hive-svg">
             <g transform="translate(10, 10) scale(0.8)">
-                <!-- Branch -->
                 <path d="M50 0 L50 20" stroke="#5D4037" stroke-width="6" stroke-linecap="round"/>
-                <!-- Hive Layers -->
                 <path d="M30 20 Q50 15 70 20 L75 30 Q50 35 25 30 Z" fill="#FBC02D" stroke="#E65100" stroke-width="2"/>
                 <path d="M25 30 Q50 25 75 30 L80 45 Q50 50 20 45 Z" fill="#FDD835" stroke="#E65100" stroke-width="2"/>
                 <path d="M20 45 Q50 40 80 45 L85 60 Q50 65 15 60 Z" fill="#FBC02D" stroke="#E65100" stroke-width="2"/>
                 <path d="M15 60 Q50 55 85 60 L80 75 Q50 80 20 75 Z" fill="#FDD835" stroke="#E65100" stroke-width="2"/>
                 <path d="M20 75 Q50 70 80 75 L70 90 Q50 95 30 90 Z" fill="#FBC02D" stroke="#E65100" stroke-width="2"/>
-                <!-- Door -->
                 <circle cx="50" cy="60" r="8" fill="#3E2723"/>
             </g>
         </svg>`;
@@ -664,40 +661,31 @@
         let calcTarget = 0;
         let calcProgress = 0;
         let waitingButterflies = 0;
+        let els = {}; // Initialize empty
 
-        // --- DOM ---
-        const els = {
-            onesContainer: document.getElementById('onesContainer'),
-            tensContainer: document.getElementById('tensContainer'),
-            onesRoom: document.getElementById('onesRoom'),
-            tensRoom: document.getElementById('tensRoom'),
-            tensCountDisplay: document.getElementById('tensCountDisplay'),
-            onesCountDisplay: document.getElementById('onesCountDisplay'),
-            totalDisplay: document.getElementById('totalDisplay'),
-            waitingArea: document.getElementById('waitingArea'),
-            waitingContainer: document.getElementById('waitingContainer'),
-            mainTitle: document.getElementById('mainTitle'),
-            stepBtn: document.getElementById('stepBtn'),
-            stepBtnText: document.getElementById('stepBtnText'),
-            stepBtnProgress: document.getElementById('stepBtnProgress'),
-            inputStart: document.getElementById('inputStart'),
-            inputChange: document.getElementById('inputChange'),
-            aiStoryDisplay: document.getElementById('aiStoryDisplay'),
-            aiStoryContent: document.getElementById('aiStoryContent')
-        };
+        function initGame() {
+            els = {
+                onesContainer: document.getElementById('onesContainer'),
+                tensContainer: document.getElementById('tensContainer'),
+                onesRoom: document.getElementById('onesRoom'),
+                tensRoom: document.getElementById('tensRoom'),
+                tensCountDisplay: document.getElementById('tensCountDisplay'),
+                onesCountDisplay: document.getElementById('onesCountDisplay'),
+                totalDisplay: document.getElementById('totalDisplay'),
+                waitingArea: document.getElementById('waitingArea'),
+                waitingContainer: document.getElementById('waitingContainer'),
+                mainTitle: document.getElementById('mainTitle'),
+                stepBtn: document.getElementById('stepBtn'),
+                stepBtnText: document.getElementById('stepBtnText'),
+                stepBtnProgress: document.getElementById('stepBtnProgress'),
+                inputStart: document.getElementById('inputStart'),
+                inputChange: document.getElementById('inputChange'),
+                aiStoryDisplay: document.getElementById('aiStoryDisplay'),
+                aiStoryContent: document.getElementById('aiStoryContent')
+            };
 
-        // --- Core Logic ---
-        function initTenFrame() {
-            els.onesContainer.innerHTML = '';
-            for (let i = 0; i < 10; i++) {
-                const slot = document.createElement('div');
-                slot.className = 'frame-slot';
-                slot.dataset.index = i + 1;
-                slot.id = `slot-${i}`;
-                els.onesContainer.appendChild(slot);
-            }
+            initTenFrame();
         }
-        initTenFrame();
 
         function updateDisplay() {
             els.tensCountDisplay.innerText = tens;

@@ -974,6 +974,16 @@
             }
         }
 
+        function exitCalcMode() {
+            document.getElementById('calc-setup').classList.remove('hidden');
+            document.getElementById('calc-action').classList.add('hidden');
+            els.waitingArea.classList.add('hidden');
+            els.calcLog.classList.add('hidden');
+            els.mathBreakdown.classList.add('hidden');
+            resetGame();
+        }
+
+
         // --- Quiz Logic ---
         function nextQuestion() {
             // Randomize

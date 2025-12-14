@@ -35,49 +35,64 @@
         <p class="text-pink-300 font-medium text-lg">Pick a fun activity!</p>
     </header>
 
-    <main class="w-full max-w-md flex flex-col gap-8 pb-12">
+    <main class="w-full max-w-md flex flex-col gap-4 pb-12">
 
         <!-- Section: Math & Logic -->
-        <section>
-            <h2 class="text-xl font-bold text-pink-400 mb-4 pl-2">Thinking & Math 🧠</h2>
-            <div class="space-y-4">
+        <details class="group bg-white rounded-3xl shadow-sm border-2 border-pink-100 overflow-hidden">
+            <summary
+                class="flex items-center justify-between p-4 cursor-pointer list-none bg-pink-50 hover:bg-pink-100 transition-colors">
+                <h2 class="text-xl font-bold text-pink-500">Thinking & Math 🧠</h2>
+                <span class="text-2xl transform group-open:rotate-180 transition-transform">🔽</span>
+            </summary>
+            <div class="p-4 space-y-4 bg-white/50">
                 <a href="./Thinking_Math/Prob_game/index.html"
                     class="app-btn group flex items-center justify-between p-6 rounded-3xl shadow-lg border-b-8 h-28 w-full text-2xl font-bold bg-sky-400 border-sky-600 text-white hover:bg-sky-300">
-                    <span class="drop-shadow-md">Probability Games</span>
+                    <div class="flex flex-col text-left">
+                        <span class="drop-shadow-md">Probability Games</span>
+                        <span class="text-xs font-normal opacity-80">(Work in Progress)</span>
+                    </div>
                     <span class="text-5xl group-hover:scale-110 transition-transform">🎲</span>
                 </a>
 
                 <a href="./Thinking_Math/Math/index.html"
                     class="app-btn group flex items-center justify-between p-6 rounded-3xl shadow-lg border-b-8 h-28 w-full text-2xl font-bold bg-amber-400 border-amber-600 text-amber-900 hover:bg-amber-300">
-                    <span class="drop-shadow-md">Bee Farm Math</span>
+                    <span class="drop-shadow-md">进位加减法</span>
                     <span class="text-5xl group-hover:scale-110 transition-transform">🐝</span>
                 </a>
             </div>
-        </section>
+        </details>
 
         <!-- Section: Language -->
-        <section>
-            <h2 class="text-xl font-bold text-pink-400 mb-4 pl-2">Words & Stories 📚</h2>
-            <div class="space-y-4">
+        <details class="group bg-white rounded-3xl shadow-sm border-2 border-pink-100 overflow-hidden">
+            <summary
+                class="flex items-center justify-between p-4 cursor-pointer list-none bg-pink-50 hover:bg-pink-100 transition-colors">
+                <h2 class="text-xl font-bold text-pink-500">Words & Stories 📚</h2>
+                <span class="text-2xl transform group-open:rotate-180 transition-transform">🔽</span>
+            </summary>
+            <div class="p-4 space-y-4 bg-white/50">
                 <a href="./Words_Stories/Learning_dict/index.html"
                     class="app-btn group flex items-center justify-between p-6 rounded-3xl shadow-lg border-b-8 h-28 w-full text-2xl font-bold bg-emerald-400 border-emerald-600 text-white hover:bg-emerald-300">
                     <span class="drop-shadow-md">Magic Dictionary</span>
                     <span class="text-5xl group-hover:scale-110 transition-transform">📖</span>
                 </a>
             </div>
-        </section>
+        </details>
 
         <!-- Section: Just for Fun -->
-        <section>
-            <h2 class="text-xl font-bold text-pink-400 mb-4 pl-2">Just for Fun 🎨</h2>
-            <div class="space-y-4">
+        <details class="group bg-white rounded-3xl shadow-sm border-2 border-pink-100 overflow-hidden">
+            <summary
+                class="flex items-center justify-between p-4 cursor-pointer list-none bg-pink-50 hover:bg-pink-100 transition-colors">
+                <h2 class="text-xl font-bold text-pink-500">Just for Fun 🎨</h2>
+                <span class="text-2xl transform group-open:rotate-180 transition-transform">🔽</span>
+            </summary>
+            <div class="p-4 space-y-4 bg-white/50">
                 <a href="./Just_Fun/Firework_launcher/index.html"
                     class="app-btn group flex items-center justify-between p-6 rounded-3xl shadow-lg border-b-8 h-28 w-full text-2xl font-bold bg-violet-400 border-violet-600 text-white hover:bg-violet-300">
                     <span class="drop-shadow-md">Fireworks!</span>
                     <span class="text-5xl group-hover:scale-110 transition-transform">🎆</span>
                 </a>
             </div>
-        </section>
+        </details>
 
     </main>
 

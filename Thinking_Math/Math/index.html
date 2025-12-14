@@ -319,12 +319,22 @@
             @apply bg-amber-400 border-amber-600 text-white;
         }
 
-        .tab-btn {
-            @apply px-4 py-3 rounded-t-xl font-bold text-amber-700 bg-amber-100 cursor-pointer flex-1 text-center transition-colors select-none border-t-2 border-x-2 border-amber-200;
+        .btn-blue {
+            @apply bg-sky-500 border-sky-700 text-white;
         }
 
-        .tab-btn.active {
-            @apply bg-white text-orange-600 border-amber-400 shadow-[0_-4px_0_rgba(251, 191, 36, 0.2)];
+        /* Top Nav "Pills" */
+        .nav-pill {
+            @apply px-4 py-2 rounded-full font-bold text-amber-900 bg-white/60 border-2 border-white/50 cursor-pointer text-center transition-all select-none shadow-sm;
+            min-width: 80px;
+        }
+
+        .nav-pill:hover {
+            @apply bg-white border-amber-300 transform scale-105;
+        }
+
+        .nav-pill.active {
+            @apply bg-amber-500 text-white border-amber-600 shadow-md;
             transform: translateY(-2px);
         }
 
@@ -357,6 +367,38 @@
             border-color: #fefce8;
         }
 
+        /* Landing Page */
+        .landing-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: #fefce8;
+            /* Same as body bg */
+            background-image: radial-gradient(#eab308 1.5px, transparent 1.5px), radial-gradient(#eab308 1.5px, #fefce8 1.5px);
+            background-size: 30px 30px;
+            z-index: 100;
+            display: flex;
+            flex-col;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            transition: opacity 0.5s ease-out;
+        }
+
+        .landing-content {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px 20px;
+            border-radius: 32px;
+            border: 8px solid #f59e0b;
+            box-shadow: 0 10px 0 #d97706;
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .menu-btn {
+            @apply w-full mb-4 py-4 rounded-2xl text-xl font-bold text-white shadow-lg border-b-4 transition-transform active:border-b-0 active:translate-y-1 relative overflow-hidden flex items-center justify-between px-6;
+        }
+
         /* Custom scrollbar for better feel */
         ::-webkit-scrollbar {
             width: 8px;
@@ -375,11 +417,42 @@
 
 <body class="h-screen flex flex-col items-center overflow-hidden">
 
-    <!-- Top Nav -->
-    <div class="w-full max-w-2xl mt-2 px-4 flex gap-2 z-50 items-end">
-        <button id="tab-count" onclick="switchTab('count')" class="tab-btn active">1: 数数 (Count)</button>
-        <button id="tab-calc" onclick="switchTab('calc')" class="tab-btn">2: 演示 (Demo)</button>
-        <button id="tab-quiz" onclick="switchTab('quiz')" class="tab-btn">3: 挑战 (Quiz)</button>
+    <!-- Landing Page Overlay -->
+    <div id="landing-page" class="landing-overlay">
+        <div class="landing-content space-y-6">
+            <h1 class="text-4xl font-black text-amber-600 mb-2 drop-shadow-sm">快乐养蜂场 🐝</h1>
+            <p class="text-amber-800 font-medium mb-6 leading-relaxed">
+                欢迎来到梅的养蜂场！<br>
+                这里有好多可爱的小蜜蜂等着你来数一数，算一算。<br>
+                快来一起玩吧！
+            </p>
+
+            <div class="flex flex-col gap-4 w-full">
+                <button onclick="enterGame('count')" class="menu-btn bg-lime-500 border-lime-700 hover:bg-lime-400">
+                    <span>1: 数数 (Count)</span>
+                    <span class="text-3xl">🍯</span>
+                </button>
+                <button onclick="enterGame('calc')"
+                    class="menu-btn bg-violet-500 border-violet-700 hover:bg-violet-400">
+                    <span>2: 演示 (Demo)</span>
+                    <span class="text-3xl">✨</span>
+                </button>
+                <button onclick="enterGame('quiz')" class="menu-btn bg-rose-500 border-rose-700 hover:bg-rose-400">
+                    <span>3: 挑战 (Quiz)</span>
+                    <span class="text-3xl">🏆</span>
+                </button>
+            </div>
+
+            <a href="../../index.html" class="inline-block mt-4 text-amber-500 font-bold hover:underline">⬅️ 返回主菜单</a>
+        </div>
+    </div>
+
+    <!-- Top Nav (Hidden initially, shown after entry) -->
+    <div id="top-nav"
+        class="w-full max-w-2xl mt-4 px-4 flex justify-center gap-4 z-50 opacity-0 transition-opacity duration-300 pointer-events-none">
+        <button id="tab-count" onclick="switchTab('count')" class="nav-pill active">1: 数数 (Count)</button>
+        <button id="tab-calc" onclick="switchTab('calc')" class="nav-pill">2: 演示 (Demo)</button>
+        <button id="tab-quiz" onclick="switchTab('quiz')" class="nav-pill">3: 挑战 (Quiz)</button>
     </div>
 
     <!-- Main Content -->
@@ -692,226 +765,261 @@
             els.tensContainer.appendChild(hive);
 
             showFloatingText("变蜂巢! (+1 Hive)", els.tensRoom, '#d97706');
-            updateDisplay();
+            // --- Landing Page Logic ---
+            function enterGame(mode) {
+                // Hide Landing
+                const landing = document.getElementById('landing-page');
+                landing.style.opacity = '0';
+                setTimeout(() => {
+                    landing.style.display = 'none';
 
-            await sleep(600);
-            isAnimating = false;
-            updateGlobalButtons();
-        }
+                    // Show Nav
+                    const nav = document.getElementById('top-nav');
+                    nav.classList.remove('opacity-0', 'pointer-events-none');
 
-        function resetGame() {
-            isAnimating = false;
-            document.body.style.cursor = 'default';
-            updateGlobalButtons();
-
-            ones = 0;
-            tens = 0;
-            waitingButterflies = 0;
-            els.tensContainer.innerHTML = '';
-            els.waitingContainer.innerHTML = '';
-            initTenFrame();
-            updateDisplay();
-            closeStory();
-            els.onesRoom.classList.remove('full-alert');
-        }
-
-        async function userAddOne() {
-            if (isAnimating) return;
-            await addOne('standard');
-        }
-
-        async function startCalculationMode() {
-            if (isAnimating) return;
-
-            const startVal = parseInt(els.inputStart.value) || 0;
-            const changeVal = parseInt(els.inputChange.value) || 0;
-
-            ones = 0;
-            tens = 0;
-            els.tensContainer.innerHTML = '';
-            initTenFrame();
-
-            // Fill Tens (Hives)
-            const startTens = Math.floor(startVal / 10);
-            for (let i = 0; i < startTens; i++) {
-                tens++;
-                const hive = document.createElement('div');
-                hive.className = 'block-ten';
-                hive.innerHTML = svgHive;
-                els.tensContainer.appendChild(hive);
-            }
-            // Fill Ones (Standard Bees)
-            const startOnes = startVal % 10;
-            for (let i = 0; i < startOnes; i++) {
-                renderBeeInCell(i, 'standard');
-                ones++;
-            }
-            updateDisplay();
-
-            els.waitingContainer.innerHTML = '';
-            for (let i = 0; i < changeVal; i++) {
-                addWaitingBee();
-            }
-            els.waitingArea.classList.remove('hidden');
-
-            calcTarget = changeVal;
-            calcProgress = 0;
-
-            document.getElementById('calc-setup').classList.add('hidden');
-            document.getElementById('calc-action').classList.remove('hidden');
-            updateStepUI();
-        }
-
-        async function manualStep() {
-            if (isAnimating) return;
-
-            if (calcProgress >= calcTarget) {
-                if (currentMode === 'quiz') nextQuestion();
-                else exitCalcMode();
-                return;
+                    // Start Game
+                    switchTab(mode);
+                }, 500);
             }
 
-            await addOne('added', true);
-            calcProgress++;
-            updateStepUI();
-        }
+            // --- Tab Switching ---
+            function switchTab(mode) {
+                currentMode = mode;
+                // Update Active Tab State
+                document.querySelectorAll('.nav-pill').forEach(b => b.classList.remove('active'));
+                document.getElementById(`tab-${mode}`).classList.add('active');
 
-        function updateStepUI() {
-            const dotsContainer = document.getElementById('step-dots');
-            dotsContainer.innerHTML = '';
-            const limit = Math.min(calcTarget, 10);
-            for (let i = 0; i < limit; i++) {
-                const dot = document.createElement('div');
-                dot.className = `step-dot ${i < calcProgress ? 'filled' : ''}`;
-                dotsContainer.appendChild(dot);
-            }
+                // Hide/Show Controls
+                document.getElementById('controls-count').style.opacity = (mode === 'count') ? '1' : '0';
+                document.getElementById('controls-count').style.pointerEvents = (mode === 'count') ? 'auto' : 'none';
 
-            const remaining = calcTarget - calcProgress;
-            const pct = calcTarget > 0 ? (calcProgress / calcTarget) * 100 : 0;
-            els.stepBtnProgress.style.width = `${pct}%`;
+                document.getElementById('controls-calc').style.opacity = (mode === 'calc') ? '1' : '0';
+                // Calc pointer events handled by its own logic (setup vs action)
+                document.getElementById('controls-calc').style.pointerEvents = (mode === 'calc') ? 'auto' : 'none';
 
-            if (remaining === 0) {
-                els.stepBtnText.innerText = "完成! (Done)";
-                els.stepBtn.classList.remove('btn-purple');
-                els.stepBtn.classList.add('btn-green');
-            } else {
-                els.stepBtnText.innerText = `飞进 1 只 (剩 ${remaining})`;
-                els.stepBtn.classList.add('btn-purple');
-                els.stepBtn.classList.remove('btn-green');
-            }
-        }
+                document.getElementById('controls-quiz').style.opacity = (mode === 'quiz') ? '1' : '0';
+                document.getElementById('controls-quiz').style.pointerEvents = (mode === 'quiz') ? 'auto' : 'none';
 
-        function exitCalcMode() {
-            els.waitingArea.classList.add('hidden');
-            document.getElementById('calc-action').classList.add('hidden');
-            if (currentMode === 'quiz') resetGame();
-            else {
-                document.getElementById('calc-setup').classList.remove('hidden');
-                resetGame();
-            }
-        }
-
-        function nextQuestion() {
-            const start = Math.floor(Math.random() * 24) + 5;
-            const ones = start % 10;
-            const neededForTen = 10 - ones;
-            let change = Math.random() > 0.5 ? neededForTen + Math.floor(Math.random() * 2) : Math.floor(Math.random() * 6) + 1;
-            if (change === 0) change = 1;
-
-            els.inputStart.value = start;
-            els.inputChange.value = change;
-
-            document.getElementById('controls-quiz').style.opacity = '0';
-            document.getElementById('controls-quiz').style.pointerEvents = 'none';
-            document.getElementById('controls-calc').style.opacity = '1';
-            document.getElementById('controls-calc').style.pointerEvents = 'auto';
-
-            document.getElementById('calc-setup').classList.add('hidden');
-            els.mainTitle.innerText = `${start} + ${change} = ?`;
-            startCalculationMode();
-        }
-
-        function showFloatingText(text, container, color = '#d97706') {
-            const el = document.createElement('div');
-            el.className = 'floating-text';
-            el.style.color = color;
-            el.innerText = text;
-            el.style.top = '50%';
-            el.style.left = '50%';
-            el.style.transform = 'translate(-50%, -50%)';
-            container.appendChild(el);
-            setTimeout(() => el.remove(), 1500);
-        }
-
-        function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
-
-        function updateGlobalButtons() {
-            const disabled = isAnimating;
-            document.querySelectorAll('button').forEach(b => {
-                if (!b.classList.contains('tab-btn') && !b.classList.contains('absolute')) {
-                    b.disabled = disabled;
+                if (mode === 'count') {
+                    resetGame();
+                    els.inputStart.value = 7;
+                    els.inputChange.value = 4;
+                } else if (mode === 'calc') {
+                    resetGame();
+                    exitCalcMode(); // Show setup
+                } else if (mode === 'quiz') {
+                    resetGame();
+                    // We'll enter quiz mode properly when they click Start button in quiz UI, 
+                    // but actually the current UI has a big button "Random Question".
+                    // Let's just make sure reset works.
                 }
-            });
-        }
+                closeStory();
+            }
 
-        function switchTab(mode) {
-            currentMode = mode;
-            ['count', 'calc', 'quiz'].forEach(m => {
-                document.getElementById(`tab-${m}`).classList.toggle('active', m === mode);
-            });
-
-            document.getElementById('controls-count').style.opacity = '0';
-            document.getElementById('controls-count').style.pointerEvents = 'none';
-            document.getElementById('controls-calc').style.opacity = '0';
-            document.getElementById('controls-calc').style.pointerEvents = 'none';
-            document.getElementById('controls-quiz').style.opacity = '0';
-            document.getElementById('controls-quiz').style.pointerEvents = 'none';
-
-            resetGame();
-
-            if (mode === 'count') {
-                document.getElementById('controls-count').style.opacity = '1';
-                document.getElementById('controls-count').style.pointerEvents = 'auto';
-                els.mainTitle.innerText = "快乐养蜂场";
-                els.waitingArea.classList.add('hidden');
-            } else if (mode === 'calc') {
-                document.getElementById('controls-calc').style.opacity = '1';
-                document.getElementById('controls-calc').style.pointerEvents = 'auto';
+            function exitCalcMode() {
                 document.getElementById('calc-setup').classList.remove('hidden');
                 document.getElementById('calc-action').classList.add('hidden');
-                els.mainTitle.innerText = "进位演示";
-            } else {
-                document.getElementById('controls-quiz').style.opacity = '1';
-                document.getElementById('controls-quiz').style.pointerEvents = 'auto';
-                els.mainTitle.innerText = "挑战时间";
+                els.waitingArea.classList.add('hidden');
+                resetGame();
+                if (currentMode === 'quiz') {
+                    // If exiting quiz via this logic (which reuses calc UI components), go back to blank.
+                    // Actually quiz mode shares calc UI logic? 
+                    // Looking at code above... 'controls-quiz' only has one button: "Random Question"
+                    // When clicked, nextQuestion() runs.
+                }
             }
-        }
 
-        async function generateStory() {
-            const start = els.inputStart.value;
-            const change = els.inputChange.value;
-            const prompt = `为6岁孩子写个一句话故事: ${start}只小蜜蜂在采蜜，又飞来了${change}只。如果相加超过10，提到"装满了一个大蜂巢"。用中文。`;
+            // --- Speech Logic ---
+            function speakText(text) {
+                if (!text) return;
+                // Cancel any current speech
+                window.speechSynthesis.cancel();
 
-            els.aiStoryDisplay.style.display = 'block';
-            els.aiStoryContent.innerHTML = "正在听蜜蜂说话...";
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = "zh-CN";
+                utterance.rate = 1.0;
+                utterance.pitch = 1.2;
 
-            try {
-                if (!apiKey) throw new Error("No Key");
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-                });
-                const data = await res.json();
-                els.aiStoryContent.innerText = data.candidates[0].content.parts[0].text;
-            } catch (e) {
-                const sum = parseInt(start) + parseInt(change);
-                let text = `花园里有 ${start} 只小蜜蜂，又飞来了 ${change} 只。`;
-                if (start % 10 + parseInt(change) >= 10) text += " 蜂巢好像要装不下了！";
-                els.aiStoryContent.innerText = text;
+                // Try to select a Chinese voice if available
+                const voices = window.speechSynthesis.getVoices();
+                console.log("Voices:", voices); // Debug
+
+                // Heuristic for Chinese voice
+                const zhVoice = voices.find(v => v.lang.includes('zh') || v.lang.includes('CN'));
+                if (zhVoice) {
+                    utterance.voice = zhVoice;
+                }
+
+                window.speechSynthesis.speak(utterance);
             }
-        }
-        function closeStory() { els.aiStoryDisplay.style.display = 'none'; }
+
+            // Make sure voices are loaded (Chrome sometimes needs this)
+            window.speechSynthesis.onvoiceschanged = () => {
+                console.log("Voices changed");
+            };
+
+            // --- Generative AI Logic ---
+            /*
+               We want to generate a SHORT, fun 1-sentence story about bees.
+               E.g. "7只小蜜蜂正在采蜜，突然飞来了4只朋友！"
+            */
+            async function generateStory() {
+                const startVal = els.inputStart.value;
+                const changeVal = els.inputChange.value;
+                const prompt = `Use simple Chinese for a 6-year-old. Write ONE short sentence: ${startVal} bees are in the hive, and ${changeVal} more fly in. Use emojis.`;
+
+                // Simple loading state
+                els.aiStoryDisplay.style.display = 'block';
+                els.aiStoryContent.innerHTML = '✨ 正在想故事... (Thinking...)';
+
+                try {
+                    // Construct the Gemini API call
+                    // Note: For a real deployed app, you'd want a backend proxy to hide the key.
+                    // Since this is a local/personal script, we put key here.
+                    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{
+                                parts: [{ text: prompt }]
+                            }]
+                        })
+                    });
+
+                    const data = await response.json();
+                    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "蜜蜂们都很开心！(Bees are happy!)";
+
+                    // Clean up markdown just in case
+                    const cleanText = marked.parse(text);
+
+                    els.aiStoryContent.innerHTML = cleanText;
+                    speakText(text); // Speak the story!
+
+                } catch (e) {
+                    console.error(e);
+                    els.aiStoryContent.innerText = "网络有点忙，蜜蜂们先去采蜜啦！";
+                }
+            }
+
+            function closeStory() {
+                els.aiStoryDisplay.style.display = 'none';
+                window.speechSynthesis.cancel();
+            }
+
+
+            // --- Quiz Logic ---
+            function nextQuestion() {
+                // Randomize
+                const s = Math.floor(Math.random() * 8) + 1; // 1-8
+                const c = Math.floor(Math.random() * 8) + 1; // 1-8
+
+                els.inputStart.value = s;
+                els.inputChange.value = c;
+
+                // Re-use Calc UI but set mode
+                // We need to hide the 'quiz' controls (the big button) and show the 'calc' UI 
+                // BUT keeps us logically in 'quiz' mode so we know what to do when finished
+
+                // Actually, my structure has separate 'controls-calc' and 'controls-quiz' divs.
+                // Let's just swap them visually for the duration of the question.
+                document.getElementById('controls-quiz').style.opacity = '0';
+                document.getElementById('controls-quiz').style.pointerEvents = 'none';
+
+                document.getElementById('controls-calc').style.opacity = '1';
+                document.getElementById('controls-calc').style.pointerEvents = 'auto'; // allow input
+
+                // Generate a story automatically? Sure, why not
+                generateStory();
+
+                // Auto start?
+                // startCalculationMode(); 
+            }
+
+    </script> function showFloatingText(text, container, color = '#d97706') {
+    const el = document.createElement('div');
+    el.className = 'floating-text';
+    el.style.color = color;
+    el.innerText = text;
+    el.style.top = '50%';
+    el.style.left = '50%';
+    el.style.transform = 'translate(-50%, -50%)';
+    container.appendChild(el);
+    setTimeout(() => el.remove(), 1500);
+    }
+
+    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    function updateGlobalButtons() {
+    const disabled = isAnimating;
+    document.querySelectorAll('button').forEach(b => {
+    if (!b.classList.contains('tab-btn') && !b.classList.contains('absolute')) {
+    b.disabled = disabled;
+    }
+    });
+    }
+
+    function switchTab(mode) {
+    currentMode = mode;
+    ['count', 'calc', 'quiz'].forEach(m => {
+    document.getElementById(`tab-${m}`).classList.toggle('active', m === mode);
+    });
+
+    document.getElementById('controls-count').style.opacity = '0';
+    document.getElementById('controls-count').style.pointerEvents = 'none';
+    document.getElementById('controls-calc').style.opacity = '0';
+    document.getElementById('controls-calc').style.pointerEvents = 'none';
+    document.getElementById('controls-quiz').style.opacity = '0';
+    document.getElementById('controls-quiz').style.pointerEvents = 'none';
+
+    resetGame();
+
+    if (mode === 'count') {
+    document.getElementById('controls-count').style.opacity = '1';
+    document.getElementById('controls-count').style.pointerEvents = 'auto';
+    els.mainTitle.innerText = "快乐养蜂场";
+    els.waitingArea.classList.add('hidden');
+    } else if (mode === 'calc') {
+    document.getElementById('controls-calc').style.opacity = '1';
+    document.getElementById('controls-calc').style.pointerEvents = 'auto';
+    document.getElementById('calc-setup').classList.remove('hidden');
+    document.getElementById('calc-action').classList.add('hidden');
+    els.mainTitle.innerText = "进位演示";
+    } else {
+    document.getElementById('controls-quiz').style.opacity = '1';
+    document.getElementById('controls-quiz').style.pointerEvents = 'auto';
+    els.mainTitle.innerText = "挑战时间";
+    }
+    }
+
+    async function generateStory() {
+    const start = els.inputStart.value;
+    const change = els.inputChange.value;
+    const prompt = `为6岁孩子写个一句话故事: ${start}只小蜜蜂在采蜜，又飞来了${change}只。如果相加超过10，提到"装满了一个大蜂巢"。用中文。`;
+
+    els.aiStoryDisplay.style.display = 'block';
+    els.aiStoryContent.innerHTML = "正在听蜜蜂说话...";
+
+    try {
+    if (!apiKey) throw new Error("No Key");
+    const res = await
+    fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`,
+    {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+    });
+    const data = await res.json();
+    els.aiStoryContent.innerText = data.candidates[0].content.parts[0].text;
+    } catch (e) {
+    const sum = parseInt(start) + parseInt(change);
+    let text = `花园里有 ${start} 只小蜜蜂，又飞来了 ${change} 只。`;
+    if (start % 10 + parseInt(change) >= 10) text += " 蜂巢好像要装不下了！";
+    els.aiStoryContent.innerText = text;
+    }
+    }
+    function closeStory() { els.aiStoryDisplay.style.display = 'none'; }
 
     </script>
 </body>

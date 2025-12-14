@@ -377,7 +377,7 @@
             background-size: 30px 30px;
             z-index: 100;
             display: flex;
-            flex-col;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: 20px;
@@ -765,201 +765,280 @@
             els.tensContainer.appendChild(hive);
 
             showFloatingText("变蜂巢! (+1 Hive)", els.tensRoom, '#d97706');
-            // --- Landing Page Logic ---
-            function enterGame(mode) {
-                // Hide Landing
-                const landing = document.getElementById('landing-page');
-                landing.style.opacity = '0';
-                setTimeout(() => {
-                    landing.style.display = 'none';
+            updateDisplay();
 
-                    // Show Nav
-                    const nav = document.getElementById('top-nav');
-                    nav.classList.remove('opacity-0', 'pointer-events-none');
+            await sleep(600);
+            isAnimating = false;
+            updateGlobalButtons();
+        }
 
-                    // Start Game
-                    switchTab(mode);
-                }, 500);
+        function resetGame() {
+            isAnimating = false;
+            document.body.style.cursor = 'default';
+            updateGlobalButtons();
+
+            ones = 0;
+            tens = 0;
+            waitingButterflies = 0;
+            els.tensContainer.innerHTML = '';
+            els.waitingContainer.innerHTML = '';
+            initTenFrame();
+            updateDisplay();
+            closeStory();
+            els.onesRoom.classList.remove('full-alert');
+        }
+
+        async function userAddOne() {
+            if (isAnimating) return;
+            await addOne('standard');
+        }
+
+        async function startCalculationMode() {
+            if (isAnimating) return;
+
+            const startVal = parseInt(els.inputStart.value) || 0;
+            const changeVal = parseInt(els.inputChange.value) || 0;
+
+            ones = 0;
+            tens = 0;
+            els.tensContainer.innerHTML = '';
+            initTenFrame();
+
+            // Fill Tens (Hives)
+            const startTens = Math.floor(startVal / 10);
+            for (let i = 0; i < startTens; i++) {
+                tens++;
+                const hive = document.createElement('div');
+                hive.className = 'block-ten';
+                hive.innerHTML = svgHive;
+                els.tensContainer.appendChild(hive);
+            }
+            // Fill Ones (Standard Bees)
+            const startOnes = startVal % 10;
+            for (let i = 0; i < startOnes; i++) {
+                renderBeeInCell(i, 'standard');
+                ones++;
+            }
+            updateDisplay();
+
+            els.waitingContainer.innerHTML = '';
+            for (let i = 0; i < changeVal; i++) {
+                addWaitingBee();
+            }
+            els.waitingArea.classList.remove('hidden');
+
+            calcTarget = changeVal;
+            calcProgress = 0;
+
+            document.getElementById('calc-setup').classList.add('hidden');
+            document.getElementById('calc-action').classList.remove('hidden');
+            updateStepUI();
+        }
+
+        async function manualStep() {
+            if (isAnimating) return;
+
+            if (calcProgress >= calcTarget) {
+                if (currentMode === 'quiz') nextQuestion();
+                else exitCalcMode();
+                return;
             }
 
-            // --- Tab Switching ---
-            function switchTab(mode) {
-                currentMode = mode;
-                // Update Active Tab State
-                document.querySelectorAll('.nav-pill').forEach(b => b.classList.remove('active'));
-                document.getElementById(`tab-${mode}`).classList.add('active');
+            await addOne('added', true);
+            calcProgress++;
+            updateStepUI();
+        }
 
-                // Hide/Show Controls
-                document.getElementById('controls-count').style.opacity = (mode === 'count') ? '1' : '0';
-                document.getElementById('controls-count').style.pointerEvents = (mode === 'count') ? 'auto' : 'none';
-
-                document.getElementById('controls-calc').style.opacity = (mode === 'calc') ? '1' : '0';
-                // Calc pointer events handled by its own logic (setup vs action)
-                document.getElementById('controls-calc').style.pointerEvents = (mode === 'calc') ? 'auto' : 'none';
-
-                document.getElementById('controls-quiz').style.opacity = (mode === 'quiz') ? '1' : '0';
-                document.getElementById('controls-quiz').style.pointerEvents = (mode === 'quiz') ? 'auto' : 'none';
-
-                if (mode === 'count') {
-                    resetGame();
-                    els.inputStart.value = 7;
-                    els.inputChange.value = 4;
-                } else if (mode === 'calc') {
-                    resetGame();
-                    exitCalcMode(); // Show setup
-                } else if (mode === 'quiz') {
-                    resetGame();
-                    // We'll enter quiz mode properly when they click Start button in quiz UI, 
-                    // but actually the current UI has a big button "Random Question".
-                    // Let's just make sure reset works.
-                }
-                closeStory();
+        function updateStepUI() {
+            const dotsContainer = document.getElementById('step-dots');
+            dotsContainer.innerHTML = '';
+            const limit = Math.min(calcTarget, 10);
+            for (let i = 0; i < limit; i++) {
+                const dot = document.createElement('div');
+                dot.className = `step-dot ${i < calcProgress ? 'filled' : ''}`;
+                dotsContainer.appendChild(dot);
             }
 
-            function exitCalcMode() {
-                document.getElementById('calc-setup').classList.remove('hidden');
-                document.getElementById('calc-action').classList.add('hidden');
-                els.waitingArea.classList.add('hidden');
+            const remaining = calcTarget - calcProgress;
+            const pct = calcTarget > 0 ? (calcProgress / calcTarget) * 100 : 0;
+            els.stepBtnProgress.style.width = `${pct}%`;
+
+            if (remaining === 0) {
+                els.stepBtnText.innerText = "完成! (Done)";
+                els.stepBtn.classList.remove('btn-purple');
+                els.stepBtn.classList.add('btn-green');
+            } else {
+                els.stepBtnText.innerText = `飞进 1 只 (剩 ${remaining})`;
+                els.stepBtn.classList.add('btn-purple');
+                els.stepBtn.classList.remove('btn-green');
+            }
+        }
+
+        // --- Landing Page Logic ---
+        function enterGame(mode) {
+            // Hide Landing
+            const landing = document.getElementById('landing-page');
+            landing.style.opacity = '0';
+            setTimeout(() => {
+                landing.style.display = 'none';
+
+                // Show Nav
+                const nav = document.getElementById('top-nav');
+                nav.classList.remove('opacity-0', 'pointer-events-none');
+
+                // Start Game
+                switchTab(mode);
+            }, 500);
+        }
+
+        // --- Tab Switching ---
+        function switchTab(mode) {
+            currentMode = mode;
+            // Update Active Tab State
+            document.querySelectorAll('.nav-pill').forEach(b => b.classList.remove('active'));
+            document.getElementById(`tab-${mode}`).classList.add('active');
+
+            // Hide/Show Controls
+            document.getElementById('controls-count').style.opacity = (mode === 'count') ? '1' : '0';
+            document.getElementById('controls-count').style.pointerEvents = (mode === 'count') ? 'auto' : 'none';
+
+            document.getElementById('controls-calc').style.opacity = (mode === 'calc') ? '1' : '0';
+            document.getElementById('controls-calc').style.pointerEvents = (mode === 'calc') ? 'auto' : 'none';
+
+            document.getElementById('controls-quiz').style.opacity = (mode === 'quiz') ? '1' : '0';
+            document.getElementById('controls-quiz').style.pointerEvents = (mode === 'quiz') ? 'auto' : 'none';
+
+            if (mode === 'count') {
                 resetGame();
-                if (currentMode === 'quiz') {
-                    // If exiting quiz via this logic (which reuses calc UI components), go back to blank.
-                    // Actually quiz mode shares calc UI logic? 
-                    // Looking at code above... 'controls-quiz' only has one button: "Random Question"
-                    // When clicked, nextQuestion() runs.
-                }
+                els.inputStart.value = 7;
+                els.inputChange.value = 4;
+            } else if (mode === 'calc') {
+                resetGame();
+                exitCalcMode(); // Show setup
+            } else if (mode === 'quiz') {
+                resetGame();
+            }
+            closeStory();
+        }
+
+        function exitCalcMode() {
+            document.getElementById('calc-setup').classList.remove('hidden');
+            document.getElementById('calc-action').classList.add('hidden');
+            els.waitingArea.classList.add('hidden');
+            resetGame();
+        }
+
+        // --- Speech Logic ---
+        function speakText(text) {
+            if (!text) return;
+            // Cancel any current speech
+            window.speechSynthesis.cancel();
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = "zh-CN";
+            utterance.rate = 1.0;
+            utterance.pitch = 1.2;
+
+            // Try to select a Chinese voice if available
+            const voices = window.speechSynthesis.getVoices();
+
+            // Heuristic for Chinese voice
+            const zhVoice = voices.find(v => v.lang.includes('zh') || v.lang.includes('CN'));
+            if (zhVoice) {
+                utterance.voice = zhVoice;
             }
 
-            // --- Speech Logic ---
-            function speakText(text) {
-                if (!text) return;
-                // Cancel any current speech
-                window.speechSynthesis.cancel();
+            window.speechSynthesis.speak(utterance);
+        }
 
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = "zh-CN";
-                utterance.rate = 1.0;
-                utterance.pitch = 1.2;
+        // Make sure voices are loaded
+        window.speechSynthesis.onvoiceschanged = () => {
+            console.log("Voices changed");
+        };
 
-                // Try to select a Chinese voice if available
-                const voices = window.speechSynthesis.getVoices();
-                console.log("Voices:", voices); // Debug
+        // --- Generative AI Logic ---
+        async function generateStory() {
+            const startVal = els.inputStart.value;
+            const changeVal = els.inputChange.value;
+            const prompt = `Use simple Chinese for a 6-year-old. Write ONE short sentence: ${startVal} bees are in the hive, and ${changeVal} more fly in. Use emojis.`;
 
-                // Heuristic for Chinese voice
-                const zhVoice = voices.find(v => v.lang.includes('zh') || v.lang.includes('CN'));
-                if (zhVoice) {
-                    utterance.voice = zhVoice;
-                }
+            // Simple loading state
+            els.aiStoryDisplay.style.display = 'block';
+            els.aiStoryContent.innerHTML = '✨ 正在想故事... (Thinking...)';
 
-                window.speechSynthesis.speak(utterance);
-            }
+            try {
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
-            // Make sure voices are loaded (Chrome sometimes needs this)
-            window.speechSynthesis.onvoiceschanged = () => {
-                console.log("Voices changed");
-            };
-
-            // --- Generative AI Logic ---
-            /*
-               We want to generate a SHORT, fun 1-sentence story about bees.
-               E.g. "7只小蜜蜂正在采蜜，突然飞来了4只朋友！"
-            */
-            async function generateStory() {
-                const startVal = els.inputStart.value;
-                const changeVal = els.inputChange.value;
-                const prompt = `Use simple Chinese for a 6-year-old. Write ONE short sentence: ${startVal} bees are in the hive, and ${changeVal} more fly in. Use emojis.`;
-
-                // Simple loading state
-                els.aiStoryDisplay.style.display = 'block';
-                els.aiStoryContent.innerHTML = '✨ 正在想故事... (Thinking...)';
-
-                try {
-                    // Construct the Gemini API call
-                    // Note: For a real deployed app, you'd want a backend proxy to hide the key.
-                    // Since this is a local/personal script, we put key here.
-                    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-
-                    const response = await fetch(url, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            contents: [{
-                                parts: [{ text: prompt }]
-                            }]
-                        })
-                    });
-
-                    const data = await response.json();
-                    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "蜜蜂们都很开心！(Bees are happy!)";
-
-                    // Clean up markdown just in case
-                    const cleanText = marked.parse(text);
-
-                    els.aiStoryContent.innerHTML = cleanText;
-                    speakText(text); // Speak the story!
-
-                } catch (e) {
-                    console.error(e);
-                    els.aiStoryContent.innerText = "网络有点忙，蜜蜂们先去采蜜啦！";
-                }
-            }
-
-            function closeStory() {
-                els.aiStoryDisplay.style.display = 'none';
-                window.speechSynthesis.cancel();
-            }
-
-
-            // --- Quiz Logic ---
-            function nextQuestion() {
-                // Randomize
-                const s = Math.floor(Math.random() * 8) + 1; // 1-8
-                const c = Math.floor(Math.random() * 8) + 1; // 1-8
-
-                els.inputStart.value = s;
-                els.inputChange.value = c;
-
-                // Re-use Calc UI but set mode
-                // We need to hide the 'quiz' controls (the big button) and show the 'calc' UI 
-                // BUT keeps us logically in 'quiz' mode so we know what to do when finished
-
-                // Actually, my structure has separate 'controls-calc' and 'controls-quiz' divs.
-                // Let's just swap them visually for the duration of the question.
-                document.getElementById('controls-quiz').style.opacity = '0';
-                document.getElementById('controls-quiz').style.pointerEvents = 'none';
-
-                document.getElementById('controls-calc').style.opacity = '1';
-                document.getElementById('controls-calc').style.pointerEvents = 'auto'; // allow input
-
-                // Generate a story automatically? Sure, why not
-                generateStory();
-
-                // Auto start?
-                // startCalculationMode(); 
-            }
-
-            function showFloatingText(text, container, color = '#d97706') {
-                const el = document.createElement('div');
-                el.className = 'floating-text';
-                el.style.color = color;
-                el.innerText = text;
-                el.style.top = '50%';
-                el.style.left = '50%';
-                el.style.transform = 'translate(-50%, -50%)';
-                container.appendChild(el);
-                setTimeout(() => el.remove(), 1500);
-            }
-
-            function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
-
-            function updateGlobalButtons() {
-                const disabled = isAnimating;
-                document.querySelectorAll('button').forEach(b => {
-                    if (!b.classList.contains('tab-btn') && !b.classList.contains('absolute') && !b.classList.contains('menu-btn')) {
-                        b.disabled = disabled;
-                    }
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{ text: prompt }]
+                        }]
+                    })
                 });
-            }
 
+                const data = await response.json();
+                const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "蜜蜂们都很开心！(Bees are happy!)";
+
+                const cleanText = marked.parse(text);
+
+                els.aiStoryContent.innerHTML = cleanText;
+                speakText(text);
+
+            } catch (e) {
+                console.error(e);
+                els.aiStoryContent.innerText = "网络有点忙，蜜蜂们先去采蜜啦！";
+            }
+        }
+
+        function closeStory() {
+            els.aiStoryDisplay.style.display = 'none';
+            window.speechSynthesis.cancel();
+        }
+
+        // --- Quiz Logic ---
+        function nextQuestion() {
+            // Randomize
+            const s = Math.floor(Math.random() * 8) + 1; // 1-8
+            const c = Math.floor(Math.random() * 8) + 1; // 1-8
+
+            els.inputStart.value = s;
+            els.inputChange.value = c;
+
+            document.getElementById('controls-quiz').style.opacity = '0';
+            document.getElementById('controls-quiz').style.pointerEvents = 'none';
+
+            document.getElementById('controls-calc').style.opacity = '1';
+            document.getElementById('controls-calc').style.pointerEvents = 'auto'; // allow input
+
+            // Generate a story automatically
+            generateStory();
+        }
+
+        function showFloatingText(text, container, color = '#d97706') {
+            const el = document.createElement('div');
+            el.className = 'floating-text';
+            el.style.color = color;
+            el.innerText = text;
+            el.style.top = '50%';
+            el.style.left = '50%';
+            el.style.transform = 'translate(-50%, -50%)';
+            container.appendChild(el);
+            setTimeout(() => el.remove(), 1500);
+        }
+
+        function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+        function updateGlobalButtons() {
+            const disabled = isAnimating;
+            document.querySelectorAll('button').forEach(b => {
+                if (!b.classList.contains('tab-btn') && !b.classList.contains('absolute') && !b.classList.contains('menu-btn')) {
+                    b.disabled = disabled;
+                }
+            });
+        }
     </script>
 </body>
 

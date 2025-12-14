@@ -458,14 +458,26 @@
     <!-- Main Content -->
     <div class="flex-1 w-full max-w-2xl flex flex-col px-4 py-2 relative">
 
-        <!-- Title / AI Story Area -->
+        <!-- Title & Calculation Display Area -->
         <div class="min-h-[3rem] flex flex-col items-center justify-center relative mb-2">
             <h1 id="mainTitle" class="text-3xl font-bold text-amber-700 transition-all duration-300 drop-shadow-sm">
                 快乐养蜂场</h1>
-            <div id="aiStoryDisplay" class="ai-story-box w-full">
-                <div id="aiStoryContent"></div>
-                <button onclick="closeStory()"
-                    class="absolute top-1 right-2 text-amber-400 hover:text-red-500 text-2xl font-bold leading-none">&times;</button>
+
+            <!-- Math Decomposition (Demo Mode Only) -->
+            <div id="math-breakdown"
+                class="hidden mt-2 px-4 py-2 bg-gradient-to-r from-violet-100 to-purple-100 border-2 border-violet-400 rounded-xl shadow-md">
+                <div id="breakdown-formula" class="text-xl font-bold text-purple-800 text-center">
+                    <!-- e.g., "7 + 4 = 7 + 3 + 1" -->
+                </div>
+            </div>
+
+            <!-- Calculation Log -->
+            <div id="calc-log"
+                class="hidden mt-2 w-full max-w-md bg-white/90 border-2 border-amber-300 rounded-xl p-3 shadow-md max-h-32 overflow-y-auto">
+                <div class="text-xs font-bold text-amber-600 mb-1">计算过程:</div>
+                <div id="calc-log-content" class="space-y-1 text-sm font-mono text-amber-900">
+                    <!-- Steps will appear here -->
+                </div>
             </div>
         </div>
 
@@ -549,10 +561,6 @@
                         <input type="number" id="inputChange" value="4" min="1" max="9"
                             class="w-16 text-center text-2xl font-bold text-amber-800 border-2 border-amber-200 rounded-xl p-1 outline-none focus:border-orange-500 bg-white">
                     </div>
-
-                    <button onclick="generateStory()"
-                        class="btn w-14 h-14 rounded-2xl flex items-center justify-center ml-2 shadow-lg bg-gradient-to-br from-violet-400 to-fuchsia-500 text-white text-2xl border-b-4 border-violet-700 active:border-b-0"
-                        title="魔法故事">✨</button>
 
                     <button onclick="startCalculationMode()"
                         class="btn btn-blue bg-sky-500 border-sky-700 text-white px-6 py-2 rounded-2xl font-bold shadow-lg ml-2 h-14 text-lg">
@@ -660,8 +668,9 @@
         let currentMode = 'count';
         let calcTarget = 0;
         let calcProgress = 0;
-        let waitingButterflies = 0;
         let els = {}; // Initialize empty
+        let calcLog = []; // Track calculation steps
+        let initialValue = 0; // Track starting value for log
 
         function initGame() {
             els = {
@@ -680,8 +689,10 @@
                 stepBtnProgress: document.getElementById('stepBtnProgress'),
                 inputStart: document.getElementById('inputStart'),
                 inputChange: document.getElementById('inputChange'),
-                aiStoryDisplay: document.getElementById('aiStoryDisplay'),
-                aiStoryContent: document.getElementById('aiStoryContent')
+                calcLog: document.getElementById('calc-log'),
+                calcLogContent: document.getElementById('calc-log-content'),
+                mathBreakdown: document.getElementById('math-breakdown'),
+                breakdownFormula: document.getElementById('breakdown-formula')
             };
 
             initTenFrame();
@@ -803,6 +814,17 @@
             els.tensContainer.innerHTML = '';
             initTenFrame();
 
+            // Reset calculation log
+            calcLog = [];
+            initialValue = startVal;
+            els.calcLogContent.innerHTML = '';
+            els.calcLog.classList.remove('hidden');
+
+            // Show decomposition if in calc mode
+            if (currentMode === 'calc') {
+                showDecomposition(startVal, changeVal);
+            }
+
             // Fill Tens (Hives)
             const startTens = Math.floor(startVal / 10);
             for (let i = 0; i < startTens; i++) {
@@ -834,6 +856,38 @@
             updateStepUI();
         }
 
+        function showDecomposition(start, change) {
+            const onesDigit = start % 10;
+            const complement = 10 - onesDigit;
+
+            let formula = '';
+            if (change > complement && onesDigit > 0) {
+                // Crossing 10: e.g., 7 + 4 = 7 + 3 + 1
+                const remainder = change - complement;
+                formula = `${start} + ${change} = ${start} + <span class="text-red-600">${complement}</span> + ${remainder}`;
+            } else {
+                // Simple addition
+                formula = `${start} + ${change} = ${start + change}`;
+            }
+
+            els.breakdownFormula.innerHTML = formula;
+            els.mathBreakdown.classList.remove('hidden');
+        }
+
+        function addCalcStep(step) {
+            const currentTotal = (tens * 10) + ones;
+            const stepText = `${initialValue} + ${step} = ${currentTotal}`;
+            calcLog.push(stepText);
+
+            const stepDiv = document.createElement('div');
+            stepDiv.className = 'calc-step';
+            stepDiv.textContent = stepText;
+            els.calcLogContent.appendChild(stepDiv);
+
+            // Auto-scroll to bottom
+            els.calcLog.scrollTop = els.calcLog.scrollHeight;
+        }
+
         async function manualStep() {
             if (isAnimating) return;
 
@@ -845,6 +899,7 @@
 
             await addOne('added', true);
             calcProgress++;
+            addCalcStep(calcProgress); // Log the step
             updateStepUI();
         }
 
@@ -917,84 +972,6 @@
             } else if (mode === 'quiz') {
                 resetGame();
             }
-            closeStory();
-        }
-
-        function exitCalcMode() {
-            document.getElementById('calc-setup').classList.remove('hidden');
-            document.getElementById('calc-action').classList.add('hidden');
-            els.waitingArea.classList.add('hidden');
-            resetGame();
-        }
-
-        // --- Speech Logic ---
-        function speakText(text) {
-            if (!text) return;
-            // Cancel any current speech
-            window.speechSynthesis.cancel();
-
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = "zh-CN";
-            utterance.rate = 1.0;
-            utterance.pitch = 1.2;
-
-            // Try to select a Chinese voice if available
-            const voices = window.speechSynthesis.getVoices();
-
-            // Heuristic for Chinese voice
-            const zhVoice = voices.find(v => v.lang.includes('zh') || v.lang.includes('CN'));
-            if (zhVoice) {
-                utterance.voice = zhVoice;
-            }
-
-            window.speechSynthesis.speak(utterance);
-        }
-
-        // Make sure voices are loaded
-        window.speechSynthesis.onvoiceschanged = () => {
-            console.log("Voices changed");
-        };
-
-        // --- Generative AI Logic ---
-        async function generateStory() {
-            const startVal = els.inputStart.value;
-            const changeVal = els.inputChange.value;
-            const prompt = `Use simple Chinese for a 6-year-old. Write ONE short sentence: ${startVal} bees are in the hive, and ${changeVal} more fly in. Use emojis.`;
-
-            // Simple loading state
-            els.aiStoryDisplay.style.display = 'block';
-            els.aiStoryContent.innerHTML = '✨ 正在想故事... (Thinking...)';
-
-            try {
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{
-                            parts: [{ text: prompt }]
-                        }]
-                    })
-                });
-
-                const data = await response.json();
-                const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "蜜蜂们都很开心！(Bees are happy!)";
-
-                const cleanText = marked.parse(text);
-
-                els.aiStoryContent.innerHTML = cleanText;
-                speakText(text);
-
-            } catch (e) {
-                console.error(e);
-                els.aiStoryContent.innerText = "网络有点忙，蜜蜂们先去采蜜啦！";
-            }
-        }
-
-        function closeStory() {
-            els.aiStoryDisplay.style.display = 'none';
-            window.speechSynthesis.cancel();
         }
 
         // --- Quiz Logic ---

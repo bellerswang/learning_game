@@ -687,6 +687,17 @@
             initTenFrame();
         }
 
+        function initTenFrame() {
+            els.onesContainer.innerHTML = '';
+            for (let i = 0; i < 10; i++) {
+                const slot = document.createElement('div');
+                slot.className = 'frame-slot';
+                slot.dataset.index = i + 1;
+                slot.id = `slot-${i}`;
+                els.onesContainer.appendChild(slot);
+            }
+        }
+
         function updateDisplay() {
             els.tensCountDisplay.innerText = tens;
             els.onesCountDisplay.innerText = ones;

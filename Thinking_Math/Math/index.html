@@ -937,89 +937,28 @@
                 // startCalculationMode(); 
             }
 
-    </script> function showFloatingText(text, container, color = '#d97706') {
-    const el = document.createElement('div');
-    el.className = 'floating-text';
-    el.style.color = color;
-    el.innerText = text;
-    el.style.top = '50%';
-    el.style.left = '50%';
-    el.style.transform = 'translate(-50%, -50%)';
-    container.appendChild(el);
-    setTimeout(() => el.remove(), 1500);
-    }
+            function showFloatingText(text, container, color = '#d97706') {
+                const el = document.createElement('div');
+                el.className = 'floating-text';
+                el.style.color = color;
+                el.innerText = text;
+                el.style.top = '50%';
+                el.style.left = '50%';
+                el.style.transform = 'translate(-50%, -50%)';
+                container.appendChild(el);
+                setTimeout(() => el.remove(), 1500);
+            }
 
-    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+            function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-    function updateGlobalButtons() {
-    const disabled = isAnimating;
-    document.querySelectorAll('button').forEach(b => {
-    if (!b.classList.contains('tab-btn') && !b.classList.contains('absolute')) {
-    b.disabled = disabled;
-    }
-    });
-    }
-
-    function switchTab(mode) {
-    currentMode = mode;
-    ['count', 'calc', 'quiz'].forEach(m => {
-    document.getElementById(`tab-${m}`).classList.toggle('active', m === mode);
-    });
-
-    document.getElementById('controls-count').style.opacity = '0';
-    document.getElementById('controls-count').style.pointerEvents = 'none';
-    document.getElementById('controls-calc').style.opacity = '0';
-    document.getElementById('controls-calc').style.pointerEvents = 'none';
-    document.getElementById('controls-quiz').style.opacity = '0';
-    document.getElementById('controls-quiz').style.pointerEvents = 'none';
-
-    resetGame();
-
-    if (mode === 'count') {
-    document.getElementById('controls-count').style.opacity = '1';
-    document.getElementById('controls-count').style.pointerEvents = 'auto';
-    els.mainTitle.innerText = "快乐养蜂场";
-    els.waitingArea.classList.add('hidden');
-    } else if (mode === 'calc') {
-    document.getElementById('controls-calc').style.opacity = '1';
-    document.getElementById('controls-calc').style.pointerEvents = 'auto';
-    document.getElementById('calc-setup').classList.remove('hidden');
-    document.getElementById('calc-action').classList.add('hidden');
-    els.mainTitle.innerText = "进位演示";
-    } else {
-    document.getElementById('controls-quiz').style.opacity = '1';
-    document.getElementById('controls-quiz').style.pointerEvents = 'auto';
-    els.mainTitle.innerText = "挑战时间";
-    }
-    }
-
-    async function generateStory() {
-    const start = els.inputStart.value;
-    const change = els.inputChange.value;
-    const prompt = `为6岁孩子写个一句话故事: ${start}只小蜜蜂在采蜜，又飞来了${change}只。如果相加超过10，提到"装满了一个大蜂巢"。用中文。`;
-
-    els.aiStoryDisplay.style.display = 'block';
-    els.aiStoryContent.innerHTML = "正在听蜜蜂说话...";
-
-    try {
-    if (!apiKey) throw new Error("No Key");
-    const res = await
-    fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`,
-    {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-    });
-    const data = await res.json();
-    els.aiStoryContent.innerText = data.candidates[0].content.parts[0].text;
-    } catch (e) {
-    const sum = parseInt(start) + parseInt(change);
-    let text = `花园里有 ${start} 只小蜜蜂，又飞来了 ${change} 只。`;
-    if (start % 10 + parseInt(change) >= 10) text += " 蜂巢好像要装不下了！";
-    els.aiStoryContent.innerText = text;
-    }
-    }
-    function closeStory() { els.aiStoryDisplay.style.display = 'none'; }
+            function updateGlobalButtons() {
+                const disabled = isAnimating;
+                document.querySelectorAll('button').forEach(b => {
+                    if (!b.classList.contains('tab-btn') && !b.classList.contains('absolute') && !b.classList.contains('menu-btn')) {
+                        b.disabled = disabled;
+                    }
+                });
+            }
 
     </script>
 </body>

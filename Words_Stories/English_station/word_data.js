@@ -22,8 +22,8 @@ window.EMBEDDED_WORD_DATA = {
                     "i": "🐟"
                 },
                 "adjective": {
-                    "t": "the yummy",
-                    "i": "😋"
+                    "t": "the soft",
+                    "i": "🧸"
                 },
                 "where": {
                     "t": "in the kitchen",
@@ -51,8 +51,8 @@ window.EMBEDDED_WORD_DATA = {
                     "i": "🚘"
                 },
                 "adjective": {
-                    "t": "the fast",
-                    "i": "⚡"
+                    "t": "the hard",
+                    "i": "🧱"
                 },
                 "where": {
                     "t": "to work",
@@ -80,8 +80,8 @@ window.EMBEDDED_WORD_DATA = {
                     "i": "⚽"
                 },
                 "adjective": {
-                    "t": "the red",
-                    "i": "🔴"
+                    "t": "the wet",
+                    "i": "💧"
                 },
                 "where": {
                     "t": "in the park",
@@ -109,8 +109,8 @@ window.EMBEDDED_WORD_DATA = {
                     "i": "👶"
                 },
                 "adjective": {
-                    "t": "the little",
-                    "i": "👶"
+                    "t": "the dry",
+                    "i": "🌵"
                 },
                 "where": {
                     "t": "on the sofa",
@@ -138,8 +138,8 @@ window.EMBEDDED_WORD_DATA = {
                     "i": "🪱"
                 },
                 "adjective": {
-                    "t": "the long",
-                    "i": "🪱"
+                    "t": "the loud",
+                    "i": "📢"
                 },
                 "where": {
                     "t": "in the tree",
@@ -167,8 +167,8 @@ window.EMBEDDED_WORD_DATA = {
                     "i": "🧃"
                 },
                 "adjective": {
-                    "t": "the orange",
-                    "i": "🍊"
+                    "t": "the quiet",
+                    "i": "🤫"
                 },
                 "where": {
                     "t": "at the table",
@@ -196,8 +196,8 @@ window.EMBEDDED_WORD_DATA = {
                     "i": "📚"
                 },
                 "adjective": {
-                    "t": "the good",
-                    "i": "📘"
+                    "t": "the red",
+                    "i": "🔴"
                 },
                 "where": {
                     "t": "in the bed",
@@ -225,12 +225,186 @@ window.EMBEDDED_WORD_DATA = {
                     "i": "🎂"
                 },
                 "adjective": {
-                    "t": "a sweet",
-                    "i": "🧁"
+                    "t": "a blue",
+                    "i": "🔵"
                 },
                 "where": {
                     "t": "in the oven",
                     "i": "🔥"
+                }
+            },
+            {
+                "parts": [
+                    "who",
+                    "doing",
+                    "adjective",
+                    "what",
+                    "where"
+                ],
+                "who": {
+                    "t": "The baby",
+                    "i": "👶"
+                },
+                "doing": {
+                    "t": "drinks",
+                    "i": "🍼"
+                },
+                "adjective": {
+                    "t": "hot",
+                    "i": "🔥"
+                },
+                "what": {
+                    "t": "milk",
+                    "i": "🥛"
+                },
+                "where": {
+                    "t": "in the cot",
+                    "i": "🛏️"
+                }
+            },
+            {
+                "parts": [
+                    "who",
+                    "doing",
+                    "adjective",
+                    "what",
+                    "where"
+                ],
+                "who": {
+                    "t": "My dog",
+                    "i": "🐕"
+                },
+                "doing": {
+                    "t": "chews",
+                    "i": "🦴"
+                },
+                "adjective": {
+                    "t": "a cold",
+                    "i": "❄️"
+                },
+                "what": {
+                    "t": "bone",
+                    "i": "🦴"
+                },
+                "where": {
+                    "t": "in the garden",
+                    "i": "🌳"
+                }
+            },
+            {
+                "parts": [
+                    "who",
+                    "doing",
+                    "adjective",
+                    "what",
+                    "where"
+                ],
+                "who": {
+                    "t": "The ninja",
+                    "i": "🥷"
+                },
+                "doing": {
+                    "t": "sleeps",
+                    "i": "💤"
+                },
+                "adjective": {
+                    "t": "a soft",
+                    "i": "🧸"
+                },
+                "what": {
+                    "t": "bed",
+                    "i": "🛏️"
+                },
+                "where": {
+                    "t": "in the house",
+                    "i": "🏠"
+                }
+            },
+            {
+                "parts": [
+                    "who",
+                    "doing",
+                    "adjective",
+                    "what",
+                    "where"
+                ],
+                "who": {
+                    "t": "The chef",
+                    "i": "👨‍🍳"
+                },
+                "doing": {
+                    "t": "washes",
+                    "i": "🧽"
+                },
+                "adjective": {
+                    "t": "the hard",
+                    "i": "🧱"
+                },
+                "what": {
+                    "t": "car",
+                    "i": "🚗"
+                },
+                "where": {
+                    "t": "on the drive",
+                    "i": "🛣️"
+                }
+            },
+            {
+                "parts": [
+                    "who",
+                    "doing",
+                    "adjective",
+                    "what",
+                    "where"
+                ],
+                "who": {
+                    "t": "The detective",
+                    "i": "🕵️"
+                },
+                "doing": {
+                    "t": "buys",
+                    "i": "🛍️"
+                },
+                "adjective": {
+                    "t": "wet",
+                    "i": "💧"
+                },
+                "what": {
+                    "t": "fruit",
+                    "i": "🍌"
+                },
+                "where": {
+                    "t": "at the shop",
+                    "i": "🏪"
+                }
+            },
+            {
+                "parts": [
+                    "who",
+                    "doing",
+                    "adjective",
+                    "what",
+                    "where"
+                ],
+                "who": {
+                    "t": "The prince",
+                    "i": "🤴"
+                },
+                "doing": {
+                    "t": "sings",
+                    "i": "🎵"
+                },
+                "adjective": {
+                    "t": "a dry",
+                    "i": "🌵"
+                },
+                "what": {
+                    "t": "song",
+                    "i": "🎶"
+                },
+                "where": {
+                    "t": "in the tree",
+                    "i": "🌳"
                 }
             }
         ],
@@ -256,8 +430,8 @@ window.EMBEDDED_WORD_DATA = {
                     "i": "🖼️"
                 },
                 "adjective": {
-                    "t": "a good",
-                    "i": "📘"
+                    "t": "a fluffy",
+                    "i": "☁️"
                 },
                 "where": {
                     "t": "in the bed",
@@ -285,8 +459,8 @@ window.EMBEDDED_WORD_DATA = {
                     "i": "🐭"
                 },
                 "adjective": {
-                    "t": "the small",
-                    "i": "🐜"
+                    "t": "the bumpy",
+                    "i": "🐢"
                 },
                 "where": {
                     "t": "in the park",
@@ -314,8 +488,8 @@ window.EMBEDDED_WORD_DATA = {
                     "i": "🍜"
                 },
                 "adjective": {
-                    "t": "little",
-                    "i": "👶"
+                    "t": "sticky",
+                    "i": "🍯"
                 },
                 "where": {
                     "t": "on the sofa",
@@ -343,8 +517,8 @@ window.EMBEDDED_WORD_DATA = {
                     "i": "⚽"
                 },
                 "adjective": {
-                    "t": "the orange",
-                    "i": "🍊"
+                    "t": "the shiny",
+                    "i": "✨"
                 },
                 "where": {
                     "t": "at the table",
@@ -372,8 +546,8 @@ window.EMBEDDED_WORD_DATA = {
                     "i": "🥕"
                 },
                 "adjective": {
-                    "t": "the red",
-                    "i": "🔴"
+                    "t": "the sparkly",
+                    "i": "❇️"
                 },
                 "where": {
                     "t": "in the kitchen",
@@ -401,8 +575,8 @@ window.EMBEDDED_WORD_DATA = {
                     "i": "✉️"
                 },
                 "adjective": {
-                    "t": "the blue",
-                    "i": "🔵"
+                    "t": "the fuzzy",
+                    "i": "🍑"
                 },
                 "where": {
                     "t": "in the garden",
@@ -430,8 +604,8 @@ window.EMBEDDED_WORD_DATA = {
                     "i": "📝"
                 },
                 "adjective": {
-                    "t": "yummy",
-                    "i": "😋"
+                    "t": "slimy",
+                    "i": "🐌"
                 },
                 "where": {
                     "t": "at home",
@@ -459,12 +633,186 @@ window.EMBEDDED_WORD_DATA = {
                     "i": "🤒"
                 },
                 "adjective": {
-                    "t": "the hot",
-                    "i": "🔥"
+                    "t": "the happy",
+                    "i": "😊"
                 },
                 "where": {
                     "t": "in the park",
                     "i": "🌳"
+                }
+            },
+            {
+                "parts": [
+                    "who",
+                    "doing",
+                    "adjective",
+                    "what",
+                    "where"
+                ],
+                "who": {
+                    "t": "The bear",
+                    "i": "🐻"
+                },
+                "doing": {
+                    "t": "eats",
+                    "i": "🍯"
+                },
+                "adjective": {
+                    "t": "sad",
+                    "i": "😢"
+                },
+                "what": {
+                    "t": "honey",
+                    "i": "🏺"
+                },
+                "where": {
+                    "t": "in the cave",
+                    "i": "🕳️"
+                }
+            },
+            {
+                "parts": [
+                    "who",
+                    "doing",
+                    "adjective",
+                    "what",
+                    "where"
+                ],
+                "who": {
+                    "t": "The shark",
+                    "i": "🦈"
+                },
+                "doing": {
+                    "t": "chases",
+                    "i": "🏊"
+                },
+                "adjective": {
+                    "t": "the busy",
+                    "i": "🐝"
+                },
+                "what": {
+                    "t": "fish",
+                    "i": "🐠"
+                },
+                "where": {
+                    "t": "in the sea",
+                    "i": "🌊"
+                }
+            },
+            {
+                "parts": [
+                    "who",
+                    "doing",
+                    "adjective",
+                    "what",
+                    "where"
+                ],
+                "who": {
+                    "t": "The clown",
+                    "i": "🤡"
+                },
+                "doing": {
+                    "t": "juggles",
+                    "i": "🤹"
+                },
+                "adjective": {
+                    "t": "fluffy",
+                    "i": "☁️"
+                },
+                "what": {
+                    "t": "balls",
+                    "i": "🔴"
+                },
+                "where": {
+                    "t": "at the circus",
+                    "i": "🎪"
+                }
+            },
+            {
+                "parts": [
+                    "who",
+                    "doing",
+                    "adjective",
+                    "what",
+                    "where"
+                ],
+                "who": {
+                    "t": "The baker",
+                    "i": "👨‍🍳"
+                },
+                "doing": {
+                    "t": "makes",
+                    "i": "🥖"
+                },
+                "adjective": {
+                    "t": "bumpy",
+                    "i": "🐢"
+                },
+                "what": {
+                    "t": "bread",
+                    "i": "🍞"
+                },
+                "where": {
+                    "t": "in the bakery",
+                    "i": "🏪"
+                }
+            },
+            {
+                "parts": [
+                    "who",
+                    "doing",
+                    "adjective",
+                    "what",
+                    "where"
+                ],
+                "who": {
+                    "t": "The monkey",
+                    "i": "🐒"
+                },
+                "doing": {
+                    "t": "climbs",
+                    "i": "🧗"
+                },
+                "adjective": {
+                    "t": "the sticky",
+                    "i": "🍯"
+                },
+                "what": {
+                    "t": "tree",
+                    "i": "🌳"
+                },
+                "where": {
+                    "t": "in the jungle",
+                    "i": "🌴"
+                }
+            },
+            {
+                "parts": [
+                    "who",
+                    "doing",
+                    "adjective",
+                    "what",
+                    "where"
+                ],
+                "who": {
+                    "t": "The police",
+                    "i": "👮"
+                },
+                "doing": {
+                    "t": "helps",
+                    "i": "🤝"
+                },
+                "adjective": {
+                    "t": "the shiny",
+                    "i": "✨"
+                },
+                "what": {
+                    "t": "boy",
+                    "i": "👦"
+                },
+                "where": {
+                    "t": "in the town",
+                    "i": "🏙️"
                 }
             }
         ],
@@ -494,8 +842,8 @@ window.EMBEDDED_WORD_DATA = {
                     "i": "🌳"
                 },
                 "adjective": {
-                    "t": "orange",
-                    "i": "🍊"
+                    "t": "brave",
+                    "i": "🦁"
                 }
             },
             {
@@ -523,8 +871,8 @@ window.EMBEDDED_WORD_DATA = {
                     "i": "🌊"
                 },
                 "adjective": {
-                    "t": "small",
-                    "i": "🐜"
+                    "t": "clever",
+                    "i": "🧠"
                 }
             },
             {
@@ -552,8 +900,8 @@ window.EMBEDDED_WORD_DATA = {
                     "i": "🏫"
                 },
                 "adjective": {
-                    "t": "a happy",
-                    "i": "😊"
+                    "t": "a clumsy",
+                    "i": "🤕"
                 }
             },
             {
@@ -581,8 +929,8 @@ window.EMBEDDED_WORD_DATA = {
                     "i": "🍴"
                 },
                 "adjective": {
-                    "t": "fast",
-                    "i": "⚡"
+                    "t": "fierce",
+                    "i": "🐯"
                 }
             },
             {
@@ -610,8 +958,8 @@ window.EMBEDDED_WORD_DATA = {
                     "i": "🏖️"
                 },
                 "adjective": {
-                    "t": "a good",
-                    "i": "📘"
+                    "t": "a gentle",
+                    "i": "🐑"
                 }
             },
             {
@@ -639,8 +987,8 @@ window.EMBEDDED_WORD_DATA = {
                     "i": "🏠"
                 },
                 "adjective": {
-                    "t": "blue",
-                    "i": "🔵"
+                    "t": "polite",
+                    "i": "🎩"
                 }
             },
             {
@@ -668,8 +1016,8 @@ window.EMBEDDED_WORD_DATA = {
                     "i": "🏪"
                 },
                 "adjective": {
-                    "t": "yummy",
-                    "i": "😋"
+                    "t": "naughty",
+                    "i": "😈"
                 }
             },
             {
@@ -697,8 +1045,182 @@ window.EMBEDDED_WORD_DATA = {
                     "i": "🏛️"
                 },
                 "adjective": {
-                    "t": "the hot",
-                    "i": "🔥"
+                    "t": "the lucky",
+                    "i": "🍀"
+                }
+            },
+            {
+                "parts": [
+                    "who",
+                    "doing",
+                    "adjective",
+                    "what",
+                    "where"
+                ],
+                "who": {
+                    "t": "The artist",
+                    "i": "🎨"
+                },
+                "doing": {
+                    "t": "paints",
+                    "i": "🖌️"
+                },
+                "adjective": {
+                    "t": "a careful",
+                    "i": "⚠️"
+                },
+                "what": {
+                    "t": "picture",
+                    "i": "🖼️"
+                },
+                "where": {
+                    "t": "in the studio",
+                    "i": "🎨"
+                }
+            },
+            {
+                "parts": [
+                    "who",
+                    "doing",
+                    "adjective",
+                    "what",
+                    "where"
+                ],
+                "who": {
+                    "t": "The vet",
+                    "i": "👩‍⚕️"
+                },
+                "doing": {
+                    "t": "fixes",
+                    "i": "🩹"
+                },
+                "adjective": {
+                    "t": "the brave",
+                    "i": "🦁"
+                },
+                "what": {
+                    "t": "dog",
+                    "i": "🐕"
+                },
+                "where": {
+                    "t": "at the clinic",
+                    "i": "🏥"
+                }
+            },
+            {
+                "parts": [
+                    "who",
+                    "doing",
+                    "adjective",
+                    "what",
+                    "where"
+                ],
+                "who": {
+                    "t": "The dancer",
+                    "i": "💃"
+                },
+                "doing": {
+                    "t": "dances",
+                    "i": "💃"
+                },
+                "adjective": {
+                    "t": "a clever",
+                    "i": "🧠"
+                },
+                "what": {
+                    "t": "dance",
+                    "i": "🎵"
+                },
+                "where": {
+                    "t": "on the stage",
+                    "i": "🎭"
+                }
+            },
+            {
+                "parts": [
+                    "who",
+                    "doing",
+                    "adjective",
+                    "what",
+                    "where"
+                ],
+                "who": {
+                    "t": "The pirate",
+                    "i": "🏴‍☠️"
+                },
+                "doing": {
+                    "t": "finds",
+                    "i": "🗺️"
+                },
+                "adjective": {
+                    "t": "clumsy",
+                    "i": "🤕"
+                },
+                "what": {
+                    "t": "coins",
+                    "i": "🪙"
+                },
+                "where": {
+                    "t": "on the island",
+                    "i": "🏝️"
+                }
+            },
+            {
+                "parts": [
+                    "who",
+                    "doing",
+                    "adjective",
+                    "what",
+                    "where"
+                ],
+                "who": {
+                    "t": "The robot",
+                    "i": "🤖"
+                },
+                "doing": {
+                    "t": "beeps",
+                    "i": "🔉"
+                },
+                "adjective": {
+                    "t": "a fierce",
+                    "i": "🐯"
+                },
+                "what": {
+                    "t": "noise",
+                    "i": "📢"
+                },
+                "where": {
+                    "t": "in the lab",
+                    "i": "🔬"
+                }
+            },
+            {
+                "parts": [
+                    "who",
+                    "doing",
+                    "adjective",
+                    "what",
+                    "where"
+                ],
+                "who": {
+                    "t": "The superhero",
+                    "i": "🦸"
+                },
+                "doing": {
+                    "t": "saves",
+                    "i": "💪"
+                },
+                "adjective": {
+                    "t": "the gentle",
+                    "i": "🐑"
+                },
+                "what": {
+                    "t": "cat",
+                    "i": "🐱"
+                },
+                "where": {
+                    "t": "from the tree",
+                    "i": "🌳"
                 }
             }
         ],
@@ -728,8 +1250,8 @@ window.EMBEDDED_WORD_DATA = {
                     "i": "✨"
                 },
                 "adjective": {
-                    "t": "the big",
-                    "i": "🐘"
+                    "t": "the ancient",
+                    "i": "🏺"
                 }
             },
             {
@@ -757,8 +1279,8 @@ window.EMBEDDED_WORD_DATA = {
                     "i": "🚜"
                 },
                 "adjective": {
-                    "t": "the small",
-                    "i": "🐜"
+                    "t": "the secret",
+                    "i": "🤫"
                 }
             },
             {
@@ -786,8 +1308,8 @@ window.EMBEDDED_WORD_DATA = {
                     "i": "☁️"
                 },
                 "adjective": {
-                    "t": "the happy",
-                    "i": "😊"
+                    "t": "the valuable",
+                    "i": "💎"
                 }
             },
             {
@@ -815,8 +1337,8 @@ window.EMBEDDED_WORD_DATA = {
                     "i": "🌊"
                 },
                 "adjective": {
-                    "t": "fast",
-                    "i": "⚡"
+                    "t": "dangerous",
+                    "i": "⚠️"
                 }
             },
             {
@@ -844,8 +1366,8 @@ window.EMBEDDED_WORD_DATA = {
                     "i": "🏜️"
                 },
                 "adjective": {
-                    "t": "red",
-                    "i": "🔴"
+                    "t": "golden",
+                    "i": "🔱"
                 }
             },
             {
@@ -873,8 +1395,8 @@ window.EMBEDDED_WORD_DATA = {
                     "i": "🇬🇧"
                 },
                 "adjective": {
-                    "t": "the blue",
-                    "i": "🔵"
+                    "t": "the silver",
+                    "i": "🥈"
                 }
             },
             {
@@ -902,8 +1424,8 @@ window.EMBEDDED_WORD_DATA = {
                     "i": "🏟️"
                 },
                 "adjective": {
-                    "t": "a yummy",
-                    "i": "😋"
+                    "t": "a wooden",
+                    "i": "🪵"
                 }
             },
             {
@@ -931,8 +1453,182 @@ window.EMBEDDED_WORD_DATA = {
                     "i": "🚉"
                 },
                 "adjective": {
-                    "t": "hot",
+                    "t": "heavy",
+                    "i": "🏋️"
+                }
+            },
+            {
+                "parts": [
+                    "who",
+                    "doing",
+                    "adjective",
+                    "what",
+                    "where"
+                ],
+                "who": {
+                    "t": "The wizard",
+                    "i": "🧙‍♂️"
+                },
+                "doing": {
+                    "t": "casts",
+                    "i": "✨"
+                },
+                "adjective": {
+                    "t": "a frozen",
+                    "i": "🧊"
+                },
+                "what": {
+                    "t": "spell",
+                    "i": "📜"
+                },
+                "where": {
+                    "t": "in the castle",
+                    "i": "🏰"
+                }
+            },
+            {
+                "parts": [
+                    "who",
+                    "doing",
+                    "adjective",
+                    "what",
+                    "where"
+                ],
+                "who": {
+                    "t": "The dragon",
+                    "i": "🐉"
+                },
+                "doing": {
+                    "t": "breathes",
                     "i": "🔥"
+                },
+                "adjective": {
+                    "t": "ancient",
+                    "i": "🏺"
+                },
+                "what": {
+                    "t": "fire",
+                    "i": "🔥"
+                },
+                "where": {
+                    "t": "on the mountain",
+                    "i": "🏔️"
+                }
+            },
+            {
+                "parts": [
+                    "who",
+                    "doing",
+                    "adjective",
+                    "what",
+                    "where"
+                ],
+                "who": {
+                    "t": "The knight",
+                    "i": "⚔️"
+                },
+                "doing": {
+                    "t": "rides",
+                    "i": "🐎"
+                },
+                "adjective": {
+                    "t": "a secret",
+                    "i": "🤫"
+                },
+                "what": {
+                    "t": "horse",
+                    "i": "🐎"
+                },
+                "where": {
+                    "t": "to the battle",
+                    "i": "⚔️"
+                }
+            },
+            {
+                "parts": [
+                    "who",
+                    "doing",
+                    "adjective",
+                    "what",
+                    "where"
+                ],
+                "who": {
+                    "t": "The alien",
+                    "i": "👽"
+                },
+                "doing": {
+                    "t": "flies",
+                    "i": "🛸"
+                },
+                "adjective": {
+                    "t": "a valuable",
+                    "i": "💎"
+                },
+                "what": {
+                    "t": "spaceship",
+                    "i": "🚀"
+                },
+                "where": {
+                    "t": "through space",
+                    "i": "🌌"
+                }
+            },
+            {
+                "parts": [
+                    "who",
+                    "doing",
+                    "adjective",
+                    "what",
+                    "where"
+                ],
+                "who": {
+                    "t": "The detective",
+                    "i": "🕵️"
+                },
+                "doing": {
+                    "t": "finds",
+                    "i": "🔍"
+                },
+                "adjective": {
+                    "t": "a dangerous",
+                    "i": "⚠️"
+                },
+                "what": {
+                    "t": "clue",
+                    "i": "👣"
+                },
+                "where": {
+                    "t": "in the room",
+                    "i": "🚪"
+                }
+            },
+            {
+                "parts": [
+                    "who",
+                    "doing",
+                    "adjective",
+                    "what",
+                    "where"
+                ],
+                "who": {
+                    "t": "The king",
+                    "i": "👑"
+                },
+                "doing": {
+                    "t": "wears",
+                    "i": "👑"
+                },
+                "adjective": {
+                    "t": "a golden",
+                    "i": "🔱"
+                },
+                "what": {
+                    "t": "crown",
+                    "i": "👑"
+                },
+                "where": {
+                    "t": "on his head",
+                    "i": "🤴"
                 }
             }
         ],
@@ -962,8 +1658,8 @@ window.EMBEDDED_WORD_DATA = {
                     "i": "🔬"
                 },
                 "adjective": {
-                    "t": "big",
-                    "i": "🐘"
+                    "t": "mysterious",
+                    "i": "🕵️"
                 }
             },
             {
@@ -991,8 +1687,8 @@ window.EMBEDDED_WORD_DATA = {
                     "i": "🏝️"
                 },
                 "adjective": {
-                    "t": "small",
-                    "i": "🐜"
+                    "t": "invisible",
+                    "i": "👻"
                 }
             },
             {
@@ -1020,8 +1716,8 @@ window.EMBEDDED_WORD_DATA = {
                     "i": "🏥"
                 },
                 "adjective": {
-                    "t": "happy",
-                    "i": "😊"
+                    "t": "gigantic",
+                    "i": "🦖"
                 }
             },
             {
@@ -1049,8 +1745,8 @@ window.EMBEDDED_WORD_DATA = {
                     "i": "💻"
                 },
                 "adjective": {
-                    "t": "fast",
-                    "i": "⚡"
+                    "t": "delicious",
+                    "i": "🍲"
                 }
             },
             {
@@ -1078,8 +1774,8 @@ window.EMBEDDED_WORD_DATA = {
                     "i": "🔺"
                 },
                 "adjective": {
-                    "t": "red",
-                    "i": "🔴"
+                    "t": "poisonous",
+                    "i": "🍄"
                 }
             },
             {
@@ -1107,8 +1803,8 @@ window.EMBEDDED_WORD_DATA = {
                     "i": "🇬🇧"
                 },
                 "adjective": {
-                    "t": "blue",
-                    "i": "🔵"
+                    "t": "magical",
+                    "i": "✨"
                 }
             },
             {
@@ -1136,8 +1832,8 @@ window.EMBEDDED_WORD_DATA = {
                     "i": "🏛️"
                 },
                 "adjective": {
-                    "t": "the yummy",
-                    "i": "😋"
+                    "t": "the electric",
+                    "i": "⚡"
                 }
             },
             {
@@ -1165,8 +1861,182 @@ window.EMBEDDED_WORD_DATA = {
                     "i": "🎓"
                 },
                 "adjective": {
-                    "t": "hot",
-                    "i": "🔥"
+                    "t": "ancient",
+                    "i": "📜"
+                }
+            },
+            {
+                "parts": [
+                    "who",
+                    "doing",
+                    "adjective",
+                    "what",
+                    "where"
+                ],
+                "who": {
+                    "t": "The cowboy",
+                    "i": "🤠"
+                },
+                "doing": {
+                    "t": "discovers",
+                    "i": "🔬"
+                },
+                "adjective": {
+                    "t": "a powerful",
+                    "i": "💪"
+                },
+                "what": {
+                    "t": "planet",
+                    "i": "🪐"
+                },
+                "where": {
+                    "t": "in the sky",
+                    "i": "🔭"
+                }
+            },
+            {
+                "parts": [
+                    "who",
+                    "doing",
+                    "adjective",
+                    "what",
+                    "where"
+                ],
+                "who": {
+                    "t": "The dinosaur",
+                    "i": "🦖"
+                },
+                "doing": {
+                    "t": "roars",
+                    "i": "📢"
+                },
+                "adjective": {
+                    "t": "a mysterious",
+                    "i": "🕵️"
+                },
+                "what": {
+                    "t": "roar",
+                    "i": "🗣️"
+                },
+                "where": {
+                    "t": "in the forest",
+                    "i": "🌲"
+                }
+            },
+            {
+                "parts": [
+                    "who",
+                    "doing",
+                    "adjective",
+                    "what",
+                    "where"
+                ],
+                "who": {
+                    "t": "The mermaid",
+                    "i": "🧜‍♀️"
+                },
+                "doing": {
+                    "t": "combs",
+                    "i": "💇‍♀️"
+                },
+                "adjective": {
+                    "t": "invisible",
+                    "i": "👻"
+                },
+                "what": {
+                    "t": "hair",
+                    "i": "💇‍♀️"
+                },
+                "where": {
+                    "t": "on the rock",
+                    "i": "🪨"
+                }
+            },
+            {
+                "parts": [
+                    "who",
+                    "doing",
+                    "adjective",
+                    "what",
+                    "where"
+                ],
+                "who": {
+                    "t": "The ghost",
+                    "i": "👻"
+                },
+                "doing": {
+                    "t": "scares",
+                    "i": "😱"
+                },
+                "adjective": {
+                    "t": "the gigantic",
+                    "i": "🦖"
+                },
+                "what": {
+                    "t": "children",
+                    "i": "👧👦"
+                },
+                "where": {
+                    "t": "in the house",
+                    "i": "🏚️"
+                }
+            },
+            {
+                "parts": [
+                    "who",
+                    "doing",
+                    "adjective",
+                    "what",
+                    "where"
+                ],
+                "who": {
+                    "t": "The vampire",
+                    "i": "🧛"
+                },
+                "doing": {
+                    "t": "drinks",
+                    "i": "🩸"
+                },
+                "adjective": {
+                    "t": "delicious",
+                    "i": "🍲"
+                },
+                "what": {
+                    "t": "juice",
+                    "i": "🧃"
+                },
+                "where": {
+                    "t": "in the dark",
+                    "i": "🌑"
+                }
+            },
+            {
+                "parts": [
+                    "who",
+                    "doing",
+                    "adjective",
+                    "what",
+                    "where"
+                ],
+                "who": {
+                    "t": "The fairy",
+                    "i": "🧚"
+                },
+                "doing": {
+                    "t": "sprinkles",
+                    "i": "✨"
+                },
+                "adjective": {
+                    "t": "poisonous",
+                    "i": "🍄"
+                },
+                "what": {
+                    "t": "dust",
+                    "i": "🌨️"
+                },
+                "where": {
+                    "t": "on the flowers",
+                    "i": "🌸"
                 }
             }
         ]

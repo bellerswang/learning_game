@@ -593,13 +593,14 @@
 
                 // Add distractors from same level
                 levelData.forEach(s => {
-                    if (s !== currentSentenceObj) options.push(s[currentPartName]);
+                    const option = s[currentPartName];
+                    // Prevent pushing duplicate descriptions of the EXACT SAME option
+                    if (option && !options.some(o => o.t === option.t)) {
+                        options.push(option);
+                    }
                 });
 
-                // Ensure unique options
-                options = [...new Set(options)];
-
-                // Shuffle
+                // Flatten and Shuffle
                 options.sort(() => Math.random() - 0.5);
 
                 options.forEach(opt => {

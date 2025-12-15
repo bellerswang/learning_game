@@ -325,18 +325,55 @@
 
         /* Top Nav "Pills" */
         .nav-pill {
-            @apply px-4 py-2 rounded-full font-bold text-amber-900 bg-white/60 border-2 border-white/50 cursor-pointer text-center transition-all select-none shadow-sm;
+            @apply px-4 py-2 rounded-full font-bold text-amber-900 bg-white/60 border-2 border-white/50 cursor-pointer text-center select-none shadow-sm;
             min-width: 80px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-pill::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(245, 158, 11, 0.2));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .nav-pill:hover::before {
+            opacity: 1;
         }
 
         .nav-pill:hover {
-            @apply bg-white border-amber-300 transform scale-105;
+            @apply bg-white border-amber-300;
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3), 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-pill:active {
+            transform: translateY(0) scale(0.98);
         }
 
         .nav-pill.active {
-            @apply bg-amber-500 text-white border-amber-600 shadow-md;
+            @apply bg-amber-500 text-white border-amber-600;
             transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(245, 158, 11, 0.4), 0 3px 6px rgba(0, 0, 0, 0.15);
+            animation: gentle-pulse 2s ease-in-out infinite;
         }
+
+        @keyframes gentle-pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 6px 16px rgba(245, 158, 11, 0.4), 0 3px 6px rgba(0, 0, 0, 0.15);
+            }
+
+            50% {
+                box-shadow: 0 6px 20px rgba(245, 158, 11, 0.6), 0 3px 8px rgba(0, 0, 0, 0.2);
+            }
+        }
+
 
         .ai-story-box {
             background: #fff;
@@ -894,6 +931,92 @@
 
     </div>
 
+    <!-- Blind Quiz Interface (Hidden by default) -->
+    <div id="quiz-interface"
+        class="hidden fixed inset-0 z-30 bg-white/95 backdrop-blur-sm flex flex-col items-center justify-center pt-20">
+        <div class="mb-8 p-6 bg-white border-4 border-amber-400 rounded-3xl shadow-xl transform scale-110">
+            <div id="quiz-question" class="text-6xl font-black text-amber-600 tracking-wider">
+                <!-- 7 + 5 = ? -->
+            </div>
+            <div id="quiz-input-display"
+                class="mt-4 h-16 bg-amber-50 rounded-xl border-2 border-amber-200 flex items-center justify-center text-4xl font-bold text-amber-800">
+                ?
+            </div>
+        </div>
+
+        <!-- Numpad -->
+        <div class="grid grid-cols-3 gap-3 p-4 bg-amber-100 rounded-2xl border-2 border-amber-300 shadow-inner">
+            <button onclick="quizInput(1)" class="numpad-btn">1</button>
+            <button onclick="quizInput(2)" class="numpad-btn">2</button>
+            <button onclick="quizInput(3)" class="numpad-btn">3</button>
+            <button onclick="quizInput(4)" class="numpad-btn">4</button>
+            <button onclick="quizInput(5)" class="numpad-btn">5</button>
+            <button onclick="quizInput(6)" class="numpad-btn">6</button>
+            <button onclick="quizInput(7)" class="numpad-btn">7</button>
+            <button onclick="quizInput(8)" class="numpad-btn">8</button>
+            <button onclick="quizInput(9)" class="numpad-btn">9</button>
+            <button onclick="quizInput('back')"
+                class="numpad-btn bg-red-100 text-red-600 border-red-200 hover:bg-red-200">⌫</button>
+            <button onclick="quizInput(0)" class="numpad-btn">0</button>
+            <button onclick="submitQuiz()"
+                class="numpad-btn bg-green-100 text-green-600 border-green-200 hover:bg-green-200">OK</button>
+        </div>
+    </div>
+
+    <!-- Result View (Hidden by default) -->
+    <div id="result-interface"
+        class="hidden fixed inset-0 z-30 bg-amber-50 flex flex-col items-center justify-center pt-20">
+        <h2 class="text-4xl font-black text-amber-600 mb-6 drop-shadow-sm">✅ 回答正确!</h2>
+
+        <div class="flex flex-col items-center gap-2 mb-8">
+            <div
+                class="text-2xl font-bold text-amber-800 bg-white px-6 py-2 rounded-full shadow-sm border border-amber-200">
+                答案是
+            </div>
+            <div id="result-number" class="text-8xl font-black text-amber-600 drop-shadow-md">
+                12
+            </div>
+        </div>
+
+        <!-- Visual Representation -->
+        <div id="result-visuals"
+            class="flex flex-wrap justify-center gap-4 p-4 w-full max-w-lg mb-8 min-h-[140px] items-center">
+            <!-- Hives and Bees injected here -->
+        </div>
+
+        <button onclick="nextQuestion()"
+            class="btn btn-yellow px-10 py-4 rounded-2xl font-bold text-2xl shadow-xl flex items-center gap-3 animate-bounce">
+            下一题 ➡️
+        </button>
+    </div>
+
+    <style>
+        .numpad-btn {
+            width: 70px;
+            height: 70px;
+            border-radius: 16px;
+            background: white;
+            border: 2px solid #fbbf24;
+            color: #d97706;
+            font-size: 2rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.1s;
+            box-shadow: 0 4px 0 rgba(245, 158, 11, 0.2);
+        }
+
+        .numpad-btn:active {
+            transform: translateY(4px);
+            box-shadow: none;
+        }
+
+        .shake-horizontal {
+            animation: shake 0.5s cubic-bezier(.36, .07, .19, .97) both;
+        }
+    </style>
+
     <script>
         // --- Error Handling for Debugging ---
         window.onerror = function (msg, url, line, col, error) {
@@ -1231,76 +1354,28 @@
             } else {
                 // Will be handled by regrouping animation
             }
-
-            // Clear highlights after a short delay
             setTimeout(() => clearHighlights(), 800);
         }
 
-        async function startCalculationMode() {
-            if (isAnimating) return;
+        // Old quiz functions removed (moved to later)
 
-            const startVal = parseInt(els.inputStart.value) || 0;
-            const changeVal = parseInt(els.inputChange.value) || 0;
+        async function playAutoCalculation() {
+            // Auto-step through the calculation
+            isAnimating = true; // Block manual clicks
 
-            ones = 0;
-            tens = 0;
-            els.tensContainer.innerHTML = '';
-            initTenFrame();
+            // Show breakdown for educational value now that they solved it
+            showDecomposition(parseInt(els.inputStart.value), parseInt(els.inputChange.value), needToFill, remainderCount);
 
-            // Fill Tens (Hives)
-            const startTens = Math.floor(startVal / 10);
-            for (let i = 0; i < startTens; i++) {
-                tens++;
-                const hive = document.createElement('div');
-                hive.className = 'block-ten';
-                hive.innerHTML = svgHive;
-                els.tensContainer.appendChild(hive);
-            }
-            // Fill Ones (Standard Bees)
-            const startOnes = startVal % 10;
-            for (let i = 0; i < startOnes; i++) {
-                renderBeeInCell(i, 'standard');
-                ones++;
-            }
-            updateDisplay();
-
-            // === CPA Setup ===
-            // Calculate how many bees needed to fill to 10, and remainder
-            const emptySlots = 10 - ones;
-            if (changeVal > emptySlots && ones > 0) {
-                // Will trigger regrouping
-                needToFill = emptySlots;
-                remainderCount = changeVal - emptySlots;
-            } else {
-                // Simple addition, no regrouping
-                needToFill = changeVal;
-                remainderCount = 0;
+            // Loop through all steps
+            for (let i = 0; i < calcTarget; i++) {
+                await manualStep();
+                await sleep(300); // Speed up a bit for auto-play
             }
 
-            // Show decomposition if in calc/quiz mode
-            if (currentMode === 'calc' || currentMode === 'quiz') {
-                showDecomposition(startVal, changeVal, needToFill, remainderCount);
-            }
-
-            // Group waiting bees visually
-            if (needToFill > 0 && remainderCount > 0) {
-                groupWaitingBees(needToFill, remainderCount);
-            } else {
-                // Simple case: just add all bees to one group
-                els.waitingContainer.innerHTML = '';
-                for (let i = 0; i < changeVal; i++) {
-                    addWaitingBee();
-                }
-            }
-            els.waitingArea.classList.remove('hidden');
-
-            calcTarget = changeVal;
-            calcProgress = 0;
-            cpaStep = 0; // Reset CPA step
-
-            document.getElementById('calc-setup').classList.add('hidden');
-            document.getElementById('calc-action').classList.remove('hidden');
-            updateStepUI();
+            // Done
+            showFloatingText("🎉 回答正确! 🎉", document.body, '#16a34a');
+            await sleep(1000);
+            nextQuestion();
         }
 
         function showDecomposition(start, change, fillCount, remainder) {
@@ -1345,8 +1420,8 @@
             const willRegroup = (ones + 1) === 10 || ones === 9;
             const isFillingPhase = cpaStep === 0 && remainderCount > 0;
 
-            // Show educational message on first bee of fill phase
-            if (isFillingPhase && calcProgress === 0 && needToFill > 0) {
+            // Show educational message on first bee of fill phase (Only in Demo/Calc mode)
+            if (currentMode !== 'quiz' && isFillingPhase && calcProgress === 0 && needToFill > 0) {
                 const missing = 10 - ones;
                 highlightEmptySlots();
                 showStepMessage(`还差 <b>${missing}</b> 只凑满10! 🔍`, els.onesRoom, 1500);
@@ -1355,31 +1430,36 @@
                 clearHighlights();
             }
 
-            // Move ONE bee from waiting zone
-            await addOne('added', true);
+            // Move ONE bee
+            // In Quiz mode, we just add it (false for animateFromWaiting)
+            // In Calc mode, we animate from waiting (true)
+            const animateWaiting = (currentMode === 'calc');
+            await addOne('added', animateWaiting);
             calcProgress++;
 
-            // Remove one bee from the appropriate waiting group
-            const fillGroup = els.waitingContainer.querySelector('.fill-group');
-            const remGroup = els.waitingContainer.querySelector('.remainder-group');
+            // Remove one bee from the appropriate waiting group (Only in Calc mode)
+            if (currentMode === 'calc') {
+                const fillGroup = els.waitingContainer.querySelector('.fill-group');
+                const remGroup = els.waitingContainer.querySelector('.remainder-group');
 
-            if (fillGroup) {
-                const beeInFill = fillGroup.querySelector('.block-one');
-                if (beeInFill) {
-                    beeInFill.remove();
-                    // Check if fill group is now empty
-                    if (!fillGroup.querySelector('.block-one')) {
-                        fillGroup.remove();
-                        const divider = els.waitingContainer.querySelector('.group-divider');
-                        if (divider) divider.remove();
+                if (fillGroup) {
+                    const beeInFill = fillGroup.querySelector('.block-one');
+                    if (beeInFill) {
+                        beeInFill.remove();
+                        // Check if fill group is now empty
+                        if (!fillGroup.querySelector('.block-one')) {
+                            fillGroup.remove();
+                            const divider = els.waitingContainer.querySelector('.group-divider');
+                            if (divider) divider.remove();
+                        }
                     }
-                }
-            } else if (remGroup) {
-                const beeInRem = remGroup.querySelector('.block-one');
-                if (beeInRem) {
-                    beeInRem.remove();
-                    if (!remGroup.querySelector('.block-one')) {
-                        remGroup.remove();
+                } else if (remGroup) {
+                    const beeInRem = remGroup.querySelector('.block-one');
+                    if (beeInRem) {
+                        beeInRem.remove();
+                        if (!remGroup.querySelector('.block-one')) {
+                            remGroup.remove();
+                        }
                     }
                 }
             }
@@ -1471,14 +1551,31 @@
                 resetGame();
                 els.inputStart.value = 7;
                 els.inputChange.value = 4;
+                // Show board
+                document.getElementById('tensRoom').style.display = 'flex';
+                document.getElementById('onesRoom').style.display = 'flex';
             } else if (mode === 'calc') {
                 resetGame();
                 exitCalcMode(); // Show setup
+                // Show board
+                document.getElementById('tensRoom').style.display = 'flex';
+                document.getElementById('onesRoom').style.display = 'flex';
             } else if (mode === 'quiz') {
                 resetGame();
+                // HIDE the game board in quiz mode
+                document.getElementById('tensRoom').style.display = 'none';
+                document.getElementById('onesRoom').style.display = 'none';
+                // Also hide any leftover interfaces
+                document.getElementById('quiz-interface').classList.add('hidden');
+                document.getElementById('result-interface').classList.add('hidden');
+                // Automatically generate a question
+                setTimeout(() => nextQuestion(), 100); // Small delay to ensure reset completes
             } else if (mode === 'friends') {
                 resetGame();
                 startFriendsPuzzle();
+                // Show board
+                document.getElementById('tensRoom').style.display = 'flex';
+                document.getElementById('onesRoom').style.display = 'flex';
             }
         }
 
@@ -1492,14 +1589,44 @@
         }
 
 
+        // Global for operator
+        let currentOperator = '+';
+
         // --- Quiz Logic ---
         function nextQuestion() {
-            // Randomize
-            const s = Math.floor(Math.random() * 8) + 1; // 1-8
-            const c = Math.floor(Math.random() * 8) + 1; // 1-8
+            currentOperator = Math.random() > 0.5 ? '+' : '-';
+
+            let s, c;
+
+            if (currentOperator === '+') {
+                // Addition: Sum >= 10
+                s = Math.floor(Math.random() * 9) + 1; // 1-9
+                const min_c = 10 - s;
+                // c can be from min_c to 9
+                const range = 9 - min_c + 1;
+                c = Math.floor(Math.random() * range) + min_c;
+            } else {
+                // Subtraction: Minuend 11-18, Result < 10 (Crossing 10)
+                // s = Minuend, c = Subtrahend
+                // We want s - c < 10 => c > s - 10
+
+                s = Math.floor(Math.random() * 8) + 11; // 11 to 18
+                const min_c = s - 9; // result max is 9
+                // max_c is s - 1 (result min is 1)
+                const max_c = s - 1;
+
+                // Also optionally ensure c is single digit? Usually Subtrahend is single digit for these exercises
+                const actual_max_c = Math.min(max_c, 9);
+
+                const range = actual_max_c - min_c + 1;
+                c = Math.floor(Math.random() * range) + min_c;
+            }
 
             els.inputStart.value = s;
             els.inputChange.value = c;
+
+            // HACK: Store operator in dataset or global to use in startCalculationMode
+            // For simplicity, we just use the global currentOperator we defined.
 
             document.getElementById('controls-quiz').style.opacity = '0';
             document.getElementById('controls-quiz').style.pointerEvents = 'none';
@@ -1507,8 +1634,166 @@
             document.getElementById('controls-calc').style.opacity = '1';
             document.getElementById('controls-calc').style.pointerEvents = 'auto'; // allow input
 
+            // Hide result interface if showing
+            document.getElementById('result-interface').classList.add('hidden');
+
             // Start the calculation immediately for quiz mode
             startCalculationMode();
+        }
+
+        // Update startCalculationMode to handle operator display
+        async function startCalculationMode() {
+            if (isAnimating) return;
+
+            const startVal = parseInt(els.inputStart.value) || 0;
+            const changeVal = parseInt(els.inputChange.value) || 0;
+
+            // Default logic mainly for Demo/Calc mode (Addition)
+            if (currentMode === 'calc') {
+                currentOperator = '+'; // Reset to + for pure calc mode unless specific UI added
+                // ... Existing logic for Calc setup ...
+                ones = 0;
+                tens = 0;
+                els.tensContainer.innerHTML = '';
+                initTenFrame();
+
+                const startTens = Math.floor(startVal / 10);
+                for (let i = 0; i < startTens; i++) {
+                    tens++;
+                    const hive = document.createElement('div');
+                    hive.className = 'block-ten';
+                    hive.innerHTML = svgHive;
+                    els.tensContainer.appendChild(hive);
+                }
+                const startOnes = startVal % 10;
+                for (let i = 0; i < startOnes; i++) {
+                    renderBeeInCell(i, 'standard');
+                    ones++;
+                }
+                updateDisplay();
+
+                const emptySlots = 10 - ones;
+                if (changeVal > emptySlots && ones > 0) {
+                    needToFill = emptySlots;
+                    remainderCount = changeVal - emptySlots;
+                } else {
+                    needToFill = changeVal;
+                    remainderCount = 0;
+                }
+
+                showDecomposition(startVal, changeVal, needToFill, remainderCount);
+                if (needToFill > 0 && remainderCount > 0) {
+                    groupWaitingBees(needToFill, remainderCount);
+                } else {
+                    els.waitingContainer.innerHTML = '';
+                    for (let i = 0; i < changeVal; i++) { addWaitingBee(); }
+                }
+                els.waitingArea.classList.remove('hidden');
+
+                calcTarget = changeVal;
+                calcProgress = 0;
+                cpaStep = 0;
+                document.getElementById('calc-setup').classList.add('hidden');
+                document.getElementById('calc-action').classList.remove('hidden');
+                updateStepUI();
+
+            } else if (currentMode === 'quiz') {
+                // BLIND MODE SETUP
+                document.getElementById('tensRoom').style.visibility = 'hidden';
+                document.getElementById('onesRoom').style.visibility = 'hidden';
+                document.getElementById('controls-calc').style.opacity = '0';
+                document.getElementById('controls-calc').style.pointerEvents = 'none';
+
+                document.getElementById('quiz-interface').classList.remove('hidden');
+                document.getElementById('result-interface').classList.add('hidden'); // Ensure result is hidden
+
+                document.getElementById('quiz-question').innerHTML = `${startVal} ${currentOperator} ${changeVal} = ?`;
+                quizCurrentInput = '';
+                updateQuizInputDisplay();
+
+                if (currentOperator === '+') {
+                    friendsAnswer = startVal + changeVal;
+                } else {
+                    friendsAnswer = startVal - changeVal;
+                }
+
+                els.waitingContainer.innerHTML = '';
+                els.waitingArea.classList.add('hidden');
+            }
+        }
+
+        let quizCurrentInput = '';
+
+        function quizInput(val) {
+            if (val === 'back') {
+                quizCurrentInput = quizCurrentInput.slice(0, -1);
+            } else {
+                if (quizCurrentInput.length < 2) {
+                    quizCurrentInput += val;
+                }
+            }
+            updateQuizInputDisplay();
+        }
+
+        function updateQuizInputDisplay() {
+            const el = document.getElementById('quiz-input-display');
+            el.innerText = quizCurrentInput === '' ? '?' : quizCurrentInput;
+        }
+
+        async function submitQuiz() {
+            if (quizCurrentInput === '') return;
+            const val = parseInt(quizCurrentInput);
+
+            if (val === friendsAnswer) {
+                // CORRECT
+                document.getElementById('quiz-interface').classList.add('hidden');
+
+                // SHOW NEW RESULT PAGE
+                showResultPage(friendsAnswer);
+
+            } else {
+                // WRONG
+                const box = document.getElementById('quiz-input-display');
+                box.classList.add('shake-horizontal', 'bg-red-100', 'text-red-600', 'border-red-400');
+                await sleep(500);
+                box.classList.remove('shake-horizontal', 'bg-red-100', 'text-red-600', 'border-red-400');
+                quizCurrentInput = '';
+                updateQuizInputDisplay();
+            }
+        }
+
+        function showResultPage(answer) {
+            const resultIf = document.getElementById('result-interface');
+            const resultNum = document.getElementById('result-number');
+            const resultVisuals = document.getElementById('result-visuals');
+
+            resultNum.innerText = answer;
+            resultVisuals.innerHTML = '';
+
+            // Calculate Hives and Bees
+            const hives = Math.floor(answer / 10);
+            const bees = answer % 10;
+
+            // Add Hives
+            for (let i = 0; i < hives; i++) {
+                const h = document.createElement('div');
+                h.className = 'transform scale-125 mx-2';
+                h.style.width = '60px';
+                h.style.height = '60px'; // Approx
+                h.innerHTML = svgHive;
+                resultVisuals.appendChild(h);
+            }
+
+            // Add Bees (grouped?)
+            for (let i = 0; i < bees; i++) {
+                const b = document.createElement('div');
+                b.className = 'w-10 h-10 mx-0.5 animate-bounce';
+                b.style.animationDelay = `${i * 0.1}s`;
+                b.innerHTML = svgBeeStandard;
+                resultVisuals.appendChild(b);
+            }
+
+            resultIf.classList.remove('hidden');
         }
 
         function showFloatingText(text, container, color = '#d97706') {

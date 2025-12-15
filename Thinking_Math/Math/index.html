@@ -412,6 +412,293 @@
             background: #fcd34d;
             border-radius: 4px;
         }
+
+        /* === CPA ENHANCEMENTS === */
+
+        /* Ghost Bee in Empty Slots */
+        .frame-slot .ghost-bee {
+            opacity: 0.15;
+            filter: grayscale(100%);
+            pointer-events: none;
+        }
+
+        /* Gap Highlight Animation */
+        .frame-slot.highlight-gap {
+            animation: pulseGap 0.8s ease-in-out infinite;
+        }
+
+        @keyframes pulseGap {
+
+            0%,
+            100% {
+                box-shadow: inset 0 0 15px rgba(239, 68, 68, 0.3);
+                background-color: #fef3c7;
+            }
+
+            50% {
+                box-shadow: inset 0 0 25px rgba(239, 68, 68, 0.6);
+                background-color: #fee2e2;
+            }
+        }
+
+        /* Waiting Zone Visual Grouping */
+        .waiting-zone {
+            flex-wrap: wrap;
+        }
+
+        .waiting-group {
+            display: flex;
+            gap: 6px;
+            padding: 8px 12px;
+            border-radius: 12px;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .waiting-group.fill-group {
+            background: rgba(34, 197, 94, 0.2);
+            border: 2px solid #22c55e;
+        }
+
+        .waiting-group.remainder-group {
+            background: rgba(168, 162, 158, 0.15);
+            border: 2px dashed #a8a29e;
+            opacity: 0.7;
+        }
+
+        .group-label {
+            font-size: 10px;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 6px;
+            margin-right: 4px;
+        }
+
+        .fill-group .group-label {
+            background: #22c55e;
+            color: white;
+        }
+
+        .remainder-group .group-label {
+            background: #a8a29e;
+            color: white;
+        }
+
+        .group-divider {
+            width: 3px;
+            height: 40px;
+            background: linear-gradient(to bottom, transparent, #d97706, transparent);
+            margin: 0 8px;
+        }
+
+        /* Formula Highlight Sync */
+        .formula-num {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .formula-num.active {
+            background: #fbbf24;
+            color: #78350f;
+            transform: scale(1.2);
+            font-weight: bold;
+        }
+
+        .formula-num.completed {
+            background: #22c55e;
+            color: white;
+        }
+
+        /* Step Message Overlay */
+        .step-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 12px 24px;
+            border-radius: 16px;
+            border: 3px solid #f59e0b;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #78350f;
+            z-index: 100;
+            animation: bounceIn 0.4s ease;
+            text-align: center;
+        }
+
+        @keyframes bounceIn {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+            }
+
+            60% {
+                transform: translate(-50%, -50%) scale(1.1);
+            }
+
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        /* Celebrate Regroup Animation */
+        @keyframes celebrateRegroup {
+            0% {
+                transform: scale(1);
+            }
+
+            25% {
+                transform: scale(1.1) rotate(-5deg);
+            }
+
+            50% {
+                transform: scale(1.2) rotate(5deg);
+            }
+
+            75% {
+                transform: scale(1.1) rotate(-3deg);
+            }
+
+            100% {
+                transform: scale(1) rotate(0);
+            }
+        }
+
+        .celebrating {
+            animation: celebrateRegroup 0.6s ease;
+        }
+
+        /* Missing Count Badge */
+        .missing-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ef4444;
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 10px;
+            z-index: 30;
+        }
+
+        /* === TEN FRIENDS GAME MODE === */
+
+        .friend-option {
+            min-width: 100px;
+            padding: 16px 24px;
+            border-radius: 20px;
+            border: 4px solid;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            background: white;
+            box-shadow: 0 4px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .friend-option:hover:not(:disabled) {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .friend-option:active:not(:disabled) {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .friend-option:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .friend-option.correct {
+            background: #22c55e;
+            color: white;
+            border-color: #15803d;
+            animation: popCorrect 0.5s ease;
+        }
+
+        .friend-option.wrong {
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            20% {
+                transform: translateX(-10px);
+            }
+
+            40% {
+                transform: translateX(10px);
+            }
+
+            60% {
+                transform: translateX(-10px);
+            }
+
+            80% {
+                transform: translateX(10px);
+            }
+        }
+
+        @keyframes popCorrect {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.2);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Dot pattern on buttons */
+        .dot-pattern {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            justify-content: center;
+            max-width: 60px;
+        }
+
+        .dot-pattern .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: currentColor;
+            opacity: 0.7;
+        }
+
+        /* Option colors */
+        .friend-option.opt-cyan {
+            border-color: #06b6d4;
+            color: #0e7490;
+        }
+
+        .friend-option.opt-pink {
+            border-color: #ec4899;
+            color: #be185d;
+        }
+
+        .friend-option.opt-orange {
+            border-color: #f97316;
+            color: #c2410c;
+        }
     </style>
 </head>
 
@@ -441,18 +728,22 @@
                     <span>3: 挑战 (Quiz)</span>
                     <span class="text-3xl">🏆</span>
                 </button>
+                <button onclick="enterGame('friends')" class="menu-btn bg-cyan-500 border-cyan-700 hover:bg-cyan-400">
+                    <span>4: 找朋友 (Ten Friends)</span>
+                    <span class="text-3xl">🤝</span>
+                </button>
             </div>
 
             <a href="../../index.html" class="inline-block mt-4 text-amber-500 font-bold hover:underline">⬅️ 返回主菜单</a>
         </div>
     </div>
 
-    <!-- Top Nav (Hidden initially, shown after entry) -->
     <div id="top-nav"
-        class="w-full max-w-2xl mt-4 px-4 flex justify-center gap-4 z-50 opacity-0 transition-opacity duration-300 pointer-events-none">
-        <button id="tab-count" onclick="switchTab('count')" class="nav-pill active">1: 数数 (Count)</button>
-        <button id="tab-calc" onclick="switchTab('calc')" class="nav-pill">2: 演示 (Demo)</button>
-        <button id="tab-quiz" onclick="switchTab('quiz')" class="nav-pill">3: 挑战 (Quiz)</button>
+        class="w-full max-w-2xl mt-4 px-4 flex justify-center gap-2 flex-wrap z-50 opacity-0 transition-opacity duration-300 pointer-events-none">
+        <button id="tab-count" onclick="switchTab('count')" class="nav-pill active">1: 数数</button>
+        <button id="tab-calc" onclick="switchTab('calc')" class="nav-pill">2: 演示</button>
+        <button id="tab-quiz" onclick="switchTab('quiz')" class="nav-pill">3: 挑战</button>
+        <button id="tab-friends" onclick="switchTab('friends')" class="nav-pill">4: 找朋友</button>
     </div>
 
     <!-- Main Content -->
@@ -468,15 +759,6 @@
                 class="hidden mt-2 px-4 py-2 bg-gradient-to-r from-violet-100 to-purple-100 border-2 border-violet-400 rounded-xl shadow-md">
                 <div id="breakdown-formula" class="text-xl font-bold text-purple-800 text-center">
                     <!-- e.g., "7 + 4 = 7 + 3 + 1" -->
-                </div>
-            </div>
-
-            <!-- Calculation Log -->
-            <div id="calc-log"
-                class="hidden mt-2 w-full max-w-md bg-white/90 border-2 border-amber-300 rounded-xl p-3 shadow-md max-h-32 overflow-y-auto">
-                <div class="text-xs font-bold text-amber-600 mb-1">计算过程:</div>
-                <div id="calc-log-content" class="space-y-1 text-sm font-mono text-amber-900">
-                    <!-- Steps will appear here -->
                 </div>
             </div>
         </div>
@@ -594,6 +876,20 @@
                 </button>
             </div>
 
+            <!-- Ten Friends Mode Controls -->
+            <div id="controls-friends"
+                class="absolute inset-0 flex flex-col items-center justify-center gap-4 opacity-0 pointer-events-none transition-opacity duration-300">
+                <div id="friends-question" class="text-xl font-bold text-amber-700 mb-2">
+                    还差几只凑成10？
+                </div>
+                <div id="friends-options" class="flex gap-4 justify-center flex-wrap">
+                    <!-- Options generated by JS -->
+                </div>
+                <div id="friends-score" class="text-lg font-bold text-amber-600 mt-2">
+                    得分: <span id="friendsScoreDisplay">0</span>
+                </div>
+            </div>
+
         </div>
 
     </div>
@@ -672,6 +968,28 @@
         let calcLog = []; // Track calculation steps
         let initialValue = 0; // Track starting value for log
 
+        // CPA Animation State
+        let cpaStep = 0; // 0=setup, 1=highlight, 2=fill, 3=pause, 4=regroup, 5=carry, 6=remainder
+        let needToFill = 0; // How many bees needed to make 10
+        let remainderCount = 0; // Bees left after filling
+
+        // Ten Friends Game State
+        let friendsScore = 0;
+        let friendsAnswer = 0; // Correct answer for current puzzle
+
+        // Ghost Bee SVG (faded version for empty slots)
+        const svgBeeGhost = `
+        <svg viewBox="0 0 100 100" class="bee-svg ghost-bee">
+            <g>
+                <ellipse cx="70" cy="35" rx="20" ry="12" fill="#e0f2fe" stroke="#93c5fd" stroke-width="2" transform="rotate(-30 70 35)" opacity="0.3"/>
+                <ellipse cx="30" cy="35" rx="20" ry="12" fill="#e0f2fe" stroke="#93c5fd" stroke-width="2" transform="rotate(30 30 35)" opacity="0.3"/>
+                <ellipse cx="50" cy="55" rx="22" ry="28" fill="#facc15" stroke="#854d0e" stroke-width="2" opacity="0.2"/>
+                <path d="M30 50 Q50 55 70 50" stroke="#451a03" stroke-width="4" fill="none" opacity="0.2"/>
+                <path d="M30 60 Q50 65 70 60" stroke="#451a03" stroke-width="4" fill="none" opacity="0.2"/>
+                <path d="M35 70 Q50 75 65 70" stroke="#451a03" stroke-width="4" fill="none" opacity="0.2"/>
+            </g>
+        </svg>`;
+
         function initGame() {
             els = {
                 onesContainer: document.getElementById('onesContainer'),
@@ -689,8 +1007,6 @@
                 stepBtnProgress: document.getElementById('stepBtnProgress'),
                 inputStart: document.getElementById('inputStart'),
                 inputChange: document.getElementById('inputChange'),
-                calcLog: document.getElementById('calc-log'),
-                calcLogContent: document.getElementById('calc-log-content'),
                 mathBreakdown: document.getElementById('math-breakdown'),
                 breakdownFormula: document.getElementById('breakdown-formula')
             };
@@ -705,7 +1021,107 @@
                 slot.className = 'frame-slot';
                 slot.dataset.index = i + 1;
                 slot.id = `slot-${i}`;
+                // Add ghost bee for visual "missing" indicator
+                const ghostDiv = document.createElement('div');
+                ghostDiv.className = 'block-one w-full h-full';
+                ghostDiv.innerHTML = svgBeeGhost;
+                slot.appendChild(ghostDiv);
                 els.onesContainer.appendChild(slot);
+            }
+        }
+
+        // === CPA HELPER FUNCTIONS ===
+
+        function highlightEmptySlots() {
+            for (let i = ones; i < 10; i++) {
+                const slot = document.getElementById(`slot-${i}`);
+                if (slot) slot.classList.add('highlight-gap');
+            }
+        }
+
+        function clearHighlights() {
+            document.querySelectorAll('.frame-slot').forEach(slot => {
+                slot.classList.remove('highlight-gap');
+            });
+        }
+
+        function showStepMessage(text, container, duration = 1500) {
+            // Remove any existing message
+            container.querySelectorAll('.step-message').forEach(m => m.remove());
+
+            const msg = document.createElement('div');
+            msg.className = 'step-message';
+            msg.innerHTML = text;
+            container.appendChild(msg);
+
+            if (duration > 0) {
+                setTimeout(() => msg.remove(), duration);
+            }
+            return msg;
+        }
+
+        function groupWaitingBees(fillCount, remainder) {
+            els.waitingContainer.innerHTML = '';
+
+            if (fillCount > 0) {
+                // Fill group (will fill the ten frame)
+                const fillGroup = document.createElement('div');
+                fillGroup.className = 'waiting-group fill-group';
+                const fillLabel = document.createElement('span');
+                fillLabel.className = 'group-label';
+                fillLabel.textContent = '填满';
+                fillGroup.appendChild(fillLabel);
+
+                for (let i = 0; i < fillCount; i++) {
+                    const div = document.createElement('div');
+                    div.className = 'block-one';
+                    div.innerHTML = svgBeeAdded;
+                    fillGroup.appendChild(div);
+                }
+                els.waitingContainer.appendChild(fillGroup);
+            }
+
+            if (fillCount > 0 && remainder > 0) {
+                // Divider
+                const divider = document.createElement('div');
+                divider.className = 'group-divider';
+                els.waitingContainer.appendChild(divider);
+            }
+
+            if (remainder > 0) {
+                // Remainder group (will move after regrouping)
+                const remGroup = document.createElement('div');
+                remGroup.className = 'waiting-group remainder-group';
+                const remLabel = document.createElement('span');
+                remLabel.className = 'group-label';
+                remLabel.textContent = '余';
+                remGroup.appendChild(remLabel);
+
+                for (let i = 0; i < remainder; i++) {
+                    const div = document.createElement('div');
+                    div.className = 'block-one';
+                    div.innerHTML = svgBeeAdded;
+                    remGroup.appendChild(div);
+                }
+                els.waitingContainer.appendChild(remGroup);
+            }
+        }
+
+        function updateFormulaHighlight(step) {
+            const nums = els.breakdownFormula.querySelectorAll('.formula-num');
+            nums.forEach(n => n.classList.remove('active', 'completed'));
+
+            if (step === 'fill') {
+                nums.forEach(n => {
+                    if (n.dataset.step === 'fill') n.classList.add('active');
+                });
+            } else if (step === 'remainder') {
+                nums.forEach(n => {
+                    if (n.dataset.step === 'fill') n.classList.add('completed');
+                    if (n.dataset.step === 'remainder') n.classList.add('active');
+                });
+            } else if (step === 'done') {
+                nums.forEach(n => n.classList.add('completed'));
             }
         }
 
@@ -789,16 +1205,35 @@
 
             ones = 0;
             tens = 0;
+            cpaStep = 0;
+            needToFill = 0;
+            remainderCount = 0;
             els.tensContainer.innerHTML = '';
             els.waitingContainer.innerHTML = '';
             initTenFrame();
             updateDisplay();
             els.onesRoom.classList.remove('full-alert');
+            clearHighlights();
         }
 
         async function userAddOne() {
             if (isAnimating) return;
+
+            // Highlight empty slots
+            highlightEmptySlots();
+
             await addOne('standard');
+
+            // Show popup with remaining count
+            const remaining = 10 - ones;
+            if (remaining > 0) {
+                showStepMessage(`还差 <b>${remaining}</b> 只到10! 🐝`, els.onesRoom, 1200);
+            } else {
+                // Will be handled by regrouping animation
+            }
+
+            // Clear highlights after a short delay
+            setTimeout(() => clearHighlights(), 800);
         }
 
         async function startCalculationMode() {
@@ -811,17 +1246,6 @@
             tens = 0;
             els.tensContainer.innerHTML = '';
             initTenFrame();
-
-            // Reset calculation log
-            calcLog = [];
-            initialValue = startVal;
-            els.calcLogContent.innerHTML = '';
-            els.calcLog.classList.remove('hidden');
-
-            // Show decomposition if in calc mode
-            if (currentMode === 'calc') {
-                showDecomposition(startVal, changeVal);
-            }
 
             // Fill Tens (Hives)
             const startTens = Math.floor(startVal / 10);
@@ -840,65 +1264,145 @@
             }
             updateDisplay();
 
-            els.waitingContainer.innerHTML = '';
-            for (let i = 0; i < changeVal; i++) {
-                addWaitingBee();
+            // === CPA Setup ===
+            // Calculate how many bees needed to fill to 10, and remainder
+            const emptySlots = 10 - ones;
+            if (changeVal > emptySlots && ones > 0) {
+                // Will trigger regrouping
+                needToFill = emptySlots;
+                remainderCount = changeVal - emptySlots;
+            } else {
+                // Simple addition, no regrouping
+                needToFill = changeVal;
+                remainderCount = 0;
+            }
+
+            // Show decomposition if in calc/quiz mode
+            if (currentMode === 'calc' || currentMode === 'quiz') {
+                showDecomposition(startVal, changeVal, needToFill, remainderCount);
+            }
+
+            // Group waiting bees visually
+            if (needToFill > 0 && remainderCount > 0) {
+                groupWaitingBees(needToFill, remainderCount);
+            } else {
+                // Simple case: just add all bees to one group
+                els.waitingContainer.innerHTML = '';
+                for (let i = 0; i < changeVal; i++) {
+                    addWaitingBee();
+                }
             }
             els.waitingArea.classList.remove('hidden');
 
             calcTarget = changeVal;
             calcProgress = 0;
+            cpaStep = 0; // Reset CPA step
 
             document.getElementById('calc-setup').classList.add('hidden');
             document.getElementById('calc-action').classList.remove('hidden');
             updateStepUI();
         }
 
-        function showDecomposition(start, change) {
+        function showDecomposition(start, change, fillCount, remainder) {
             const onesDigit = start % 10;
-            const complement = 10 - onesDigit;
 
             let formula = '';
-            if (change > complement && onesDigit > 0) {
+            if (remainder > 0 && onesDigit > 0) {
                 // Crossing 10: e.g., 7 + 4 = 7 + 3 + 1
-                const remainder = change - complement;
-                formula = `${start} + ${change} = ${start} + <span class="text-red-600">${complement}</span> + ${remainder}`;
+                formula = `<span class="formula-num" data-step="start">${start}</span> + ` +
+                    `<span class="formula-num" data-step="change">${change}</span> = ` +
+                    `<span class="formula-num" data-step="start">${start}</span> + ` +
+                    `<span class="formula-num" data-step="fill">${fillCount}</span> + ` +
+                    `<span class="formula-num" data-step="remainder">${remainder}</span>`;
             } else {
                 // Simple addition
-                formula = `${start} + ${change} = ${start + change}`;
+                formula = `<span class="formula-num" data-step="start">${start}</span> + ` +
+                    `<span class="formula-num" data-step="change">${change}</span> = ` +
+                    `<span class="formula-num" data-step="result">${start + change}</span>`;
             }
 
             els.breakdownFormula.innerHTML = formula;
             els.mathBreakdown.classList.remove('hidden');
         }
 
-        function addCalcStep(step) {
-            const currentTotal = (tens * 10) + ones;
-            const stepText = `${initialValue} + ${step} = ${currentTotal}`;
-            calcLog.push(stepText);
 
-            const stepDiv = document.createElement('div');
-            stepDiv.className = 'calc-step';
-            stepDiv.textContent = stepText;
-            els.calcLogContent.appendChild(stepDiv);
-
-            // Auto-scroll to bottom
-            els.calcLog.scrollTop = els.calcLog.scrollHeight;
-        }
 
         async function manualStep() {
             if (isAnimating) return;
 
+            // If done, exit or next question
             if (calcProgress >= calcTarget) {
+                updateFormulaHighlight('done');
                 if (currentMode === 'quiz') nextQuestion();
                 else exitCalcMode();
                 return;
             }
 
+            isAnimating = true;
+            updateGlobalButtons();
+
+            // Check if we need CPA hints (approaching regrouping)
+            const willRegroup = (ones + 1) === 10 || ones === 9;
+            const isFillingPhase = cpaStep === 0 && remainderCount > 0;
+
+            // Show educational message on first bee of fill phase
+            if (isFillingPhase && calcProgress === 0 && needToFill > 0) {
+                const missing = 10 - ones;
+                highlightEmptySlots();
+                showStepMessage(`还差 <b>${missing}</b> 只凑满10! 🔍`, els.onesRoom, 1500);
+                updateFormulaHighlight('fill');
+                await sleep(800);
+                clearHighlights();
+            }
+
+            // Move ONE bee from waiting zone
             await addOne('added', true);
             calcProgress++;
-            addCalcStep(calcProgress); // Log the step
+
+            // Remove one bee from the appropriate waiting group
+            const fillGroup = els.waitingContainer.querySelector('.fill-group');
+            const remGroup = els.waitingContainer.querySelector('.remainder-group');
+
+            if (fillGroup) {
+                const beeInFill = fillGroup.querySelector('.block-one');
+                if (beeInFill) {
+                    beeInFill.remove();
+                    // Check if fill group is now empty
+                    if (!fillGroup.querySelector('.block-one')) {
+                        fillGroup.remove();
+                        const divider = els.waitingContainer.querySelector('.group-divider');
+                        if (divider) divider.remove();
+                    }
+                }
+            } else if (remGroup) {
+                const beeInRem = remGroup.querySelector('.block-one');
+                if (beeInRem) {
+                    beeInRem.remove();
+                    if (!remGroup.querySelector('.block-one')) {
+                        remGroup.remove();
+                    }
+                }
+            }
+
+            // Check if frame just became full (10 bees)
+            if (ones === 10) {
+                showStepMessage(`满10只啦! ✨<br>变成1个蜂巢!`, els.onesRoom, 2000);
+                els.onesRoom.classList.add('celebrating');
+                await sleep(1000);
+                els.onesRoom.classList.remove('celebrating');
+
+                // Perform regrouping
+                await performRegrouping();
+
+                // Update formula highlight to remainder phase
+                if (remainderCount > 0) {
+                    updateFormulaHighlight('remainder');
+                }
+            }
+
             updateStepUI();
+            isAnimating = false;
+            updateGlobalButtons();
         }
 
         function updateStepUI() {
@@ -960,6 +1464,9 @@
             document.getElementById('controls-quiz').style.opacity = (mode === 'quiz') ? '1' : '0';
             document.getElementById('controls-quiz').style.pointerEvents = (mode === 'quiz') ? 'auto' : 'none';
 
+            document.getElementById('controls-friends').style.opacity = (mode === 'friends') ? '1' : '0';
+            document.getElementById('controls-friends').style.pointerEvents = (mode === 'friends') ? 'auto' : 'none';
+
             if (mode === 'count') {
                 resetGame();
                 els.inputStart.value = 7;
@@ -969,6 +1476,9 @@
                 exitCalcMode(); // Show setup
             } else if (mode === 'quiz') {
                 resetGame();
+            } else if (mode === 'friends') {
+                resetGame();
+                startFriendsPuzzle();
             }
         }
 
@@ -976,8 +1486,8 @@
             document.getElementById('calc-setup').classList.remove('hidden');
             document.getElementById('calc-action').classList.add('hidden');
             els.waitingArea.classList.add('hidden');
-            els.calcLog.classList.add('hidden');
             els.mathBreakdown.classList.add('hidden');
+            clearHighlights();
             resetGame();
         }
 
@@ -997,8 +1507,8 @@
             document.getElementById('controls-calc').style.opacity = '1';
             document.getElementById('controls-calc').style.pointerEvents = 'auto'; // allow input
 
-            // Generate a story automatically
-            generateStory();
+            // Start the calculation immediately for quiz mode
+            startCalculationMode();
         }
 
         function showFloatingText(text, container, color = '#d97706') {
@@ -1022,6 +1532,136 @@
                     b.disabled = disabled;
                 }
             });
+        }
+
+        // === TEN FRIENDS GAME MODE ===
+
+        function startFriendsPuzzle() {
+            // Reset the ten frame
+            ones = 0;
+            tens = 0;
+            initTenFrame();
+            updateDisplay();
+
+            // Generate random number of bees (0-9)
+            const beeCount = Math.floor(Math.random() * 10); // 0 to 9
+            friendsAnswer = 10 - beeCount;
+
+            // Fill bees in ten frame
+            for (let i = 0; i < beeCount; i++) {
+                renderBeeInCell(i, 'standard');
+                ones++;
+            }
+            updateDisplay();
+
+            // Highlight empty slots (ghost bees already visible from initTenFrame)
+            highlightEmptySlots();
+
+            // Generate answer options
+            generateFriendsOptions(friendsAnswer);
+
+            // Update score display
+            document.getElementById('friendsScoreDisplay').textContent = friendsScore;
+        }
+
+        function generateFriendsOptions(correctAnswer) {
+            const optionsContainer = document.getElementById('friends-options');
+            optionsContainer.innerHTML = '';
+
+            // Create options array with correct answer and 2 distractors
+            let options = [correctAnswer];
+
+            // Generate distractors
+            const possibleDistractors = [];
+            for (let i = 0; i <= 10; i++) {
+                if (i !== correctAnswer) possibleDistractors.push(i);
+            }
+
+            // Shuffle and pick 2 distractors
+            possibleDistractors.sort(() => Math.random() - 0.5);
+            options.push(possibleDistractors[0]);
+            options.push(possibleDistractors[1]);
+
+            // Shuffle options
+            options.sort(() => Math.random() - 0.5);
+
+            // Option colors
+            const colors = ['opt-cyan', 'opt-pink', 'opt-orange'];
+
+            // Create buttons
+            options.forEach((num, idx) => {
+                const btn = document.createElement('button');
+                btn.className = `friend-option ${colors[idx]}`;
+                btn.onclick = () => checkFriendsAnswer(num, btn);
+
+                // Number display
+                const numSpan = document.createElement('span');
+                numSpan.className = 'text-3xl';
+                numSpan.textContent = num;
+                btn.appendChild(numSpan);
+
+                // Dot pattern
+                const dots = document.createElement('div');
+                dots.className = 'dot-pattern';
+                for (let d = 0; d < num; d++) {
+                    const dot = document.createElement('div');
+                    dot.className = 'dot';
+                    dots.appendChild(dot);
+                }
+                btn.appendChild(dots);
+
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        async function checkFriendsAnswer(answer, btnEl) {
+            if (isAnimating) return;
+
+            if (answer === friendsAnswer) {
+                // CORRECT!
+                isAnimating = true;
+                btnEl.classList.add('correct');
+
+                // Disable all buttons
+                document.querySelectorAll('.friend-option').forEach(b => b.disabled = true);
+
+                // Fill remaining slots with animation
+                clearHighlights();
+                for (let i = ones; i < 10; i++) {
+                    renderBeeInCell(i, 'added');
+                    ones++;
+                    updateDisplay();
+                    await sleep(150);
+                }
+
+                // Celebration
+                showStepMessage('🎉 太棒了! 10! 🎉', els.onesRoom, 1500);
+                els.onesRoom.classList.add('celebrating');
+
+                // Update score
+                friendsScore++;
+                document.getElementById('friendsScoreDisplay').textContent = friendsScore;
+
+                await sleep(1500);
+                els.onesRoom.classList.remove('celebrating');
+
+                // Next puzzle
+                isAnimating = false;
+                startFriendsPuzzle();
+
+            } else {
+                // WRONG
+                btnEl.classList.add('wrong');
+
+                // Pulse the empty slots as hint
+                highlightEmptySlots();
+                showStepMessage(`再想想! 还差 ${friendsAnswer} 只!`, els.onesRoom, 1200);
+
+                // Remove wrong class after animation
+                setTimeout(() => {
+                    btnEl.classList.remove('wrong');
+                }, 500);
+            }
         }
     </script>
 </body>

@@ -444,6 +444,24 @@
 
         // Initialize data immediately (embedded approach)
         document.addEventListener('DOMContentLoaded', function () {
+            // --- CONFIG: Filter Games based on URL ---
+            const urlParams = new URLSearchParams(window.location.search);
+            const gamesParam = urlParams.get('games');
+
+            if (gamesParam) {
+                const allowedGames = gamesParam.split(',');
+                const allModules = ['sentence', 'phonics', 'vocab', 'uk'];
+
+                allModules.forEach(mod => {
+                    if (!allowedGames.includes(mod)) {
+                        // Find the menu card and hide it
+                        // We search by the onclick attribute containing the module name
+                        const card = document.querySelector(`.menu-card[onclick*="'${mod}'"]`);
+                        if (card) card.style.display = 'none';
+                    }
+                });
+            }
+
             // Load from external script if available
             if (window.EMBEDDED_WORD_DATA) {
                 sentenceDB = window.EMBEDDED_WORD_DATA.sentenceDB;

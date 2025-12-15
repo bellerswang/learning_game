@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>May's Maths Magic</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* --- ACCESSIBILITY CORE & THEME --- */
+        :root {
+            --bg-grad-start: #0f2027;
+            --bg-grad-mid: #203a43;
+            --bg-grad-end: #2c5364;
+
+            --primary-color: #00E5FF;
+            /* Bright Cyan */
+            --secondary-color: #FF4081;
+            /* Pink Accent */
+            --success-color: #00E676;
+            /* Green */
+            --text-white: #ffffff;
+            --text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --card-border: rgba(255, 255, 255, 0.2);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+
+        * {
+            box-sizing: border-box;
+            touch-action: manipulation;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-grad-start), var(--bg-grad-mid), var(--bg-grad-end));
+            color: var(--text-white);
+            font-family: 'Nunito', sans-serif;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* --- LAYOUT --- */
+        #app-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* --- MENU SCREEN --- */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            box-shadow: var(--glass-shadow);
+        }
+
+        .menu-view {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .app-title {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 40px;
+            background: linear-gradient(to right, #00E5FF, #FF4081);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .menu-card {
+            padding: 30px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .menu-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            border-color: var(--primary-color);
+            box-shadow: 0 10px 40px -10px rgba(0, 229, 255, 0.4);
+        }
+
+        .menu-card:hover::before {
+            opacity: 1;
+        }
+
+        .menu-card:active {
+            transform: scale(0.98);
+        }
+
+        .md-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .md-sub {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .md-icon {
+            font-size: 2.5rem;
+        }
+
+        /* --- GAME UI --- */
+        #game-view {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding-top: 60px;
+        }
+
+        .game-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+            position: absolute;
+            top: 20px;
+            z-index: 100;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .target-container {
+            margin-bottom: 20px;
+            /* reduced from 40 */
+            text-align: center;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        .target-label {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .target-value {
+            font-size: 6rem;
+            font-weight: 900;
+            line-height: 1;
+            background: linear-gradient(to bottom, #fff, #b2ebf2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 15px rgba(0, 229, 255, 0.4));
+        }
+
+        .game-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        .cards-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            min-height: 200px;
+            perspective: 1000px;
+        }
+
+        .num-card {
+            width: 110px;
+            height: 150px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: #fff;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        .num-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-color);
+        }
+
+        .num-card.selected {
+            background: var(--primary-color);
+            color: #000;
+            transform: scale(1.1) rotate(3deg);
+            box-shadow: 0 0 30px var(--primary-color);
+            border-color: #fff;
+            z-index: 10;
+        }
+
+        .num-card.merged {
+            animation: mergePop 0.5s ease-out;
+        }
+
+        @keyframes mergePop {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+
+            50% {
+                transform: scale(1.2);
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .operators-dock {
+            margin-top: 40px;
+            display: flex;
+            gap: 25px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px 30px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .op-btn {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--secondary-color);
+            color: var(--secondary-color);
+            font-size: 2.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .op-btn:hover {
+            background: rgba(255, 64, 129, 0.1);
+            transform: scale(1.1);
+        }
+
+        .op-btn:active {
+            transform: scale(0.95);
+        }
+
+        .op-btn.selected-op {
+            background: var(--secondary-color);
+            color: white;
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px var(--secondary-color);
+        }
+
+        .guide-text {
+            margin-top: 20px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        /* --- VICTORY OVERLAY --- */
+        #victory-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s;
+        }
+
+        #victory-modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .victory-content {
+            text-align: center;
+            transform: scale(0.8);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        #victory-modal.active .victory-content {
+            transform: scale(1);
+        }
+
+        .victory-title {
+            font-size: 5rem;
+            font-weight: 900;
+            background: linear-gradient(to right, #FFD700, #FDB931);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+            animation: pulseTitle 2s infinite;
+        }
+
+        @keyframes pulseTitle {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .victory-sub {
+            font-size: 1.5rem;
+            color: #ccc;
+            margin-top: 10px;
+            margin-bottom: 40px;
+        }
+
+        .victory-btn {
+            background: linear-gradient(45deg, #00E5FF, #00B8D4);
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #000;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0, 229, 255, 0.3);
+            transition: transform 0.2s;
+        }
+
+        .victory-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(0, 229, 255, 0.6);
+        }
+
+        /* --- PARTICLES --- */
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            animation: pop var(--d) ease-out forwards;
+        }
+
+        @keyframes pop {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(1);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translate(var(--x), var(--y)) scale(0);
+            }
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            z-index: 1500;
+            animation: rain linear forwards;
+        }
+
+        @keyframes rain {
+            0% {
+                transform: translateY(-10vh) rotate(0deg);
+            }
+
+            100% {
+                transform: translateY(110vh) rotate(720deg);
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="app-container">
+
+        <!-- MENU SCREEN -->
+        <div id="menu-view" class="menu-view">
+            <h1 class="app-title">Maths Magic</h1>
+
+            <div class="menu-grid">
+                <div class="menu-card glass-panel" onclick="startMathGame(10)">
+                    <div>
+                        <div class="md-title">Make 10</div>
+                        <div class="md-sub">Beginner • 3 Numbers</div>
+                    </div>
+                    <div class="md-icon">🌱</div>
+                </div>
+                <div class="menu-card glass-panel" onclick="startMathGame(24)"
+                    style="border-left: 5px solid var(--secondary-color);">
+                    <div>
+                        <div class="md-title" style="color: var(--secondary-color);">Make 24</div>
+                        <div class="md-sub">Master • 4 Numbers</div>
+                    </div>
+                    <div class="md-icon">🔥</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GAME SCREEN -->
+        <div id="game-view" class="hidden">
+            <div class="game-header">
+                <button class="nav-btn" onclick="goHome()">
+                    <span>🏠</span> Exit
+                </button>
+                <div id="mode-badge"
+                    style="background: rgba(255,255,255,0.15); padding: 5px 15px; border-radius: 20px; font-size: 0.9rem;">
+                    Mode: Make 10</div>
+            </div>
+
+            <div class="game-area">
+                <div class="target-container">
+                    <div class="target-label">Target Number</div>
+                    <div id="math-target-display" class="target-value">10</div>
+                </div>
+
+                <div class="cards-container" id="math-desk">
+                    <!-- Cards Injected Here -->
+                </div>
+
+                <div class="operators-dock">
+                    <div class="op-btn" id="op-add" onclick="selectOp('+')">+</div>
+                    <div class="op-btn" id="op-sub" onclick="selectOp('-')">−</div>
+                    <div class="op-btn hidden" id="op-mult" onclick="selectOp('*')">×</div>
+                </div>
+
+                <div class="guide-text" id="guide-text">Select two numbers to combine them!</div>
+            </div>
+
+            <button
+                style="margin-bottom: 30px; background: rgba(255,255,255,0.1); border:none; color: #aaa; padding: 10px 20px; border-radius: 20px; cursor: pointer; transition: color 0.2s;"
+                onclick="resetCurrentGame()">
+                Try Another Puzzle ⟳
+            </button>
+        </div>
+
+        <!-- VICTORY OVERLAY -->
+        <div id="victory-modal">
+            <div class="victory-content">
+                <div style="font-size: 6rem; margin-bottom: 20px;">🏆</div>
+                <h2 class="victory-title">AMAZING!</h2>
+                <p class="victory-sub" id="victory-msg">You made 10!</p>
+                <button class="victory-btn" onclick="nextLevel()">Play Again</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- AUDIO ENGINE ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playTone(freq, type, duration) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + duration);
+        }
+
+        function playSound(name) {
+            if (name === 'select') playTone(400, 'sine', 0.1);
+            if (name === 'op') playTone(600, 'triangle', 0.1);
+            if (name === 'merge') {
+                playTone(300, 'sine', 0.2);
+                setTimeout(() => playTone(600, 'sine', 0.4), 100);
+            }
+            if (name === 'win') {
+                // Victory Fanfare
+                let now = audioCtx.currentTime;
+                [523.25, 659.25, 783.99, 1046.50].forEach((f, i) => {
+                    setTimeout(() => playTone(f, 'square', 0.3), i * 100);
+                });
+            }
+        }
+
+        // --- SPEECH ENGINE ---
+        const synth = window.speechSynthesis;
+        function speak(text) {
+            synth.cancel();
+            const u = new SpeechSynthesisUtterance(text);
+            u.rate = 1.0;
+            u.lang = 'en-GB';
+            synth.speak(u);
+        }
+
+        // --- STATE ---
+        let targetValue = 10;
+        let numbers = [];
+        let selectedIdx = null;
+        let selectedOp = null;
+
+        // --- NAVIGATION ---
+        function startMathGame(target) {
+            targetValue = target;
+            document.getElementById('menu-view').classList.add('hidden');
+            document.getElementById('game-view').classList.remove('hidden');
+            document.getElementById('mode-badge').innerText = `Mode: Make ${target}`;
+            document.getElementById('math-target-display').innerText = target;
+
+            if (target === 24) {
+                document.getElementById('op-mult').classList.remove('hidden');
+            } else {
+                document.getElementById('op-mult').classList.add('hidden');
+            }
+
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            generateNewPuzzle();
+        }
+
+        function goHome() {
+            document.getElementById('game-view').classList.add('hidden');
+            document.getElementById('menu-view').classList.remove('hidden');
+            document.getElementById('victory-modal').classList.remove('active');
+            removeAllConfetti();
+        }
+
+        function resetCurrentGame() {
+            removeAllConfetti();
+            generateNewPuzzle();
+        }
+
+        function nextLevel() {
+            document.getElementById('victory-modal').classList.remove('active');
+            removeAllConfetti();
+            generateNewPuzzle();
+        }
+
+        // --- GAME LOGIC ---
+        function generateNewPuzzle() {
+            const count = targetValue === 24 ? 4 : 3;
+            const allowMult = targetValue === 24;
+            numbers = generateSolvableNumbers(targetValue, count, allowMult);
+            selectedIdx = null;
+            selectedOp = null;
+            updateUI();
+        }
+
+        function updateUI() {
+            const desk = document.getElementById('math-desk');
+            desk.innerHTML = ''; // Clear
+
+            numbers.forEach((num, idx) => {
+                const card = document.createElement('div');
+                card.className = 'num-card';
+                if (idx === selectedIdx) card.classList.add('selected');
+
+                card.innerText = num;
+                card.onclick = () => handleCardClick(idx);
+                desk.appendChild(card);
+            });
+
+            // Mark merged if we just merged (hacky check: if this is a fresh render of a merge)
+            // Ideally we'd track "last merged index" but a full redraw is fine for now.
+
+            document.querySelectorAll('.op-btn').forEach(btn => btn.classList.remove('selected-op'));
+            if (selectedOp) {
+                let btnId = selectedOp === '+' ? 'op-add' : selectedOp === '-' ? 'op-sub' : 'op-mult';
+                document.getElementById(btnId).classList.add('selected-op');
+            }
+        }
+
+        function selectOp(op) {
+            if (selectedIdx === null) {
+                speak("Pick a number first");
+                return;
+            }
+            selectedOp = op;
+            playSound('op');
+            speak(op === '+' ? "Plus" : op === '-' ? "Minus" : "Times");
+            updateUI();
+        }
+
+        function handleCardClick(idx) {
+            playSound('select');
+
+            if (selectedIdx === null) {
+                selectedIdx = idx;
+                speak(numbers[idx]);
+                updateUI();
+                return;
+            }
+
+            if (selectedOp === null) {
+                if (selectedIdx !== idx) {
+                    selectedIdx = idx;
+                    speak(numbers[idx]);
+                    updateUI();
+                } else {
+                    // Deselect
+                    selectedIdx = null;
+                    updateUI();
+                }
+                return;
+            }
+
+            if (selectedIdx === idx) {
+                selectedIdx = null;
+                selectedOp = null;
+                updateUI();
+                return;
+            }
+
+            // Perform Calc
+            const val1 = numbers[selectedIdx];
+            const val2 = numbers[idx];
+            let result = 0;
+            let phrase = "";
+
+            if (selectedOp === '+') {
+                result = val1 + val2;
+                phrase = `${val1} plus ${val2} is ${result}`;
+            } else if (selectedOp === '-') {
+                if (val1 >= val2) {
+                    result = val1 - val2;
+                    phrase = `${val1} minus ${val2} is ${result}`;
+                } else {
+                    result = val2 - val1;
+                    phrase = `${val2} minus ${val1} is ${result}`;
+                }
+            } else if (selectedOp === '*') {
+                result = val1 * val2;
+                phrase = `${val1} times ${val2} is ${result}`;
+            }
+
+            speak(phrase);
+            playSound('merge');
+
+            // Particles at merge location
+            // We need to find the element position to spawn particles, but we are about to re-render.
+            // Let's spawn particles at the center of the DESK for simplicity or try to grab coords.
+            const clickEvent = window.event;
+            if (clickEvent) spawnParticles(clickEvent.clientX, clickEvent.clientY, 10);
+
+            const idxA = Math.max(selectedIdx, idx);
+            const idxB = Math.min(selectedIdx, idx);
+
+            numbers.splice(idxA, 1);
+            numbers.splice(idxB, 1);
+            numbers.push(result);
+
+            selectedIdx = null;
+            selectedOp = null;
+            updateUI();
+
+            // Animate only the new card
+            const cards = document.querySelectorAll('.num-card');
+            if (cards.length > 0) cards[cards.length - 1].classList.add('merged');
+
+            checkWin();
+        }
+
+        function checkWin() {
+            if (numbers.length === 1) {
+                if (numbers[0] === targetValue) {
+                    // WIN
+                    setTimeout(() => {
+                        playSound('win');
+                        showVictory();
+                    }, 500);
+                } else {
+                    speak(`Oh no. That is ${numbers[0]}. Try again!`);
+                    setTimeout(generateNewPuzzle, 2500);
+                }
+            }
+        }
+
+        function showVictory() {
+            document.getElementById('victory-msg').innerText = `You made ${targetValue}!`;
+            document.getElementById('victory-modal').classList.add('active');
+            triggerConfetti();
+        }
+
+        // --- MATHS GENERATOR ---
+        function generateSolvableNumbers(target, count, allowMult) {
+            let nums = [target];
+            for (let i = 0; i < count - 1; i++) {
+                let idx = Math.floor(Math.random() * nums.length);
+                let val = nums[idx];
+                nums.splice(idx, 1);
+
+                let methods = ['+'];
+                if (val < 20) methods.push('-');
+                if (allowMult && !isPrime(val) && val > 1) methods.push('*');
+
+                let method = methods[Math.floor(Math.random() * methods.length)];
+
+                if (method === '+') {
+                    if (val <= 1) { nums.push(val); i--; continue; }
+                    let part1 = Math.floor(Math.random() * (val - 1)) + 1;
+                    nums.push(part1);
+                    nums.push(val - part1);
+                }
+                else if (method === '-') {
+                    let subtractor = Math.floor(Math.random() * 9) + 1;
+                    let minuend = val + subtractor;
+                    nums.push(minuend);
+                    nums.push(subtractor);
+                }
+                else if (method === '*') {
+                    let factors = getFactors(val);
+                    if (factors.length === 0) { nums.push(val); i--; continue; }
+                    let f = factors[Math.floor(Math.random() * factors.length)];
+                    nums.push(f);
+                    nums.push(val / f);
+                }
+            }
+            return nums;
+        }
+
+        function isPrime(num) {
+            for (let i = 2; i < num; i++) if (num % i === 0) return false;
+            return num > 1;
+        }
+
+        function getFactors(num) {
+            let factors = [];
+            for (let i = 2; i <= Math.sqrt(num); i++) {
+                if (num % i === 0) {
+                    factors.push(i);
+                    if (i * i !== num) factors.push(num / i);
+                }
+            }
+            return factors;
+        }
+
+        // --- VISUAL FX ---
+        function spawnParticles(x, y, count) {
+            for (let i = 0; i < count; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.left = x + 'px';
+                p.style.top = y + 'px';
+                p.style.width = (Math.random() * 8 + 4) + 'px';
+                p.style.height = p.style.width;
+                p.style.background = `hsl(${Math.random() * 360}, 100%, 70%)`;
+                p.style.borderRadius = '50%';
+
+                // Random direction
+                const angle = Math.random() * Math.PI * 2;
+                const dist = Math.random() * 100 + 50;
+                const tx = Math.cos(angle) * dist;
+                const ty = Math.sin(angle) * dist;
+
+                p.style.setProperty('--x', tx + 'px');
+                p.style.setProperty('--y', ty + 'px');
+                p.style.setProperty('--d', (Math.random() * 0.5 + 0.3) + 's');
+
+                document.body.appendChild(p);
+                setTimeout(() => p.remove(), 800);
+            }
+        }
+
+        function triggerConfetti() {
+            const colors = ['#00E5FF', '#FF4081', '#00E676', '#FFD700', '#FFFFFF'];
+            for (let i = 0; i < 150; i++) {
+                const c = document.createElement('div');
+                c.className = 'confetti';
+                c.style.left = Math.random() * 100 + 'vw';
+                c.style.background = colors[Math.floor(Math.random() * colors.length)];
+                c.style.opacity = Math.random();
+                c.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                c.style.animationDelay = (Math.random() * 2) + 's';
+                document.body.appendChild(c);
+            }
+        }
+
+        function removeAllConfetti() {
+            document.querySelectorAll('.confetti').forEach(e => e.remove());
+        }
+
+    </script>
+</body>
+
+</html>

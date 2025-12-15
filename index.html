@@ -45,7 +45,7 @@
                 <span class="text-2xl transform group-open:rotate-180 transition-transform">🔽</span>
             </summary>
             <div class="p-4 space-y-4 bg-white/50">
-                <a href="./Thinking_Math/Prob_game/index.html"
+                <a href="./Thinking_Math/Prob_game/index.html" data-module="probability"
                     class="app-btn group flex items-center justify-between p-6 rounded-3xl shadow-lg border-b-8 h-28 w-full text-2xl font-bold bg-sky-400 border-sky-600 text-white hover:bg-sky-300">
                     <div class="flex flex-col text-left">
                         <span class="drop-shadow-md">Probability Games</span>
@@ -54,7 +54,7 @@
                     <span class="text-5xl group-hover:scale-110 transition-transform">🎲</span>
                 </a>
 
-                <a href="./Thinking_Math/Math/index.html"
+                <a href="./Thinking_Math/Math/index.html" data-module="math"
                     class="app-btn group flex items-center justify-between p-6 rounded-3xl shadow-lg border-b-8 h-28 w-full text-2xl font-bold bg-amber-400 border-amber-600 text-amber-900 hover:bg-amber-300">
                     <span class="drop-shadow-md">进位加减法</span>
                     <span class="text-5xl group-hover:scale-110 transition-transform">🐝</span>
@@ -70,13 +70,13 @@
                 <span class="text-2xl transform group-open:rotate-180 transition-transform">🔽</span>
             </summary>
             <div class="p-4 space-y-4 bg-white/50">
-                <a href="./Words_Stories/Learning_dict/index.html"
+                <a href="./Words_Stories/Learning_dict/index.html" data-module="dictionary"
                     class="app-btn group flex items-center justify-between p-6 rounded-3xl shadow-lg border-b-8 h-28 w-full text-2xl font-bold bg-emerald-400 border-emerald-600 text-white hover:bg-emerald-300">
                     <span class="drop-shadow-md">Magic Dictionary</span>
                     <span class="text-5xl group-hover:scale-110 transition-transform">📖</span>
                 </a>
 
-                <a href="./Words_Stories/English_station/english_station.html"
+                <a href="./Words_Stories/English_station/english_station.html" data-module="englishStation"
                     class="app-btn group flex items-center justify-between p-6 rounded-3xl shadow-lg border-b-8 h-28 w-full text-2xl font-bold bg-purple-500 border-purple-700 text-white hover:bg-purple-400">
                     <span class="drop-shadow-md">English Station</span>
                     <span class="text-5xl group-hover:scale-110 transition-transform">🇬🇧</span>
@@ -92,19 +92,48 @@
                 <span class="text-2xl transform group-open:rotate-180 transition-transform">🔽</span>
             </summary>
             <div class="p-4 space-y-4 bg-white/50">
-                <a href="./Just_Fun/Firework_launcher/index.html"
+                <a href="./Just_Fun/Firework_launcher/index.html" data-module="fireworks"
                     class="app-btn group flex items-center justify-between p-6 rounded-3xl shadow-lg border-b-8 h-28 w-full text-2xl font-bold bg-violet-400 border-violet-600 text-white hover:bg-violet-300">
                     <span class="drop-shadow-md">Fireworks!</span>
                     <span class="text-5xl group-hover:scale-110 transition-transform">🎆</span>
+                </a>
+
+                <a href="./Just_Fun/24_point/make_24.html" data-module="make24"
+                    class="app-btn group flex items-center justify-between p-6 rounded-3xl shadow-lg border-b-8 h-28 w-full text-2xl font-bold bg-indigo-400 border-indigo-600 text-white hover:bg-indigo-300">
+                    <span class="drop-shadow-md">Maths Magic (24)</span>
+                    <span class="text-5xl group-hover:scale-110 transition-transform">✨</span>
                 </a>
             </div>
         </details>
 
     </main>
 
-    <footer class="mt-auto text-pink-300 text-sm font-bold opacity-60">
-        Made with ❤️ for May
-    </footer>
+    <!-- Load Configuration -->
+    <script src="game_config.js"></script>
+
+    <script>
+        // Apply Config to Links & Visibility
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if config loaded
+            if (typeof APP_CONFIG === 'undefined') {
+                console.error("Config not found!");
+                return;
+            }
+
+            // 1. Module Visibility (Top Level)
+            if (APP_CONFIG.modules) {
+                for (const [moduleId, isEnabled] of Object.entries(APP_CONFIG.modules)) {
+                    if (isEnabled === false) {
+                        const el = document.querySelector(`[data-module="${moduleId}"]`);
+                        if (el) el.style.display = 'none';
+                    }
+                }
+            }
+
+            // 2. English Station Sub-games URL Params
+            // (Functionality removed from config)
+        });
+    </script>
 </body>
 
 </html>

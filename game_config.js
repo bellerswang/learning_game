@@ -4,7 +4,7 @@ const APP_CONFIG = {
     // 1. Top Level Modules (Main Menu)
     // Set to false to hide the game from the main list
     modules: {
-        probability: true,    // Probability Games
+        probability: false,    // Probability Games
         math: true,           // Bee Farm Math
         dictionary: true,     // Magic Dictionary
         englishStation: true, // English Station

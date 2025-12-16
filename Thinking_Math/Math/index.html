@@ -122,70 +122,61 @@
             text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.2);
         }
 
-        /* The Honeycomb Grid (Ten Frame) */
+        /* The Honeycomb Grid (Ten Frame) - High Contrast */
         .ten-frame-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             grid-template-rows: repeat(5, 1fr);
             gap: 8px;
             padding: 24px 30px;
-            /* More padding to center hexagons */
             justify-items: center;
             align-items: center;
             height: 340px;
             position: relative;
+            background-color: #FFFFFF;
+            border: 4px solid #000000;
+            border-radius: 12px;
+            margin: 8px;
         }
 
-        /* Hexagonal Cells */
+        /* Frame Cells - High Contrast Square Design */
         .frame-slot {
             width: 50px;
-            height: 58px;
-            /* Hexagon aspect ratio */
-            background-color: #fef3c7;
-            /* Very light amber */
+            height: 50px;
+            background-color: #FFFFFF;
             position: relative;
-            /* Create Hexagon Shape */
-            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-            border: none;
-            /* clip-path hides borders, so we rely on background contrast */
-            box-shadow: inset 0 0 10px rgba(217, 119, 6, 0.2);
-            /* Inner shadow for depth */
+            border: 3px solid #000000;
+            border-radius: 8px;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        /* Fake border for hexagon using a pseudo-element behind (optional, keeping simple for now) */
-        .frame-slot::before {
-            content: '';
-            position: absolute;
-            inset: 2px;
-            background-color: rgba(251, 191, 36, 0.1);
-            /* Inner cell color */
-            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-            z-index: 1;
-        }
-
-        /* Number inside cell */
+        /* Number inside cell - High Contrast */
         .frame-slot::after {
             content: attr(data-index);
             position: absolute;
-            color: #d97706;
-            font-size: 14px;
+            color: #000000;
+            font-size: 12px;
             font-weight: bold;
-            opacity: 0.5;
+            opacity: 0.3;
             z-index: 2;
         }
 
+        /* Hives Container - High Contrast */
         .flex-tens {
             display: flex;
             flex-wrap: wrap;
             padding: 20px;
             align-content: flex-start;
-            /* Stack from top like hanging hives */
             justify-content: center;
             height: 100%;
-            gap: 2px;
+            gap: 8px;
+            background-color: #FFFFFF;
+            border: 4px solid #000000;
+            border-radius: 12px;
+            margin: 8px;
         }
 
         /* --- Waiting Zone (Flower Patch) --- */
@@ -607,6 +598,49 @@
             animation: celebrateRegroup 0.6s ease;
         }
 
+        /* === MILESTONE 4: Gather to Center Animation === */
+        @keyframes gatherToCenter {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 1;
+            }
+
+            70% {
+                transform: translate(var(--dx), var(--dy)) scale(0.3);
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: translate(var(--dx), var(--dy)) scale(0);
+                opacity: 0;
+            }
+        }
+
+        .gathering-bee {
+            animation: gatherToCenter 0.8s ease-in forwards;
+        }
+
+        /* Hive appear animation */
+        @keyframes hiveAppear {
+            0% {
+                transform: scale(0) rotate(-180deg);
+                opacity: 0;
+            }
+
+            60% {
+                transform: scale(1.3) rotate(10deg);
+            }
+
+            100% {
+                transform: scale(1) rotate(0);
+                opacity: 1;
+            }
+        }
+
+        .hive-appear {
+            animation: hiveAppear 0.6s ease-out forwards;
+        }
+
         /* Missing Count Badge */
         .missing-badge {
             position: absolute;
@@ -704,37 +738,123 @@
             }
         }
 
-        /* Dot pattern on buttons */
-        .dot-pattern {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 4px;
-            justify-content: center;
-            max-width: 60px;
+        /* === SHAPE BLOCKS (Bee Clusters) for Ten Friends === */
+        .bee-shape-block {
+            display: grid;
+            gap: 2px;
+            padding: 8px;
+            background: white;
+            border: 4px solid #000;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 0 rgba(0, 0, 0, 0.3);
+            position: relative;
         }
 
-        .dot-pattern .dot {
-            width: 10px;
-            height: 10px;
+        .bee-shape-block:hover:not(:disabled) {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 8px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .bee-shape-block:active:not(:disabled) {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .bee-shape-block:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .bee-shape-block.correct {
+            background: #22c55e;
+            border-color: #15803d;
+            animation: popCorrect 0.5s ease;
+        }
+
+        .bee-shape-block.wrong {
+            animation: shake 0.5s ease;
+            border-color: #ef4444;
+        }
+
+        /* Shape layouts */
+        .shape-row-1 {
+            grid-template-columns: repeat(1, 28px);
+        }
+
+        .shape-row-2 {
+            grid-template-columns: repeat(2, 28px);
+        }
+
+        .shape-row-3 {
+            grid-template-columns: repeat(3, 28px);
+        }
+
+        .shape-row-4 {
+            grid-template-columns: repeat(4, 28px);
+        }
+
+        .shape-row-5 {
+            grid-template-columns: repeat(5, 28px);
+        }
+
+        .mini-bee {
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
-            background: currentColor;
-            opacity: 0.7;
+            background: linear-gradient(135deg, #fbbf24 60%, #f59e0b 100%);
+            border: 2px solid #000;
+            position: relative;
         }
 
-        /* Option colors */
-        .friend-option.opt-cyan {
-            border-color: #06b6d4;
-            color: #0e7490;
+        .mini-bee::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 8px;
+            background: #000;
+            border-radius: 50%;
         }
 
-        .friend-option.opt-pink {
-            border-color: #ec4899;
-            color: #be185d;
+        /* Fly-in animation */
+        @keyframes flyToSlot {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(0.5) translateY(-50px);
+            }
+
+            100% {
+                opacity: 0;
+                transform: scale(0) translateY(-100px);
+            }
         }
 
-        .friend-option.opt-orange {
-            border-color: #f97316;
-            color: #c2410c;
+        .flying-bee {
+            animation: flyToSlot 0.4s ease-out forwards;
+        }
+
+        /* Option colors with high contrast */
+        .bee-shape-block.opt-cyan {
+            border-color: #0891b2;
+            background: #ecfeff;
+        }
+
+        .bee-shape-block.opt-pink {
+            border-color: #db2777;
+            background: #fdf2f8;
+        }
+
+        .bee-shape-block.opt-orange {
+            border-color: #ea580c;
+            background: #fff7ed;
         }
     </style>
 </head>
@@ -844,6 +964,48 @@
                 class="text-3xl font-bold text-amber-800 bg-yellow-100/95 px-8 py-2 rounded-full shadow-lg border-2 border-yellow-400 backdrop-blur flex items-center gap-2">
                 <span>🍯</span> <span id="totalDisplay">0</span>
             </div>
+        </div>
+
+        <!-- === MILESTONE 5: Number Bond Panel === -->
+        <div id="number-bond-panel"
+            class="hidden w-full mt-4 p-4 bg-white border-4 border-violet-400 rounded-2xl shadow-lg">
+            <div class="flex items-center justify-center gap-4">
+                <!-- Main equation display -->
+                <div class="text-2xl font-bold text-violet-800">
+                    <span id="bond-start">7</span> + <span id="bond-change">5</span> =
+                </div>
+
+                <!-- Tree diagram -->
+                <div class="flex flex-col items-center">
+                    <div class="text-lg font-bold text-violet-600 mb-1">拆分</div>
+                    <div class="flex items-end gap-4">
+                        <!-- Left branch (fill amount) -->
+                        <div class="flex flex-col items-center">
+                            <input type="number" id="bond-fill-input"
+                                class="w-14 h-14 text-center text-2xl font-bold border-4 border-green-400 rounded-xl bg-green-50 focus:border-green-600 outline-none"
+                                min="0" max="10" placeholder="?">
+                            <span class="text-xs text-green-600 font-bold mt-1">🎁 凑10</span>
+                        </div>
+
+                        <div class="text-2xl text-violet-400 font-bold pb-6">+</div>
+
+                        <!-- Right branch (remainder) -->
+                        <div class="flex flex-col items-center">
+                            <input type="number" id="bond-remainder-input"
+                                class="w-14 h-14 text-center text-2xl font-bold border-4 border-orange-400 rounded-xl bg-orange-50 focus:border-orange-600 outline-none"
+                                min="0" max="10" placeholder="?">
+                            <span class="text-xs text-orange-600 font-bold mt-1">🐝 余下</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Verify button -->
+                <button id="bond-verify-btn" onclick="verifyNumberBond()"
+                    class="btn btn-green px-6 py-3 rounded-xl font-bold shadow-md">
+                    ✓ 验证
+                </button>
+            </div>
+            <div id="bond-feedback" class="hidden mt-2 text-center text-lg font-bold"></div>
         </div>
 
         <!-- Controls Area -->
@@ -1039,14 +1201,14 @@
         const svgBeeStandard = `
         <svg viewBox="0 0 100 100" class="bee-svg">
             <g>
-                <ellipse cx="70" cy="35" rx="20" ry="12" fill="#e0f2fe" stroke="#93c5fd" stroke-width="2" transform="rotate(-30 70 35)" opacity="0.8"/>
-                <ellipse cx="30" cy="35" rx="20" ry="12" fill="#e0f2fe" stroke="#93c5fd" stroke-width="2" transform="rotate(30 30 35)" opacity="0.8"/>
-                <ellipse cx="50" cy="55" rx="22" ry="28" fill="#facc15" stroke="#854d0e" stroke-width="2"/>
-                <path d="M30 50 Q50 55 70 50" stroke="#451a03" stroke-width="4" fill="none"/>
-                <path d="M30 60 Q50 65 70 60" stroke="#451a03" stroke-width="4" fill="none"/>
-                <path d="M35 70 Q50 75 65 70" stroke="#451a03" stroke-width="4" fill="none"/>
-                <circle cx="42" cy="40" r="3" fill="#000"/>
-                <circle cx="58" cy="40" r="3" fill="#000"/>
+                <ellipse cx="70" cy="35" rx="20" ry="12" fill="#e0f2fe" stroke="#1e3a5f" stroke-width="2" transform="rotate(-30 70 35)" opacity="0.9"/>
+                <ellipse cx="30" cy="35" rx="20" ry="12" fill="#e0f2fe" stroke="#1e3a5f" stroke-width="2" transform="rotate(30 30 35)" opacity="0.9"/>
+                <ellipse cx="50" cy="55" rx="22" ry="28" fill="#facc15" stroke="#000000" stroke-width="3"/>
+                <path d="M30 50 Q50 55 70 50" stroke="#000000" stroke-width="5" fill="none"/>
+                <path d="M30 60 Q50 65 70 60" stroke="#000000" stroke-width="5" fill="none"/>
+                <path d="M35 70 Q50 75 65 70" stroke="#000000" stroke-width="5" fill="none"/>
+                <circle cx="42" cy="40" r="4" fill="#000"/>
+                <circle cx="58" cy="40" r="4" fill="#000"/>
                 <path d="M45 45 Q50 48 55 45" stroke="#000" stroke-width="2" fill="none"/>
             </g>
         </svg>`;
@@ -1054,16 +1216,16 @@
         const svgBeeAdded = `
         <svg viewBox="0 0 100 100" class="bee-svg">
             <g>
-                <ellipse cx="70" cy="35" rx="20" ry="12" fill="#e0f2fe" stroke="#93c5fd" stroke-width="2" transform="rotate(-30 70 35)" opacity="0.8"/>
-                <ellipse cx="30" cy="35" rx="20" ry="12" fill="#e0f2fe" stroke="#93c5fd" stroke-width="2" transform="rotate(30 30 35)" opacity="0.8"/>
-                <ellipse cx="50" cy="55" rx="22" ry="28" fill="#fbbf24" stroke="#854d0e" stroke-width="2"/>
-                <path d="M30 50 Q50 55 70 50" stroke="#451a03" stroke-width="4" fill="none"/>
-                <path d="M30 60 Q50 65 70 60" stroke="#451a03" stroke-width="4" fill="none"/>
-                <path d="M35 70 Q50 75 65 70" stroke="#451a03" stroke-width="4" fill="none"/>
-                <circle cx="42" cy="40" r="3" fill="#000"/>
-                <circle cx="58" cy="40" r="3" fill="#000"/>
-                <circle cx="50" cy="28" r="8" fill="#f43f5e" />
-                <circle cx="50" cy="28" r="3" fill="#fef08a" />
+                <ellipse cx="70" cy="35" rx="20" ry="12" fill="#e0f2fe" stroke="#1e3a5f" stroke-width="2" transform="rotate(-30 70 35)" opacity="0.9"/>
+                <ellipse cx="30" cy="35" rx="20" ry="12" fill="#e0f2fe" stroke="#1e3a5f" stroke-width="2" transform="rotate(30 30 35)" opacity="0.9"/>
+                <ellipse cx="50" cy="55" rx="22" ry="28" fill="#fbbf24" stroke="#000000" stroke-width="3"/>
+                <path d="M30 50 Q50 55 70 50" stroke="#000000" stroke-width="5" fill="none"/>
+                <path d="M30 60 Q50 65 70 60" stroke="#000000" stroke-width="5" fill="none"/>
+                <path d="M35 70 Q50 75 65 70" stroke="#000000" stroke-width="5" fill="none"/>
+                <circle cx="42" cy="40" r="4" fill="#000"/>
+                <circle cx="58" cy="40" r="4" fill="#000"/>
+                <circle cx="50" cy="28" r="8" fill="#f43f5e" stroke="#000" stroke-width="2"/>
+                <circle cx="50" cy="28" r="3" fill="#fef08a"/>
             </g>
         </svg>`;
 
@@ -1092,9 +1254,30 @@
         let initialValue = 0; // Track starting value for log
 
         // CPA Animation State
-        let cpaStep = 0; // 0=setup, 1=highlight, 2=fill, 3=pause, 4=regroup, 5=carry, 6=remainder
+        let cpaStep = 0; // Legacy - kept for compatibility
         let needToFill = 0; // How many bees needed to make 10
         let remainderCount = 0; // Bees left after filling
+
+        // === MILESTONE 4: State Machine ===
+        // States: IDLE -> HIGHLIGHT_GAP -> MOVE_FILL -> REGROUP_ANIMATION -> MOVE_REMAINDER -> FINISHED
+        let stepState = 'IDLE';
+        let decomposition = null; // Store current decomposition result
+
+        // === MILESTONE 2: Pure Decomposition Logic ===
+        function calculateDecomposition(currentOnes, adding) {
+            const spaceAvailable = 10 - currentOnes;
+            if (adding <= spaceAvailable) {
+                // No regrouping needed
+                return { fill: adding, remainder: 0, regroup: false };
+            } else {
+                // Will cross 10 - need to regroup
+                return {
+                    fill: spaceAvailable,
+                    remainder: adding - spaceAvailable,
+                    regroup: true
+                };
+            }
+        }
 
         // Ten Friends Game State
         let friendsScore = 0;
@@ -1104,12 +1287,12 @@
         const svgBeeGhost = `
         <svg viewBox="0 0 100 100" class="bee-svg ghost-bee">
             <g>
-                <ellipse cx="70" cy="35" rx="20" ry="12" fill="#e0f2fe" stroke="#93c5fd" stroke-width="2" transform="rotate(-30 70 35)" opacity="0.3"/>
-                <ellipse cx="30" cy="35" rx="20" ry="12" fill="#e0f2fe" stroke="#93c5fd" stroke-width="2" transform="rotate(30 30 35)" opacity="0.3"/>
-                <ellipse cx="50" cy="55" rx="22" ry="28" fill="#facc15" stroke="#854d0e" stroke-width="2" opacity="0.2"/>
-                <path d="M30 50 Q50 55 70 50" stroke="#451a03" stroke-width="4" fill="none" opacity="0.2"/>
-                <path d="M30 60 Q50 65 70 60" stroke="#451a03" stroke-width="4" fill="none" opacity="0.2"/>
-                <path d="M35 70 Q50 75 65 70" stroke="#451a03" stroke-width="4" fill="none" opacity="0.2"/>
+                <ellipse cx="70" cy="35" rx="20" ry="12" fill="#e5e7eb" stroke="#9ca3af" stroke-width="2" transform="rotate(-30 70 35)" opacity="0.4"/>
+                <ellipse cx="30" cy="35" rx="20" ry="12" fill="#e5e7eb" stroke="#9ca3af" stroke-width="2" transform="rotate(30 30 35)" opacity="0.4"/>
+                <ellipse cx="50" cy="55" rx="22" ry="28" fill="#e5e7eb" stroke="#9ca3af" stroke-width="2" opacity="0.3"/>
+                <path d="M30 50 Q50 55 70 50" stroke="#9ca3af" stroke-width="3" fill="none" opacity="0.3"/>
+                <path d="M30 60 Q50 65 70 60" stroke="#9ca3af" stroke-width="3" fill="none" opacity="0.3"/>
+                <path d="M35 70 Q50 75 65 70" stroke="#9ca3af" stroke-width="3" fill="none" opacity="0.3"/>
             </g>
         </svg>`;
 
@@ -1187,12 +1370,12 @@
             els.waitingContainer.innerHTML = '';
 
             if (fillCount > 0) {
-                // Fill group (will fill the ten frame)
+                // Fill group (gift for the hive - will fill the ten frame)
                 const fillGroup = document.createElement('div');
                 fillGroup.className = 'waiting-group fill-group';
                 const fillLabel = document.createElement('span');
                 fillLabel.className = 'group-label';
-                fillLabel.textContent = '填满';
+                fillLabel.textContent = '🎁 给蜂巢的礼物';
                 fillGroup.appendChild(fillLabel);
 
                 for (let i = 0; i < fillCount; i++) {
@@ -1205,19 +1388,20 @@
             }
 
             if (fillCount > 0 && remainder > 0) {
-                // Divider
+                // Physical divider with clear separation
                 const divider = document.createElement('div');
                 divider.className = 'group-divider';
+                divider.innerHTML = '<span style="font-size:20px">➡️</span>';
                 els.waitingContainer.appendChild(divider);
             }
 
             if (remainder > 0) {
-                // Remainder group (will move after regrouping)
+                // Remainder group (friends waiting - will move after regrouping)
                 const remGroup = document.createElement('div');
                 remGroup.className = 'waiting-group remainder-group';
                 const remLabel = document.createElement('span');
                 remLabel.className = 'group-label';
-                remLabel.textContent = '余';
+                remLabel.textContent = '🐝 剩下的小伙伴';
                 remGroup.appendChild(remLabel);
 
                 for (let i = 0; i < remainder; i++) {
@@ -1297,19 +1481,46 @@
 
             els.onesRoom.classList.add('full-alert');
             showFloatingText("满员啦! (Hive Full!)", els.onesRoom);
-            await sleep(1000);
+            await sleep(800);
 
             if (!isAnimating) { els.onesRoom.classList.remove('full-alert'); return; }
 
-            initTenFrame(); // Clear ones
+            // === MILESTONE 4: Gather Animation ===
+            // Get all bees in the frame and animate them gathering to center
+            const frameSlots = els.onesContainer.querySelectorAll('.frame-slot');
+            const centerX = els.onesContainer.offsetWidth / 2;
+            const centerY = els.onesContainer.offsetHeight / 2;
+
+            // Apply gather animation to each bee
+            frameSlots.forEach((slot, i) => {
+                const bee = slot.querySelector('.block-one');
+                if (bee) {
+                    const rect = slot.getBoundingClientRect();
+                    const containerRect = els.onesContainer.getBoundingClientRect();
+                    const slotCenterX = rect.left - containerRect.left + rect.width / 2;
+                    const slotCenterY = rect.top - containerRect.top + rect.height / 2;
+
+                    const dx = centerX - slotCenterX;
+                    const dy = centerY - slotCenterY;
+
+                    bee.style.setProperty('--dx', `${dx}px`);
+                    bee.style.setProperty('--dy', `${dy}px`);
+                    bee.classList.add('gathering-bee');
+                }
+            });
+
+            await sleep(800); // Wait for gather animation
+
+            // Clear the ten frame
+            initTenFrame();
             ones = 0;
             updateDisplay();
             els.onesRoom.classList.remove('full-alert');
 
-            // Add Hive
+            // Add Hive with appear animation
             tens++;
             const hive = document.createElement('div');
-            hive.className = 'block-ten';
+            hive.className = 'block-ten hive-appear';
             hive.innerHTML = svgHive;
             els.tensContainer.appendChild(hive);
 
@@ -1317,6 +1528,7 @@
             updateDisplay();
 
             await sleep(600);
+            hive.classList.remove('hive-appear');
             isAnimating = false;
             updateGlobalButtons();
         }
@@ -1439,24 +1651,27 @@
 
             // Remove one bee from the appropriate waiting group (Only in Calc mode)
             if (currentMode === 'calc') {
+                // Always check fill-group first, then remainder-group
+                // This ensures we remove from fill first, then remainder
                 const fillGroup = els.waitingContainer.querySelector('.fill-group');
-                const remGroup = els.waitingContainer.querySelector('.remainder-group');
-
-                if (fillGroup) {
+                if (fillGroup && fillGroup.querySelector('.block-one')) {
+                    // Remove from fill group
                     const beeInFill = fillGroup.querySelector('.block-one');
-                    if (beeInFill) {
-                        beeInFill.remove();
-                        // Check if fill group is now empty
-                        if (!fillGroup.querySelector('.block-one')) {
-                            fillGroup.remove();
-                            const divider = els.waitingContainer.querySelector('.group-divider');
-                            if (divider) divider.remove();
-                        }
+                    beeInFill.remove();
+
+                    // Check if fill group is now empty
+                    if (!fillGroup.querySelector('.block-one')) {
+                        fillGroup.remove();
+                        const divider = els.waitingContainer.querySelector('.group-divider');
+                        if (divider) divider.remove();
                     }
-                } else if (remGroup) {
-                    const beeInRem = remGroup.querySelector('.block-one');
-                    if (beeInRem) {
+                } else {
+                    // Fill group is empty or doesn't exist, try remainder group
+                    const remGroup = els.waitingContainer.querySelector('.remainder-group');
+                    if (remGroup && remGroup.querySelector('.block-one')) {
+                        const beeInRem = remGroup.querySelector('.block-one');
                         beeInRem.remove();
+
                         if (!remGroup.querySelector('.block-one')) {
                             remGroup.remove();
                         }
@@ -1533,6 +1748,15 @@
             // Update Active Tab State
             document.querySelectorAll('.nav-pill').forEach(b => b.classList.remove('active'));
             document.getElementById(`tab-${mode}`).classList.add('active');
+
+            // ALWAYS hide quiz overlays when switching tabs
+            document.getElementById('quiz-interface').classList.add('hidden');
+            document.getElementById('result-interface').classList.add('hidden');
+            document.getElementById('number-bond-panel').classList.add('hidden');
+
+            // Reset room visibility
+            document.getElementById('tensRoom').style.visibility = 'visible';
+            document.getElementById('onesRoom').style.visibility = 'visible';
 
             // Hide/Show Controls
             document.getElementById('controls-count').style.opacity = (mode === 'count') ? '1' : '0';
@@ -1690,9 +1914,25 @@
                 }
                 els.waitingArea.classList.remove('hidden');
 
+                // === MILESTONE 5: Show Number Bond Panel ===
+                if (remainderCount > 0) {
+                    const bondPanel = document.getElementById('number-bond-panel');
+                    document.getElementById('bond-start').textContent = startVal;
+                    document.getElementById('bond-change').textContent = changeVal;
+                    document.getElementById('bond-fill-input').value = '';
+                    document.getElementById('bond-remainder-input').value = '';
+                    document.getElementById('bond-feedback').classList.add('hidden');
+                    bondPanel.classList.remove('hidden');
+                    // Store expected values
+                    decomposition = { fill: needToFill, remainder: remainderCount };
+                } else {
+                    document.getElementById('number-bond-panel').classList.add('hidden');
+                }
+
                 calcTarget = changeVal;
                 calcProgress = 0;
                 cpaStep = 0;
+                stepState = 'IDLE';
                 document.getElementById('calc-setup').classList.add('hidden');
                 document.getElementById('calc-action').classList.remove('hidden');
                 updateStepUI();
@@ -1810,6 +2050,53 @@
 
         function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
+        // === MILESTONE 5: Number Bond Verification ===
+        function verifyNumberBond() {
+            const fillInput = parseInt(document.getElementById('bond-fill-input').value) || 0;
+            const remainderInput = parseInt(document.getElementById('bond-remainder-input').value) || 0;
+            const feedback = document.getElementById('bond-feedback');
+
+            if (!decomposition) return;
+
+            const fillCorrect = fillInput === decomposition.fill;
+            const remainderCorrect = remainderInput === decomposition.remainder;
+
+            feedback.classList.remove('hidden');
+
+            if (fillCorrect && remainderCorrect) {
+                feedback.textContent = '🎉 太棒了! 拆分正确!';
+                feedback.className = 'mt-2 text-center text-lg font-bold text-green-600';
+
+                // Celebrate and allow animation to proceed
+                document.getElementById('bond-fill-input').classList.add('border-green-600', 'bg-green-100');
+                document.getElementById('bond-remainder-input').classList.add('border-green-600', 'bg-green-100');
+
+                // Flash the waiting groups
+                const fillGroup = els.waitingContainer.querySelector('.fill-group');
+                const remGroup = els.waitingContainer.querySelector('.remainder-group');
+                if (fillGroup) fillGroup.classList.add('celebrating');
+                if (remGroup) remGroup.classList.add('celebrating');
+
+                setTimeout(() => {
+                    if (fillGroup) fillGroup.classList.remove('celebrating');
+                    if (remGroup) remGroup.classList.remove('celebrating');
+                }, 600);
+
+            } else {
+                feedback.textContent = '再想想! 🤔';
+                feedback.className = 'mt-2 text-center text-lg font-bold text-red-600';
+
+                if (!fillCorrect) {
+                    document.getElementById('bond-fill-input').classList.add('shake-horizontal', 'border-red-400');
+                    setTimeout(() => document.getElementById('bond-fill-input').classList.remove('shake-horizontal', 'border-red-400'), 500);
+                }
+                if (!remainderCorrect) {
+                    document.getElementById('bond-remainder-input').classList.add('shake-horizontal', 'border-red-400');
+                    setTimeout(() => document.getElementById('bond-remainder-input').classList.remove('shake-horizontal', 'border-red-400'), 500);
+                }
+            }
+        }
+
         function updateGlobalButtons() {
             const disabled = isAnimating;
             document.querySelectorAll('button').forEach(b => {
@@ -1856,9 +2143,9 @@
             // Create options array with correct answer and 2 distractors
             let options = [correctAnswer];
 
-            // Generate distractors
+            // Generate distractors (avoid 0 if correct is not 0)
             const possibleDistractors = [];
-            for (let i = 0; i <= 10; i++) {
+            for (let i = 1; i <= 10; i++) {
                 if (i !== correctAnswer) possibleDistractors.push(i);
             }
 
@@ -1873,29 +2160,23 @@
             // Option colors
             const colors = ['opt-cyan', 'opt-pink', 'opt-orange'];
 
-            // Create buttons
+            // Create shape block buttons
             options.forEach((num, idx) => {
-                const btn = document.createElement('button');
-                btn.className = `friend-option ${colors[idx]}`;
-                btn.onclick = () => checkFriendsAnswer(num, btn);
+                const block = document.createElement('button');
 
-                // Number display
-                const numSpan = document.createElement('span');
-                numSpan.className = 'text-3xl';
-                numSpan.textContent = num;
-                btn.appendChild(numSpan);
+                // Determine grid layout based on count
+                const cols = num <= 2 ? num : (num <= 4 ? 2 : (num <= 6 ? 3 : (num <= 8 ? 4 : 5)));
+                block.className = `bee-shape-block shape-row-${cols} ${colors[idx]}`;
+                block.onclick = () => checkFriendsAnswer(num, block);
 
-                // Dot pattern
-                const dots = document.createElement('div');
-                dots.className = 'dot-pattern';
-                for (let d = 0; d < num; d++) {
-                    const dot = document.createElement('div');
-                    dot.className = 'dot';
-                    dots.appendChild(dot);
+                // Create mini-bees
+                for (let b = 0; b < num; b++) {
+                    const bee = document.createElement('div');
+                    bee.className = 'mini-bee';
+                    block.appendChild(bee);
                 }
-                btn.appendChild(dots);
 
-                optionsContainer.appendChild(btn);
+                optionsContainer.appendChild(block);
             });
         }
 
@@ -1908,7 +2189,17 @@
                 btnEl.classList.add('correct');
 
                 // Disable all buttons
-                document.querySelectorAll('.friend-option').forEach(b => b.disabled = true);
+                document.querySelectorAll('.bee-shape-block').forEach(b => b.disabled = true);
+
+                // Animate mini-bees flying out
+                const miniBees = btnEl.querySelectorAll('.mini-bee');
+                miniBees.forEach((bee, i) => {
+                    setTimeout(() => {
+                        bee.classList.add('flying-bee');
+                    }, i * 80);
+                });
+
+                await sleep(miniBees.length * 80 + 400);
 
                 // Fill remaining slots with animation
                 clearHighlights();

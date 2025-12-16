@@ -1036,9 +1036,15 @@
                         <input type="number" id="inputStart" value="7" min="0" max="99"
                             class="w-16 text-center text-2xl font-bold text-amber-800 border-2 border-amber-200 rounded-xl p-1 outline-none focus:border-orange-500 bg-white">
                     </div>
-                    <span class="text-2xl text-amber-400 font-black">➕</span>
+
+                    <!-- Operator Toggle -->
+                    <button id="demoOperatorBtn" onclick="toggleDemoOperator()"
+                        class="text-3xl font-black w-12 h-12 rounded-xl bg-amber-100 border-2 border-amber-300 hover:bg-amber-200 transition-all">
+                        <span id="demoOperatorIcon">➕</span>
+                    </button>
+
                     <div class="flex flex-col items-center">
-                        <label class="text-[10px] text-amber-700 font-bold uppercase">飞来</label>
+                        <label id="changeLabel" class="text-[10px] text-amber-700 font-bold uppercase">飞来</label>
                         <input type="number" id="inputChange" value="4" min="1" max="9"
                             class="w-16 text-center text-2xl font-bold text-amber-800 border-2 border-amber-200 rounded-xl p-1 outline-none focus:border-orange-500 bg-white">
                     </div>
@@ -1533,6 +1539,69 @@
             updateGlobalButtons();
         }
 
+        // === SUBTRACTION FUNCTIONS ===
+        async function removeOne() {
+            if (ones <= 0) return;
+
+            isAnimating = true;
+            updateGlobalButtons();
+
+            // Find the last bee and animate it flying away
+            const lastBeeIndex = ones - 1;
+            const slot = document.getElementById(`slot-${lastBeeIndex}`);
+            const bee = slot?.querySelector('.block-one');
+
+            if (bee) {
+                bee.classList.add('gathering-bee');
+                bee.style.setProperty('--dx', '100px');
+                bee.style.setProperty('--dy', '-50px');
+                await sleep(400);
+                bee.remove();
+            }
+
+            ones--;
+            updateDisplay();
+
+            // Show ghost bee in empty slot
+            if (slot) {
+                slot.innerHTML = svgBeeGhost;
+            }
+
+            isAnimating = false;
+            updateGlobalButtons();
+        }
+
+        async function performUnbundling() {
+            isAnimating = true;
+            updateGlobalButtons();
+
+            // Remove the last hive
+            const lastHive = els.tensContainer.lastElementChild;
+            if (lastHive) {
+                lastHive.classList.add('gathering-bee');
+                lastHive.style.setProperty('--dx', '100px');
+                lastHive.style.setProperty('--dy', '0px');
+                await sleep(400);
+                lastHive.remove();
+            }
+            tens--;
+            updateDisplay();
+
+            // Fill the ten frame with 10 bees
+            initTenFrame();
+            for (let i = 0; i < 10; i++) {
+                renderBeeInCell(i, 'standard');
+            }
+            ones = 10;
+            updateDisplay();
+
+            showFloatingText("拆成10只! (Unbundle)", els.onesRoom, '#16a34a');
+            await sleep(400);
+
+            isAnimating = false;
+            updateGlobalButtons();
+        }
+
         function resetGame() {
             isAnimating = false;
             document.body.style.cursor = 'default';
@@ -1612,7 +1681,27 @@
             els.mathBreakdown.classList.remove('hidden');
         }
 
+        // Subtraction decomposition display
+        // e.g., 13 - 5 = 13 - 3 - 2 (first remove 3 to get to 10, then remove 2 more)
+        function showSubtractionDecomposition(start, change, firstRemove, afterBorrow) {
+            let formula = '';
+            if (afterBorrow > 0) {
+                // Crossing 10: e.g., 13 - 5 = 13 - 3 - 2
+                formula = `<span class="formula-num" data-step="start">${start}</span> - ` +
+                    `<span class="formula-num" data-step="change">${change}</span> = ` +
+                    `<span class="formula-num" data-step="start">${start}</span> - ` +
+                    `<span class="formula-num" data-step="fill">${firstRemove}</span> - ` +
+                    `<span class="formula-num" data-step="remainder">${afterBorrow}</span>`;
+            } else {
+                // Simple subtraction
+                formula = `<span class="formula-num" data-step="start">${start}</span> - ` +
+                    `<span class="formula-num" data-step="change">${change}</span> = ` +
+                    `<span class="formula-num" data-step="result">${start - change}</span>`;
+            }
 
+            els.breakdownFormula.innerHTML = formula;
+            els.mathBreakdown.classList.remove('hidden');
+        }
 
         async function manualStep() {
             if (isAnimating) return;
@@ -1628,69 +1717,82 @@
             isAnimating = true;
             updateGlobalButtons();
 
-            // Check if we need CPA hints (approaching regrouping)
-            const willRegroup = (ones + 1) === 10 || ones === 9;
-            const isFillingPhase = cpaStep === 0 && remainderCount > 0;
+            if (demoOperator === '+') {
+                // === ADDITION LOGIC ===
+                const isFillingPhase = cpaStep === 0 && remainderCount > 0;
 
-            // Show educational message on first bee of fill phase (Only in Demo/Calc mode)
-            if (currentMode !== 'quiz' && isFillingPhase && calcProgress === 0 && needToFill > 0) {
-                const missing = 10 - ones;
-                highlightEmptySlots();
-                showStepMessage(`还差 <b>${missing}</b> 只凑满10! 🔍`, els.onesRoom, 1500);
-                updateFormulaHighlight('fill');
-                await sleep(800);
-                clearHighlights();
-            }
+                // Show educational message on first bee of fill phase
+                if (currentMode !== 'quiz' && isFillingPhase && calcProgress === 0 && needToFill > 0) {
+                    const missing = 10 - ones;
+                    highlightEmptySlots();
+                    showStepMessage(`还差 <b>${missing}</b> 只凑满10! 🔍`, els.onesRoom, 1500);
+                    updateFormulaHighlight('fill');
+                    await sleep(800);
+                    clearHighlights();
+                }
 
-            // Move ONE bee
-            // In Quiz mode, we just add it (false for animateFromWaiting)
-            // In Calc mode, we animate from waiting (true)
-            const animateWaiting = (currentMode === 'calc');
-            await addOne('added', animateWaiting);
-            calcProgress++;
+                // Add ONE bee
+                const animateWaiting = (currentMode === 'calc');
+                await addOne('added', animateWaiting);
+                calcProgress++;
 
-            // Remove one bee from the appropriate waiting group (Only in Calc mode)
-            if (currentMode === 'calc') {
-                // Always check fill-group first, then remainder-group
-                // This ensures we remove from fill first, then remainder
-                const fillGroup = els.waitingContainer.querySelector('.fill-group');
-                if (fillGroup && fillGroup.querySelector('.block-one')) {
-                    // Remove from fill group
-                    const beeInFill = fillGroup.querySelector('.block-one');
-                    beeInFill.remove();
-
-                    // Check if fill group is now empty
-                    if (!fillGroup.querySelector('.block-one')) {
-                        fillGroup.remove();
-                        const divider = els.waitingContainer.querySelector('.group-divider');
-                        if (divider) divider.remove();
-                    }
-                } else {
-                    // Fill group is empty or doesn't exist, try remainder group
-                    const remGroup = els.waitingContainer.querySelector('.remainder-group');
-                    if (remGroup && remGroup.querySelector('.block-one')) {
-                        const beeInRem = remGroup.querySelector('.block-one');
-                        beeInRem.remove();
-
-                        if (!remGroup.querySelector('.block-one')) {
-                            remGroup.remove();
+                // Remove one bee from the waiting group
+                if (currentMode === 'calc') {
+                    const fillGroup = els.waitingContainer.querySelector('.fill-group');
+                    if (fillGroup && fillGroup.querySelector('.block-one')) {
+                        const beeInFill = fillGroup.querySelector('.block-one');
+                        beeInFill.remove();
+                        if (!fillGroup.querySelector('.block-one')) {
+                            fillGroup.remove();
+                            const divider = els.waitingContainer.querySelector('.group-divider');
+                            if (divider) divider.remove();
+                        }
+                    } else {
+                        const remGroup = els.waitingContainer.querySelector('.remainder-group');
+                        if (remGroup && remGroup.querySelector('.block-one')) {
+                            const beeInRem = remGroup.querySelector('.block-one');
+                            beeInRem.remove();
+                            if (!remGroup.querySelector('.block-one')) {
+                                remGroup.remove();
+                            }
                         }
                     }
                 }
-            }
 
-            // Check if frame just became full (10 bees)
-            if (ones === 10) {
-                showStepMessage(`满10只啦! ✨<br>变成1个蜂巢!`, els.onesRoom, 2000);
-                els.onesRoom.classList.add('celebrating');
-                await sleep(1000);
-                els.onesRoom.classList.remove('celebrating');
+                // Check if frame is full - regroup
+                if (ones === 10) {
+                    showStepMessage(`满10只啦! ✨<br>变成1个蜂巢!`, els.onesRoom, 2000);
+                    els.onesRoom.classList.add('celebrating');
+                    await sleep(1000);
+                    els.onesRoom.classList.remove('celebrating');
+                    await performRegrouping();
+                    if (remainderCount > 0) {
+                        updateFormulaHighlight('remainder');
+                    }
+                }
 
-                // Perform regrouping
-                await performRegrouping();
+            } else {
+                // === SUBTRACTION LOGIC ===
+                // Show message on first removal
+                if (calcProgress === 0 && needToFill > 0) {
+                    showStepMessage(`先移走 <b>${needToFill}</b> 只! 👋`, els.onesRoom, 1500);
+                    updateFormulaHighlight('fill');
+                    await sleep(800);
+                }
 
-                // Update formula highlight to remainder phase
-                if (remainderCount > 0) {
+                // Remove ONE bee
+                await removeOne();
+                calcProgress++;
+
+                // Check if we hit 0 bees and need to borrow
+                if (ones === 0 && remainderCount > 0 && tens > 0) {
+                    showStepMessage(`蜂巢拆开! 🔓`, els.tensRoom, 1500);
+                    els.tensRoom.classList.add('celebrating');
+                    await sleep(800);
+                    els.tensRoom.classList.remove('celebrating');
+
+                    // Borrow: convert one hive to 10 bees
+                    await performUnbundling();
                     updateFormulaHighlight('remainder');
                 }
             }
@@ -1719,7 +1821,9 @@
                 els.stepBtn.classList.remove('btn-purple');
                 els.stepBtn.classList.add('btn-green');
             } else {
-                els.stepBtnText.innerText = `飞进 1 只 (剩 ${remaining})`;
+                // Different text for addition vs subtraction
+                const actionText = demoOperator === '+' ? '飞进' : '飞走';
+                els.stepBtnText.innerText = `${actionText} 1 只 (剩 ${remaining})`;
                 els.stepBtn.classList.add('btn-purple');
                 els.stepBtn.classList.remove('btn-green');
             }
@@ -1815,6 +1919,22 @@
 
         // Global for operator
         let currentOperator = '+';
+        let demoOperator = '+'; // Separate operator for Demo mode
+
+        // Toggle Demo operator (+/-)
+        function toggleDemoOperator() {
+            demoOperator = demoOperator === '+' ? '-' : '+';
+            const icon = document.getElementById('demoOperatorIcon');
+            const label = document.getElementById('changeLabel');
+
+            if (demoOperator === '+') {
+                icon.textContent = '➕';
+                label.textContent = '飞来';
+            } else {
+                icon.textContent = '➖';
+                label.textContent = '飞走';
+            }
+        }
 
         // --- Quiz Logic ---
         function nextQuestion() {
@@ -1872,10 +1992,9 @@
             const startVal = parseInt(els.inputStart.value) || 0;
             const changeVal = parseInt(els.inputChange.value) || 0;
 
-            // Default logic mainly for Demo/Calc mode (Addition)
+            // Default logic mainly for Demo/Calc mode
             if (currentMode === 'calc') {
-                currentOperator = '+'; // Reset to + for pure calc mode unless specific UI added
-                // ... Existing logic for Calc setup ...
+                currentOperator = demoOperator; // Use the demo operator toggle
                 ones = 0;
                 tens = 0;
                 els.tensContainer.innerHTML = '';
@@ -1896,36 +2015,57 @@
                 }
                 updateDisplay();
 
-                const emptySlots = 10 - ones;
-                if (changeVal > emptySlots && ones > 0) {
-                    needToFill = emptySlots;
-                    remainderCount = changeVal - emptySlots;
-                } else {
-                    needToFill = changeVal;
-                    remainderCount = 0;
-                }
+                if (demoOperator === '+') {
+                    // ADDITION LOGIC
+                    const emptySlots = 10 - ones;
+                    if (changeVal > emptySlots && ones > 0) {
+                        needToFill = emptySlots;
+                        remainderCount = changeVal - emptySlots;
+                    } else {
+                        needToFill = changeVal;
+                        remainderCount = 0;
+                    }
 
-                showDecomposition(startVal, changeVal, needToFill, remainderCount);
-                if (needToFill > 0 && remainderCount > 0) {
-                    groupWaitingBees(needToFill, remainderCount);
-                } else {
-                    els.waitingContainer.innerHTML = '';
-                    for (let i = 0; i < changeVal; i++) { addWaitingBee(); }
-                }
-                els.waitingArea.classList.remove('hidden');
+                    showDecomposition(startVal, changeVal, needToFill, remainderCount);
+                    if (needToFill > 0 && remainderCount > 0) {
+                        groupWaitingBees(needToFill, remainderCount);
+                    } else {
+                        els.waitingContainer.innerHTML = '';
+                        for (let i = 0; i < changeVal; i++) { addWaitingBee(); }
+                    }
+                    els.waitingArea.classList.remove('hidden');
 
-                // === MILESTONE 5: Show Number Bond Panel ===
-                if (remainderCount > 0) {
-                    const bondPanel = document.getElementById('number-bond-panel');
-                    document.getElementById('bond-start').textContent = startVal;
-                    document.getElementById('bond-change').textContent = changeVal;
-                    document.getElementById('bond-fill-input').value = '';
-                    document.getElementById('bond-remainder-input').value = '';
-                    document.getElementById('bond-feedback').classList.add('hidden');
-                    bondPanel.classList.remove('hidden');
-                    // Store expected values
-                    decomposition = { fill: needToFill, remainder: remainderCount };
+                    // Show Number Bond Panel for addition crossing 10
+                    if (remainderCount > 0) {
+                        const bondPanel = document.getElementById('number-bond-panel');
+                        document.getElementById('bond-start').textContent = startVal;
+                        document.getElementById('bond-change').textContent = changeVal;
+                        document.getElementById('bond-fill-input').value = '';
+                        document.getElementById('bond-remainder-input').value = '';
+                        document.getElementById('bond-feedback').classList.add('hidden');
+                        bondPanel.classList.remove('hidden');
+                        decomposition = { fill: needToFill, remainder: remainderCount };
+                    } else {
+                        document.getElementById('number-bond-panel').classList.add('hidden');
+                    }
+
                 } else {
+                    // SUBTRACTION LOGIC
+                    // For subtraction crossing 10: e.g., 12 - 5 = 12 - 2 - 3 = 10 - 3 = 7
+                    // First remove bees to get to 10, then need to "borrow" from tens
+
+                    if (ones >= changeVal) {
+                        // Simple subtraction - no borrowing needed
+                        needToFill = changeVal; // bees to remove
+                        remainderCount = 0;
+                    } else {
+                        // Needs borrowing! Remove what we have, then borrow
+                        needToFill = ones; // First remove down to 0
+                        remainderCount = changeVal - ones; // Then remove this many after borrowing
+                    }
+
+                    showSubtractionDecomposition(startVal, changeVal, needToFill, remainderCount);
+                    els.waitingArea.classList.add('hidden'); // No waiting bees for subtraction
                     document.getElementById('number-bond-panel').classList.add('hidden');
                 }
 

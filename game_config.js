@@ -7,7 +7,7 @@ const APP_CONFIG = {
         probability: false,    // Probability Games
         math: true,           // Bee Farm Math
         dictionary: true,     // Magic Dictionary
-        englishStation: true, // English Station
+        sentenceLab: true,    // May's Sentence Lab
         fireworks: true,      // Fireworks Launcher
         make24: true          // Make 24 Game
 

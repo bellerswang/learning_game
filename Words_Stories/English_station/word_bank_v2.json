@@ -1,0 +1,2011 @@
+[
+    {
+        "id": "art_the_01",
+        "text": "The",
+        "type": "article",
+        "level": 1,
+        "tags": [
+            "grammar",
+            "basic"
+        ],
+        "emoji": "📝",
+        "isCapitalized": true
+    },
+    {
+        "id": "art_a_01",
+        "text": "A",
+        "type": "article",
+        "level": 1,
+        "tags": [
+            "grammar",
+            "basic"
+        ],
+        "emoji": "📝",
+        "isCapitalized": true
+    },
+    {
+        "id": "art_an_01",
+        "text": "An",
+        "type": "article",
+        "level": 1,
+        "tags": [
+            "grammar",
+            "basic"
+        ],
+        "emoji": "📝",
+        "isCapitalized": true
+    },
+    {
+        "id": "art_my_01",
+        "text": "My",
+        "type": "article",
+        "level": 1,
+        "tags": [
+            "grammar",
+            "possessive"
+        ],
+        "emoji": "👤",
+        "isCapitalized": true
+    },
+    {
+        "id": "n_mum_01",
+        "text": "mum",
+        "type": "noun",
+        "level": 1,
+        "tags": [
+            "life",
+            "family",
+            "uk_culture"
+        ],
+        "forms": {
+            "plural": "mums"
+        },
+        "emoji": "👩"
+    },
+    {
+        "id": "n_dad_01",
+        "text": "dad",
+        "type": "noun",
+        "level": 1,
+        "tags": [
+            "life",
+            "family",
+            "uk_culture"
+        ],
+        "forms": {
+            "plural": "dads"
+        },
+        "emoji": "👨"
+    },
+    {
+        "id": "n_gran_01",
+        "text": "gran",
+        "type": "noun",
+        "level": 1,
+        "tags": [
+            "life",
+            "family",
+            "uk_culture"
+        ],
+        "forms": {
+            "plural": "grans"
+        },
+        "emoji": "👵"
+    },
+    {
+        "id": "n_grandad_01",
+        "text": "grandad",
+        "type": "noun",
+        "level": 1,
+        "tags": [
+            "life",
+            "family",
+            "uk_culture"
+        ],
+        "forms": {
+            "plural": "grandads"
+        },
+        "emoji": "👴"
+    },
+    {
+        "id": "n_teacher_01",
+        "text": "teacher",
+        "type": "noun",
+        "level": 1,
+        "tags": [
+            "life",
+            "school",
+            "people"
+        ],
+        "forms": {
+            "plural": "teachers"
+        },
+        "emoji": "👩‍🏫"
+    },
+    {
+        "id": "n_friend_01",
+        "text": "friend",
+        "type": "noun",
+        "level": 1,
+        "tags": [
+            "life",
+            "people",
+            "feelings"
+        ],
+        "forms": {
+            "plural": "friends"
+        },
+        "emoji": "🤝"
+    },
+    {
+        "id": "n_postman_01",
+        "text": "postman",
+        "type": "noun",
+        "level": 2,
+        "tags": [
+            "life",
+            "people",
+            "uk_culture"
+        ],
+        "forms": {
+            "plural": "postmen"
+        },
+        "emoji": "📮"
+    },
+    {
+        "id": "n_king_01",
+        "text": "king",
+        "type": "noun",
+        "level": 2,
+        "tags": [
+            "life",
+            "uk_culture",
+            "royalty"
+        ],
+        "forms": {
+            "plural": "kings"
+        },
+        "emoji": "👑"
+    },
+    {
+        "id": "n_queen_01",
+        "text": "queen",
+        "type": "noun",
+        "level": 2,
+        "tags": [
+            "life",
+            "uk_culture",
+            "royalty"
+        ],
+        "forms": {
+            "plural": "queens"
+        },
+        "emoji": "👸"
+    },
+    {
+        "id": "n_cat_01",
+        "text": "cat",
+        "type": "noun",
+        "level": 1,
+        "tags": [
+            "life",
+            "animals",
+            "pets"
+        ],
+        "forms": {
+            "plural": "cats"
+        },
+        "emoji": "🐱"
+    },
+    {
+        "id": "n_dog_01",
+        "text": "dog",
+        "type": "noun",
+        "level": 1,
+        "tags": [
+            "life",
+            "animals",
+            "pets"
+        ],
+        "forms": {
+            "plural": "dogs"
+        },
+        "emoji": "🐕"
+    },
+    {
+        "id": "n_bird_01",
+        "text": "bird",
+        "type": "noun",
+        "level": 1,
+        "tags": [
+            "life",
+            "animals",
+            "nature"
+        ],
+        "forms": {
+            "plural": "birds"
+        },
+        "emoji": "🐦"
+    },
+    {
+        "id": "n_fox_01",
+        "text": "fox",
+        "type": "noun",
+        "level": 2,
+        "tags": [
+            "interests",
+            "animals",
+            "uk_wildlife"
+        ],
+        "forms": {
+            "plural": "foxes"
+        },
+        "emoji": "🦊"
+    },
+    {
+        "id": "n_hedgehog_01",
+        "text": "hedgehog",
+        "type": "noun",
+        "level": 2,
+        "tags": [
+            "interests",
+            "animals",
+            "uk_wildlife"
+        ],
+        "forms": {
+            "plural": "hedgehogs"
+        },
+        "emoji": "🦔"
+    },
+    {
+        "id": "n_squirrel_01",
+        "text": "squirrel",
+        "type": "noun",
+        "level": 2,
+        "tags": [
+            "interests",
+            "animals",
+            "uk_wildlife"
+        ],
+        "forms": {
+            "plural": "squirrels"
+        },
+        "emoji": "🐿️"
+    },
+    {
+        "id": "n_badger_01",
+        "text": "badger",
+        "type": "noun",
+        "level": 3,
+        "tags": [
+            "interests",
+            "animals",
+            "uk_wildlife"
+        ],
+        "forms": {
+            "plural": "badgers"
+        },
+        "emoji": "🦡"
+    },
+    {
+        "id": "n_robin_01",
+        "text": "robin",
+        "type": "noun",
+        "level": 2,
+        "tags": [
+            "interests",
+            "animals",
+            "uk_wildlife"
+        ],
+        "forms": {
+            "plural": "robins"
+        },
+        "emoji": "🐦"
+    },
+    {
+        "id": "n_shark_01",
+        "text": "shark",
+        "type": "noun",
+        "level": 2,
+        "tags": [
+            "interests",
+            "animals",
+            "sea"
+        ],
+        "forms": {
+            "plural": "sharks"
+        },
+        "emoji": "🦈"
+    },
+    {
+        "id": "n_dinosaur_01",
+        "text": "dinosaur",
+        "type": "noun",
+        "level": 3,
+        "tags": [
+            "interests",
+            "animals",
+            "history"
+        ],
+        "forms": {
+            "plural": "dinosaurs"
+        },
+        "emoji": "🦕"
+    },
+    {
+        "id": "n_biscuit_01",
+        "text": "biscuit",
+        "type": "noun",
+        "level": 1,
+        "tags": [
+            "life",
+            "food",
+            "uk_culture"
+        ],
+        "forms": {
+            "plural": "biscuits"
+        },
+        "emoji": "🍪"
+    },
+    {
+        "id": "n_tea_01",
+        "text": "tea",
+        "type": "noun",
+        "level": 1,
+        "tags": [
+            "life",
+            "food",
+            "uk_culture"
+        ],
+        "emoji": "🍵"
+    },
+    {
+        "id": "n_porridge_01",
+        "text": "porridge",
+        "type": "noun",
+        "level": 2,
+        "tags": [
+            "life",
+            "food",
+            "breakfast"
+        ],
+        "emoji": "🥣"
+    },
+    {
+        "id": "n_toast_01",
+        "text": "toast",
+        "type": "noun",
+        "level": 1,
+        "tags": [
+            "life",
+            "food",
+            "breakfast"
+        ],
+        "emoji": "🍞"
+    },
+    {
+        "id": "n_chips_01",
+        "text": "chips",
+        "type": "noun",
+        "level": 1,
+        "tags": [
+            "life",
+            "food",
+            "uk_culture"
+        ],
+        "emoji": "🍟"
+    },
+    {
+        "id": "n_jam_01",
+        "text": "jam",
+        "type": "noun",
+        "level": 1,
+        "tags": [
+            "life",
+            "food"
+        ],
+        "forms": {
+            "plural": "jams"
+        },
+        "emoji": "🍓"
+    },
+    {
+        "id": "n_apple_01",
+        "text": "apple",
+        "type": "noun",
+        "level": 1,
+        "tags": [
+            "life",
+            "food",
+            "fruit"
+        ],
+        "forms": {
+            "plural": "apples"
+        },
+        "emoji": "🍎"
+    },
+    {
+        "id": "n_cake_01",
+        "text": "cake",
+        "type": "noun",
+        "level": 1,
+        "tags": [
+            "life",
+            "food"
+        ],
+        "forms": {
+            "plural": "cakes"
+        },
+        "emoji": "🎂"
+    },
+    {
+        "id": "n_garden_01",
+        "text": "garden",
+        "type": "noun",
+        "level": 1,
+        "tags": [
+            "life",
+            "home",
+            "uk_culture"
+        ],
+        "forms": {
+            "plural": "gardens"
+        },
+        "emoji": "🌳"
+    },
+    {
+        "id": "n_bedroom_01",
+        "text": "bedroom",
+        "type": "noun",
+        "level": 2,
+        "tags": [
+            "life",
+            "home"
+        ],
+        "forms": {
+            "plural": "bedrooms"
+        },
+        "emoji": "🛏️"
+    },
+    {
+        "id": "n_umbrella_01",
+        "text": "umbrella",
+        "type": "noun",
+        "level": 2,
+        "tags": [
+            "life",
+            "weather",
+            "uk_culture"
+        ],
+        "forms": {
+            "plural": "umbrellas"
+        },
+        "emoji": "☂️"
+    },
+    {
+        "id": "n_wellies_01",
+        "text": "wellies",
+        "type": "noun",
+        "level": 2,
+        "tags": [
+            "life",
+            "clothing",
+            "uk_culture"
+        ],
+        "emoji": "👢"
+    },
+    {
+        "id": "n_school_01",
+        "text": "school",
+        "type": "noun",
+        "level": 1,
+        "tags": [
+            "life",
+            "places"
+        ],
+        "forms": {
+            "plural": "schools"
+        },
+        "emoji": "🏫"
+    },
+    {
+        "id": "n_park_01",
+        "text": "park",
+        "type": "noun",
+        "level": 1,
+        "tags": [
+            "life",
+            "places"
+        ],
+        "forms": {
+            "plural": "parks"
+        },
+        "emoji": "🌳"
+    },
+    {
+        "id": "n_seaside_01",
+        "text": "seaside",
+        "type": "noun",
+        "level": 2,
+        "tags": [
+            "life",
+            "places",
+            "uk_culture"
+        ],
+        "emoji": "🏖️"
+    },
+    {
+        "id": "n_london_01",
+        "text": "London",
+        "type": "noun",
+        "level": 2,
+        "tags": [
+            "life",
+            "places",
+            "uk_culture",
+            "geography"
+        ],
+        "emoji": "🇬🇧"
+    },
+    {
+        "id": "n_football_01",
+        "text": "football",
+        "type": "noun",
+        "level": 1,
+        "tags": [
+            "interests",
+            "sports",
+            "uk_culture"
+        ],
+        "forms": {
+            "plural": "footballs"
+        },
+        "emoji": "⚽"
+    },
+    {
+        "id": "n_cricket_01",
+        "text": "cricket",
+        "type": "noun",
+        "level": 2,
+        "tags": [
+            "interests",
+            "sports",
+            "uk_culture"
+        ],
+        "emoji": "🏏"
+    },
+    {
+        "id": "n_rugby_01",
+        "text": "rugby",
+        "type": "noun",
+        "level": 2,
+        "tags": [
+            "interests",
+            "sports",
+            "uk_culture"
+        ],
+        "emoji": "🏉"
+    },
+    {
+        "id": "n_swimming_01",
+        "text": "swimming",
+        "type": "noun",
+        "level": 2,
+        "tags": [
+            "interests",
+            "sports",
+            "exercise"
+        ],
+        "emoji": "🏊"
+    },
+    {
+        "id": "n_goal_01",
+        "text": "goal",
+        "type": "noun",
+        "level": 2,
+        "tags": [
+            "interests",
+            "sports"
+        ],
+        "forms": {
+            "plural": "goals"
+        },
+        "emoji": "🥅"
+    },
+    {
+        "id": "n_dragon_01",
+        "text": "dragon",
+        "type": "noun",
+        "level": 2,
+        "tags": [
+            "interests",
+            "fantasy",
+            "stories"
+        ],
+        "forms": {
+            "plural": "dragons"
+        },
+        "emoji": "🐉"
+    },
+    {
+        "id": "n_wizard_01",
+        "text": "wizard",
+        "type": "noun",
+        "level": 2,
+        "tags": [
+            "interests",
+            "fantasy",
+            "stories"
+        ],
+        "forms": {
+            "plural": "wizards"
+        },
+        "emoji": "🧙"
+    },
+    {
+        "id": "n_unicorn_01",
+        "text": "unicorn",
+        "type": "noun",
+        "level": 2,
+        "tags": [
+            "interests",
+            "fantasy",
+            "stories"
+        ],
+        "forms": {
+            "plural": "unicorns"
+        },
+        "emoji": "🦄"
+    },
+    {
+        "id": "n_castle_01",
+        "text": "castle",
+        "type": "noun",
+        "level": 2,
+        "tags": [
+            "interests",
+            "fantasy",
+            "history"
+        ],
+        "forms": {
+            "plural": "castles"
+        },
+        "emoji": "🏰"
+    },
+    {
+        "id": "n_wand_01",
+        "text": "wand",
+        "type": "noun",
+        "level": 2,
+        "tags": [
+            "interests",
+            "fantasy",
+            "stories"
+        ],
+        "forms": {
+            "plural": "wands"
+        },
+        "emoji": "✨"
+    },
+    {
+        "id": "n_potion_01",
+        "text": "potion",
+        "type": "noun",
+        "level": 3,
+        "tags": [
+            "interests",
+            "fantasy",
+            "stories"
+        ],
+        "forms": {
+            "plural": "potions"
+        },
+        "emoji": "🧪"
+    },
+    {
+        "id": "n_princess_01",
+        "text": "princess",
+        "type": "noun",
+        "level": 2,
+        "tags": [
+            "interests",
+            "fantasy",
+            "stories"
+        ],
+        "forms": {
+            "plural": "princesses"
+        },
+        "emoji": "👸"
+    },
+    {
+        "id": "n_knight_01",
+        "text": "knight",
+        "type": "noun",
+        "level": 3,
+        "tags": [
+            "interests",
+            "fantasy",
+            "history"
+        ],
+        "forms": {
+            "plural": "knights"
+        },
+        "emoji": "🛡️"
+    },
+    {
+        "id": "n_planet_01",
+        "text": "planet",
+        "type": "noun",
+        "level": 3,
+        "tags": [
+            "knowledge",
+            "science",
+            "space"
+        ],
+        "forms": {
+            "plural": "planets"
+        },
+        "emoji": "🪐"
+    },
+    {
+        "id": "n_volcano_01",
+        "text": "volcano",
+        "type": "noun",
+        "level": 3,
+        "tags": [
+            "knowledge",
+            "science",
+            "geography"
+        ],
+        "forms": {
+            "plural": "volcanoes"
+        },
+        "emoji": "🌋"
+    },
+    {
+        "id": "n_fossil_01",
+        "text": "fossil",
+        "type": "noun",
+        "level": 3,
+        "tags": [
+            "knowledge",
+            "science",
+            "history"
+        ],
+        "forms": {
+            "plural": "fossils"
+        },
+        "emoji": "🦴"
+    },
+    {
+        "id": "n_skeleton_01",
+        "text": "skeleton",
+        "type": "noun",
+        "level": 3,
+        "tags": [
+            "knowledge",
+            "science",
+            "body"
+        ],
+        "forms": {
+            "plural": "skeletons"
+        },
+        "emoji": "💀"
+    },
+    {
+        "id": "n_habitat_01",
+        "text": "habitat",
+        "type": "noun",
+        "level": 4,
+        "tags": [
+            "knowledge",
+            "science",
+            "nature"
+        ],
+        "forms": {
+            "plural": "habitats"
+        },
+        "emoji": "🏕️"
+    },
+    {
+        "id": "n_electricity_01",
+        "text": "electricity",
+        "type": "noun",
+        "level": 4,
+        "tags": [
+            "knowledge",
+            "science"
+        ],
+        "emoji": "⚡"
+    },
+    {
+        "id": "n_magnet_01",
+        "text": "magnet",
+        "type": "noun",
+        "level": 3,
+        "tags": [
+            "knowledge",
+            "science"
+        ],
+        "forms": {
+            "plural": "magnets"
+        },
+        "emoji": "🧲"
+    },
+    {
+        "id": "n_river_01",
+        "text": "river",
+        "type": "noun",
+        "level": 2,
+        "tags": [
+            "knowledge",
+            "geography",
+            "nature"
+        ],
+        "forms": {
+            "plural": "rivers"
+        },
+        "emoji": "🌊"
+    },
+    {
+        "id": "n_mountain_01",
+        "text": "mountain",
+        "type": "noun",
+        "level": 2,
+        "tags": [
+            "knowledge",
+            "geography",
+            "nature"
+        ],
+        "forms": {
+            "plural": "mountains"
+        },
+        "emoji": "⛰️"
+    },
+    {
+        "id": "n_island_01",
+        "text": "island",
+        "type": "noun",
+        "level": 3,
+        "tags": [
+            "knowledge",
+            "geography"
+        ],
+        "forms": {
+            "plural": "islands"
+        },
+        "emoji": "🏝️"
+    },
+    {
+        "id": "n_village_01",
+        "text": "village",
+        "type": "noun",
+        "level": 2,
+        "tags": [
+            "knowledge",
+            "geography",
+            "uk_culture"
+        ],
+        "forms": {
+            "plural": "villages"
+        },
+        "emoji": "🏡"
+    },
+    {
+        "id": "n_city_01",
+        "text": "city",
+        "type": "noun",
+        "level": 2,
+        "tags": [
+            "knowledge",
+            "geography"
+        ],
+        "forms": {
+            "plural": "cities"
+        },
+        "emoji": "🏙️"
+    },
+    {
+        "id": "n_thames_01",
+        "text": "River Thames",
+        "type": "noun",
+        "level": 3,
+        "tags": [
+            "knowledge",
+            "geography",
+            "london",
+            "uk_culture"
+        ],
+        "emoji": "🌊"
+    },
+    {
+        "id": "n_soldier_01",
+        "text": "soldier",
+        "type": "noun",
+        "level": 3,
+        "tags": [
+            "knowledge",
+            "history"
+        ],
+        "forms": {
+            "plural": "soldiers"
+        },
+        "emoji": "💂"
+    },
+    {
+        "id": "n_pyramid_01",
+        "text": "pyramid",
+        "type": "noun",
+        "level": 3,
+        "tags": [
+            "knowledge",
+            "history",
+            "geography"
+        ],
+        "forms": {
+            "plural": "pyramids"
+        },
+        "emoji": "🔺"
+    },
+    {
+        "id": "n_invention_01",
+        "text": "invention",
+        "type": "noun",
+        "level": 4,
+        "tags": [
+            "knowledge",
+            "history",
+            "science"
+        ],
+        "forms": {
+            "plural": "inventions"
+        },
+        "emoji": "💡"
+    },
+    {
+        "id": "n_empire_01",
+        "text": "empire",
+        "type": "noun",
+        "level": 4,
+        "tags": [
+            "knowledge",
+            "history"
+        ],
+        "forms": {
+            "plural": "empires"
+        },
+        "emoji": "👑"
+    },
+    {
+        "id": "v_run_01",
+        "text": "runs",
+        "type": "verb",
+        "level": 1,
+        "tags": [
+            "life",
+            "action",
+            "sports"
+        ],
+        "forms": {
+            "past": "ran",
+            "present": "runs",
+            "ing": "running",
+            "base": "run"
+        },
+        "emoji": "🏃"
+    },
+    {
+        "id": "v_jump_01",
+        "text": "jumps",
+        "type": "verb",
+        "level": 1,
+        "tags": [
+            "life",
+            "action"
+        ],
+        "forms": {
+            "past": "jumped",
+            "present": "jumps",
+            "ing": "jumping",
+            "base": "jump"
+        },
+        "emoji": "🦘"
+    },
+    {
+        "id": "v_eat_01",
+        "text": "eats",
+        "type": "verb",
+        "level": 1,
+        "tags": [
+            "life",
+            "food",
+            "action"
+        ],
+        "forms": {
+            "past": "ate",
+            "present": "eats",
+            "ing": "eating",
+            "base": "eat"
+        },
+        "emoji": "🍽️"
+    },
+    {
+        "id": "v_sleep_01",
+        "text": "sleeps",
+        "type": "verb",
+        "level": 1,
+        "tags": [
+            "life",
+            "action"
+        ],
+        "forms": {
+            "past": "slept",
+            "present": "sleeps",
+            "ing": "sleeping",
+            "base": "sleep"
+        },
+        "emoji": "😴"
+    },
+    {
+        "id": "v_play_01",
+        "text": "plays",
+        "type": "verb",
+        "level": 1,
+        "tags": [
+            "life",
+            "action",
+            "fun"
+        ],
+        "forms": {
+            "past": "played",
+            "present": "plays",
+            "ing": "playing",
+            "base": "play"
+        },
+        "emoji": "🎮"
+    },
+    {
+        "id": "v_read_01",
+        "text": "reads",
+        "type": "verb",
+        "level": 1,
+        "tags": [
+            "life",
+            "school",
+            "action"
+        ],
+        "forms": {
+            "past": "read",
+            "present": "reads",
+            "ing": "reading",
+            "base": "read"
+        },
+        "emoji": "📚"
+    },
+    {
+        "id": "v_write_01",
+        "text": "writes",
+        "type": "verb",
+        "level": 2,
+        "tags": [
+            "life",
+            "school",
+            "action"
+        ],
+        "forms": {
+            "past": "wrote",
+            "present": "writes",
+            "ing": "writing",
+            "base": "write"
+        },
+        "emoji": "✏️"
+    },
+    {
+        "id": "v_sing_01",
+        "text": "sings",
+        "type": "verb",
+        "level": 1,
+        "tags": [
+            "interests",
+            "music",
+            "action"
+        ],
+        "forms": {
+            "past": "sang",
+            "present": "sings",
+            "ing": "singing",
+            "base": "sing"
+        },
+        "emoji": "🎤"
+    },
+    {
+        "id": "v_dance_01",
+        "text": "dances",
+        "type": "verb",
+        "level": 2,
+        "tags": [
+            "interests",
+            "music",
+            "action"
+        ],
+        "forms": {
+            "past": "danced",
+            "present": "dances",
+            "ing": "dancing",
+            "base": "dance"
+        },
+        "emoji": "💃"
+    },
+    {
+        "id": "v_fly_01",
+        "text": "flies",
+        "type": "verb",
+        "level": 2,
+        "tags": [
+            "interests",
+            "fantasy",
+            "action"
+        ],
+        "forms": {
+            "past": "flew",
+            "present": "flies",
+            "ing": "flying",
+            "base": "fly"
+        },
+        "emoji": "✈️"
+    },
+    {
+        "id": "v_swim_01",
+        "text": "swims",
+        "type": "verb",
+        "level": 2,
+        "tags": [
+            "interests",
+            "sports",
+            "action"
+        ],
+        "forms": {
+            "past": "swam",
+            "present": "swims",
+            "ing": "swimming",
+            "base": "swim"
+        },
+        "emoji": "🏊"
+    },
+    {
+        "id": "v_climb_01",
+        "text": "climbs",
+        "type": "verb",
+        "level": 2,
+        "tags": [
+            "life",
+            "action",
+            "adventure"
+        ],
+        "forms": {
+            "past": "climbed",
+            "present": "climbs",
+            "ing": "climbing",
+            "base": "climb"
+        },
+        "emoji": "🧗"
+    },
+    {
+        "id": "v_draw_01",
+        "text": "draws",
+        "type": "verb",
+        "level": 2,
+        "tags": [
+            "interests",
+            "art",
+            "action"
+        ],
+        "forms": {
+            "past": "drew",
+            "present": "draws",
+            "ing": "drawing",
+            "base": "draw"
+        },
+        "emoji": "🎨"
+    },
+    {
+        "id": "v_paint_01",
+        "text": "paints",
+        "type": "verb",
+        "level": 2,
+        "tags": [
+            "interests",
+            "art",
+            "action"
+        ],
+        "forms": {
+            "past": "painted",
+            "present": "paints",
+            "ing": "painting",
+            "base": "paint"
+        },
+        "emoji": "🖌️"
+    },
+    {
+        "id": "v_build_01",
+        "text": "builds",
+        "type": "verb",
+        "level": 2,
+        "tags": [
+            "interests",
+            "games",
+            "action"
+        ],
+        "forms": {
+            "past": "built",
+            "present": "builds",
+            "ing": "building",
+            "base": "build"
+        },
+        "emoji": "🧱"
+    },
+    {
+        "id": "v_roar_01",
+        "text": "roars",
+        "type": "verb",
+        "level": 2,
+        "tags": [
+            "interests",
+            "animals",
+            "action"
+        ],
+        "forms": {
+            "past": "roared",
+            "present": "roars",
+            "ing": "roaring",
+            "base": "roar"
+        },
+        "emoji": "🦁"
+    },
+    {
+        "id": "v_hunt_01",
+        "text": "hunts",
+        "type": "verb",
+        "level": 3,
+        "tags": [
+            "interests",
+            "animals",
+            "action"
+        ],
+        "forms": {
+            "past": "hunted",
+            "present": "hunts",
+            "ing": "hunting",
+            "base": "hunt"
+        },
+        "emoji": "🎯"
+    },
+    {
+        "id": "v_cycle_01",
+        "text": "cycles",
+        "type": "verb",
+        "level": 2,
+        "tags": [
+            "life",
+            "transport",
+            "exercise"
+        ],
+        "forms": {
+            "past": "cycled",
+            "present": "cycles",
+            "ing": "cycling",
+            "base": "cycle"
+        },
+        "emoji": "🚲"
+    },
+    {
+        "id": "v_explore_01",
+        "text": "explores",
+        "type": "verb",
+        "level": 3,
+        "tags": [
+            "interests",
+            "adventure",
+            "action"
+        ],
+        "forms": {
+            "past": "explored",
+            "present": "explores",
+            "ing": "exploring",
+            "base": "explore"
+        },
+        "emoji": "🔍"
+    },
+    {
+        "id": "v_discover_01",
+        "text": "discovers",
+        "type": "verb",
+        "level": 4,
+        "tags": [
+            "knowledge",
+            "science",
+            "action"
+        ],
+        "forms": {
+            "past": "discovered",
+            "present": "discovers",
+            "ing": "discovering",
+            "base": "discover"
+        },
+        "emoji": "💡"
+    },
+    {
+        "id": "v_love_01",
+        "text": "loves",
+        "type": "verb",
+        "level": 1,
+        "tags": [
+            "life",
+            "feelings",
+            "action"
+        ],
+        "forms": {
+            "past": "loved",
+            "present": "loves",
+            "ing": "loving",
+            "base": "love"
+        },
+        "emoji": "❤️"
+    },
+    {
+        "id": "v_help_01",
+        "text": "helps",
+        "type": "verb",
+        "level": 1,
+        "tags": [
+            "life",
+            "action",
+            "kindness"
+        ],
+        "forms": {
+            "past": "helped",
+            "present": "helps",
+            "ing": "helping",
+            "base": "help"
+        },
+        "emoji": "🤝"
+    },
+    {
+        "id": "v_bake_01",
+        "text": "bakes",
+        "type": "verb",
+        "level": 2,
+        "tags": [
+            "life",
+            "food",
+            "action"
+        ],
+        "forms": {
+            "past": "baked",
+            "present": "bakes",
+            "ing": "baking",
+            "base": "bake"
+        },
+        "emoji": "🧁"
+    },
+    {
+        "id": "adj_happy_01",
+        "text": "happy",
+        "type": "adjective",
+        "level": 1,
+        "tags": [
+            "life",
+            "feelings"
+        ],
+        "emoji": "😊"
+    },
+    {
+        "id": "adj_sad_01",
+        "text": "sad",
+        "type": "adjective",
+        "level": 1,
+        "tags": [
+            "life",
+            "feelings"
+        ],
+        "emoji": "😢"
+    },
+    {
+        "id": "adj_cross_01",
+        "text": "cross",
+        "type": "adjective",
+        "level": 2,
+        "tags": [
+            "life",
+            "feelings",
+            "uk_culture"
+        ],
+        "emoji": "😠"
+    },
+    {
+        "id": "adj_tired_01",
+        "text": "tired",
+        "type": "adjective",
+        "level": 1,
+        "tags": [
+            "life",
+            "feelings"
+        ],
+        "emoji": "😴"
+    },
+    {
+        "id": "adj_brilliant_01",
+        "text": "brilliant",
+        "type": "adjective",
+        "level": 2,
+        "tags": [
+            "life",
+            "feelings",
+            "uk_culture"
+        ],
+        "emoji": "🌟"
+    },
+    {
+        "id": "adj_lovely_01",
+        "text": "lovely",
+        "type": "adjective",
+        "level": 2,
+        "tags": [
+            "life",
+            "feelings",
+            "uk_culture"
+        ],
+        "emoji": "💕"
+    },
+    {
+        "id": "adj_cosy_01",
+        "text": "cosy",
+        "type": "adjective",
+        "level": 2,
+        "tags": [
+            "life",
+            "feelings",
+            "uk_culture"
+        ],
+        "emoji": "🏠"
+    },
+    {
+        "id": "adj_frightened_01",
+        "text": "frightened",
+        "type": "adjective",
+        "level": 3,
+        "tags": [
+            "life",
+            "feelings"
+        ],
+        "emoji": "😨"
+    },
+    {
+        "id": "adj_big_01",
+        "text": "big",
+        "type": "adjective",
+        "level": 1,
+        "tags": [
+            "life",
+            "size"
+        ],
+        "emoji": "📏"
+    },
+    {
+        "id": "adj_little_01",
+        "text": "little",
+        "type": "adjective",
+        "level": 1,
+        "tags": [
+            "life",
+            "size"
+        ],
+        "emoji": "🐜"
+    },
+    {
+        "id": "adj_fast_01",
+        "text": "fast",
+        "type": "adjective",
+        "level": 1,
+        "tags": [
+            "life",
+            "speed"
+        ],
+        "emoji": "🚀"
+    },
+    {
+        "id": "adj_slow_01",
+        "text": "slow",
+        "type": "adjective",
+        "level": 1,
+        "tags": [
+            "life",
+            "speed"
+        ],
+        "emoji": "🐢"
+    },
+    {
+        "id": "adj_brave_01",
+        "text": "brave",
+        "type": "adjective",
+        "level": 2,
+        "tags": [
+            "interests",
+            "fantasy",
+            "feelings"
+        ],
+        "emoji": "🦸"
+    },
+    {
+        "id": "adj_fierce_01",
+        "text": "fierce",
+        "type": "adjective",
+        "level": 3,
+        "tags": [
+            "interests",
+            "fantasy",
+            "animals"
+        ],
+        "emoji": "🔥"
+    },
+    {
+        "id": "adj_invisible_01",
+        "text": "invisible",
+        "type": "adjective",
+        "level": 3,
+        "tags": [
+            "interests",
+            "fantasy"
+        ],
+        "emoji": "👻"
+    },
+    {
+        "id": "adj_magical_01",
+        "text": "magical",
+        "type": "adjective",
+        "level": 3,
+        "tags": [
+            "interests",
+            "fantasy"
+        ],
+        "emoji": "✨"
+    },
+    {
+        "id": "adj_furry_01",
+        "text": "furry",
+        "type": "adjective",
+        "level": 2,
+        "tags": [
+            "interests",
+            "animals"
+        ],
+        "emoji": "🧸"
+    },
+    {
+        "id": "adj_ancient_01",
+        "text": "ancient",
+        "type": "adjective",
+        "level": 3,
+        "tags": [
+            "knowledge",
+            "history"
+        ],
+        "emoji": "🏺"
+    },
+    {
+        "id": "adj_victorian_01",
+        "text": "Victorian",
+        "type": "adjective",
+        "level": 4,
+        "tags": [
+            "knowledge",
+            "history",
+            "uk_culture"
+        ],
+        "emoji": "🎩"
+    },
+    {
+        "id": "adj_roman_01",
+        "text": "Roman",
+        "type": "adjective",
+        "level": 3,
+        "tags": [
+            "knowledge",
+            "history"
+        ],
+        "emoji": "🏛️"
+    },
+    {
+        "id": "adj_heavy_01",
+        "text": "heavy",
+        "type": "adjective",
+        "level": 2,
+        "tags": [
+            "knowledge",
+            "maths",
+            "science"
+        ],
+        "emoji": "🏋️"
+    },
+    {
+        "id": "adj_light_01",
+        "text": "light",
+        "type": "adjective",
+        "level": 2,
+        "tags": [
+            "knowledge",
+            "maths",
+            "science"
+        ],
+        "emoji": "🪶"
+    },
+    {
+        "id": "adj_mysterious_01",
+        "text": "mysterious",
+        "type": "adjective",
+        "level": 4,
+        "tags": [
+            "interests",
+            "fantasy",
+            "stories"
+        ],
+        "emoji": "🔮"
+    },
+    {
+        "id": "adj_exhausted_01",
+        "text": "exhausted",
+        "type": "adjective",
+        "level": 5,
+        "tags": [
+            "life",
+            "feelings"
+        ],
+        "emoji": "😫"
+    },
+    {
+        "id": "adj_magnificent_01",
+        "text": "magnificent",
+        "type": "adjective",
+        "level": 5,
+        "tags": [
+            "interests",
+            "fantasy",
+            "feelings"
+        ],
+        "emoji": "👑"
+    },
+    {
+        "id": "adj_curious_01",
+        "text": "curious",
+        "type": "adjective",
+        "level": 3,
+        "tags": [
+            "life",
+            "feelings",
+            "knowledge"
+        ],
+        "emoji": "🤔"
+    },
+    {
+        "id": "adj_colourful_01",
+        "text": "colourful",
+        "type": "adjective",
+        "level": 2,
+        "tags": [
+            "life",
+            "art",
+            "uk_culture"
+        ],
+        "emoji": "🌈"
+    },
+    {
+        "id": "adj_hungry_01",
+        "text": "hungry",
+        "type": "adjective",
+        "level": 1,
+        "tags": [
+            "life",
+            "feelings",
+            "food"
+        ],
+        "emoji": "😋"
+    },
+    {
+        "id": "adj_fluffy_01",
+        "text": "fluffy",
+        "type": "adjective",
+        "level": 2,
+        "tags": [
+            "life",
+            "animals"
+        ],
+        "emoji": "☁️"
+    },
+    {
+        "id": "adj_cheeky_01",
+        "text": "cheeky",
+        "type": "adjective",
+        "level": 2,
+        "tags": [
+            "life",
+            "feelings",
+            "uk_culture"
+        ],
+        "emoji": "😜"
+    },
+    {
+        "id": "adv_quickly_01",
+        "text": "quickly",
+        "type": "adverb",
+        "level": 3,
+        "tags": [
+            "life",
+            "speed"
+        ],
+        "emoji": "⚡"
+    },
+    {
+        "id": "adv_slowly_01",
+        "text": "slowly",
+        "type": "adverb",
+        "level": 3,
+        "tags": [
+            "life",
+            "speed"
+        ],
+        "emoji": "🐌"
+    },
+    {
+        "id": "adv_loudly_01",
+        "text": "loudly",
+        "type": "adverb",
+        "level": 3,
+        "tags": [
+            "life",
+            "sound"
+        ],
+        "emoji": "📢"
+    },
+    {
+        "id": "adv_quietly_01",
+        "text": "quietly",
+        "type": "adverb",
+        "level": 3,
+        "tags": [
+            "life",
+            "sound"
+        ],
+        "emoji": "🤫"
+    },
+    {
+        "id": "adv_happily_01",
+        "text": "happily",
+        "type": "adverb",
+        "level": 3,
+        "tags": [
+            "life",
+            "feelings"
+        ],
+        "emoji": "😊"
+    },
+    {
+        "id": "con_and_01",
+        "text": "and",
+        "type": "connective",
+        "level": 1,
+        "tags": [
+            "grammar",
+            "basic"
+        ],
+        "emoji": "➕"
+    },
+    {
+        "id": "con_but_01",
+        "text": "but",
+        "type": "connective",
+        "level": 2,
+        "tags": [
+            "grammar",
+            "contrast"
+        ],
+        "emoji": "↔️"
+    },
+    {
+        "id": "con_because_01",
+        "text": "because",
+        "type": "connective",
+        "level": 2,
+        "tags": [
+            "grammar",
+            "cause"
+        ],
+        "emoji": "💡"
+    },
+    {
+        "id": "con_so_01",
+        "text": "so",
+        "type": "connective",
+        "level": 2,
+        "tags": [
+            "grammar",
+            "result"
+        ],
+        "emoji": "➡️"
+    },
+    {
+        "id": "con_then_01",
+        "text": "then",
+        "type": "connective",
+        "level": 2,
+        "tags": [
+            "grammar",
+            "time"
+        ],
+        "emoji": "⏭️"
+    },
+    {
+        "id": "con_when_01",
+        "text": "when",
+        "type": "connective",
+        "level": 2,
+        "tags": [
+            "grammar",
+            "time"
+        ],
+        "emoji": "⏰"
+    },
+    {
+        "id": "con_while_01",
+        "text": "while",
+        "type": "connective",
+        "level": 3,
+        "tags": [
+            "grammar",
+            "time"
+        ],
+        "emoji": "⏳"
+    },
+    {
+        "id": "con_although_01",
+        "text": "although",
+        "type": "connective",
+        "level": 4,
+        "tags": [
+            "grammar",
+            "contrast"
+        ],
+        "emoji": "🔄"
+    },
+    {
+        "id": "con_however_01",
+        "text": "however",
+        "type": "connective",
+        "level": 4,
+        "tags": [
+            "grammar",
+            "contrast"
+        ],
+        "emoji": "⚖️"
+    },
+    {
+        "id": "prep_in_01",
+        "text": "in",
+        "type": "preposition",
+        "level": 1,
+        "tags": [
+            "grammar",
+            "place"
+        ],
+        "emoji": "📍"
+    },
+    {
+        "id": "prep_on_01",
+        "text": "on",
+        "type": "preposition",
+        "level": 1,
+        "tags": [
+            "grammar",
+            "place"
+        ],
+        "emoji": "🔛"
+    },
+    {
+        "id": "prep_at_01",
+        "text": "at",
+        "type": "preposition",
+        "level": 1,
+        "tags": [
+            "grammar",
+            "place"
+        ],
+        "emoji": "📌"
+    },
+    {
+        "id": "prep_to_01",
+        "text": "to",
+        "type": "preposition",
+        "level": 1,
+        "tags": [
+            "grammar",
+            "direction"
+        ],
+        "emoji": "➡️"
+    },
+    {
+        "id": "prep_with_01",
+        "text": "with",
+        "type": "preposition",
+        "level": 1,
+        "tags": [
+            "grammar",
+            "companion"
+        ],
+        "emoji": "🤝"
+    },
+    {
+        "id": "prep_under_01",
+        "text": "under",
+        "type": "preposition",
+        "level": 2,
+        "tags": [
+            "grammar",
+            "place"
+        ],
+        "emoji": "⬇️"
+    },
+    {
+        "id": "prep_over_01",
+        "text": "over",
+        "type": "preposition",
+        "level": 2,
+        "tags": [
+            "grammar",
+            "place"
+        ],
+        "emoji": "⬆️"
+    },
+    {
+        "id": "prep_through_01",
+        "text": "through",
+        "type": "preposition",
+        "level": 3,
+        "tags": [
+            "grammar",
+            "place"
+        ],
+        "emoji": "🚪"
+    },
+    {
+        "id": "punc_fullstop_01",
+        "text": ".",
+        "type": "punctuation",
+        "level": 1,
+        "tags": [
+            "grammar",
+            "ending"
+        ],
+        "emoji": "⏹️"
+    },
+    {
+        "id": "punc_question_01",
+        "text": "?",
+        "type": "punctuation",
+        "level": 2,
+        "tags": [
+            "grammar",
+            "question"
+        ],
+        "emoji": "❓"
+    },
+    {
+        "id": "punc_exclaim_01",
+        "text": "!",
+        "type": "punctuation",
+        "level": 2,
+        "tags": [
+            "grammar",
+            "exclamation"
+        ],
+        "emoji": "❗"
+    }
+]

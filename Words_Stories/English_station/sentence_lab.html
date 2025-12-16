@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>May's Sentence Lab</title>
+    <meta name="description" content="Interactive sentence building game for children - drag and drop magnetic words">
+    <link rel="stylesheet" href="lab_style.css">
+</head>
+
+<body>
+    <div id="app">
+        <!-- HEADER -->
+        <header id="header">
+            <div class="header-left">
+                <button id="back-btn" class="btn-icon" title="Back to Menu">⬅</button>
+                <h1>May's Sentence Lab</h1>
+            </div>
+            <div class="header-center">
+                <span id="level-indicator">Level 1: Build the Sentence</span>
+            </div>
+            <div class="header-right">
+                <div class="mode-toggle">
+                    <span class="mode-label">Silly Mode</span>
+                    <label class="switch">
+                        <input type="checkbox" id="silly-mode-toggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="score-display">
+                    <span class="score-icon">⭐</span>
+                    <span id="score-value">0</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN GAME AREA -->
+        <main id="game-area">
+            <!-- SENTENCE STRIP - Drop Zone -->
+            <div id="sentence-strip">
+                <div class="strip-label">Drop words here to build your sentence</div>
+                <div id="sentence-container"></div>
+                <div class="ruled-line"></div>
+            </div>
+
+            <!-- FEEDBACK AREA -->
+            <div id="feedback-area" class="hidden">
+                <span id="feedback-message"></span>
+            </div>
+
+            <!-- WORD BANK -->
+            <div id="word-bank">
+                <div class="bank-label">Word Bank</div>
+                <div id="bank-container"></div>
+            </div>
+        </main>
+
+        <!-- FOOTER / CONTROLS -->
+        <footer id="controls">
+            <button id="reset-btn" class="btn btn-secondary">🔄 Reset</button>
+            <button id="check-btn" class="btn btn-primary">✓ Check</button>
+            <button id="next-btn" class="btn btn-success hidden">Next ➡</button>
+        </footer>
+
+        <!-- CONFETTI CANVAS -->
+        <canvas id="confetti-canvas"></canvas>
+    </div>
+
+    <script src="lab_engine.js"></script>
+</body>
+
+</html>

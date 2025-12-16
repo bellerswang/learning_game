@@ -70,6 +70,7 @@ let userState = {
 
 // Word library
 let wordLibrary = [];
+let sentenceLibrary = null; // New: Container for pre-generated sentences
 
 // Dealer's deck (shuffled word pools)
 let dealerDeck = {
@@ -102,10 +103,11 @@ const LIBRARY_VERSION = 3;
 // INITIALIZATION
 // ============================================
 
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
     initDOMReferences();
     loadUserState();
-    await loadWordLibrary();
+    loadWordLibrary();      // Uses embedded word library
+    loadSentenceLibrary();  // Uses embedded sentence database (from sentence_data.js)
 
     // Check if library was updated - force new board if so
     const storedVersion = sessionStorage.getItem('library_version');
@@ -265,23 +267,39 @@ function resetAllData() {
 // WORD LIBRARY
 // ============================================
 
-async function loadWordLibrary() {
-    try {
-        const response = await fetch('word_library_expanded.json');
-        if (!response.ok) throw new Error('Failed to load');
-        wordLibrary = await response.json();
-        console.log(`✅ Word library loaded: ${wordLibrary.length} words`);
+function loadWordLibrary() {
+    // Use embedded word library for word type lookups
+    // Sentences come from sentence_db.json
+    wordLibrary = getDefaultWordLibrary();
+    console.log(`✅ Word library loaded: ${wordLibrary.length} words (embedded)`);
+}
 
-        // Count by type
-        const counts = {};
-        wordLibrary.forEach(w => {
-            counts[w.type] = (counts[w.type] || 0) + 1;
-        });
-        console.log('📊 Word distribution:', counts);
-    } catch (error) {
-        console.error('Error loading word library:', error);
-        wordLibrary = getDefaultWordLibrary();
+function loadSentenceLibrary() {
+    // Use embedded sentence database (from sentence_data.js)
+    // This avoids CORS issues when opening via file:// protocol
+    if (typeof SENTENCE_DATABASE !== 'undefined' && SENTENCE_DATABASE.levels) {
+        sentenceLibrary = SENTENCE_DATABASE.levels;
+        console.log(`✅ Sentence library loaded: ${SENTENCE_DATABASE.metadata.total_count} sentences (embedded)`);
+    } else {
+        console.error('❌ SENTENCE_DATABASE not found! Check that sentence_data.js is loaded.');
+        sentenceLibrary = null;
     }
+}
+
+function getMissionSentences(level, count) {
+    if (!sentenceLibrary || !sentenceLibrary[level]) return null;
+
+    // Pick unique random sentences
+    const pool = [...sentenceLibrary[level]];
+    const picked = [];
+
+    for (let i = 0; i < count; i++) {
+        if (pool.length === 0) break;
+        const idx = Math.floor(Math.random() * pool.length);
+        picked.push(pool.splice(idx, 1)[0]);
+    }
+
+    return picked;
 }
 
 function getDefaultWordLibrary() {
@@ -484,17 +502,51 @@ class Dealer {
         for (let i = 0; i < tileCount; i++) {
             const tileId = i + 1;
 
-            // Assign random difficulty (1-3)
+            // Assign random difficulty (1-4)
+            // Updated to support level 4 (silly)
             const difficulty = this.assignDifficulty(tileId, tileCount);
 
-            // 20% chance of silly tile
-            const isSilly = Math.random() < 0.2;
+            // If we have a sentence library, try to use it
+            let hand;
+            let isSilly = false;
 
-            // Get skeleton for this difficulty
-            const skeleton = this.pickSkeleton(difficulty);
+            if (sentenceLibrary) {
+                // If it's level 4, it's inherently silly
+                if (difficulty === 4) isSilly = true;
 
-            // Deal words for this skeleton
-            const hand = this.dealHand(skeleton, isSilly, tileId);
+                // Get a sentence for this difficulty (level keys are strings in JSON)
+                const sentences = getMissionSentences(String(difficulty), 1);
+                if (sentences && sentences.length > 0) {
+                    hand = this.dealFromSentence(sentences[0], tileId);
+                }
+            }
+
+            // If no sentence found, try a different level as fallback
+            if (!hand && sentenceLibrary) {
+                // Try levels 1-4 until we find a sentence
+                for (let lvl = 1; lvl <= 4 && !hand; lvl++) {
+                    const sentences = getMissionSentences(String(lvl), 1);
+                    if (sentences && sentences.length > 0) {
+                        hand = this.dealFromSentence(sentences[0], tileId);
+                        console.warn(`⚠️ Used level ${lvl} sentence for tile ${tileId} (wanted level ${difficulty})`);
+                    }
+                }
+            }
+
+            // Last resort fallback to generative (should never happen with 1685 sentences)
+            if (!hand) {
+                console.error(`❌ No sentence found for tile ${tileId}, using generative fallback`);
+                // 20% chance of silly tile (if not already level 4)
+                isSilly = difficulty === 4 || Math.random() < 0.2;
+                if (difficulty === 4) isSilly = true; // Ensure level 4 is silly
+
+                // Get skeleton for this difficulty (clamp to 3 for generative skeletons)
+                const genDifficulty = Math.min(difficulty, 3);
+                const skeleton = this.pickSkeleton(genDifficulty);
+
+                // Deal words for this skeleton
+                hand = this.dealHand(skeleton, isSilly, tileId);
+            }
 
             // Random color and icon
             const color = TILE_COLORS[i % TILE_COLORS.length];
@@ -507,7 +559,7 @@ class Dealer {
                 color: color,
                 icon: icon,
                 hand: hand,
-                skeleton: skeleton
+                skeleton: hand.skeleton || null
             });
 
             // Log the generated sentence
@@ -516,6 +568,58 @@ class Dealer {
 
         console.log(`✅ Board generated with ${tiles.length} unique tiles`);
         return tiles;
+    }
+
+    /**
+     * Parse a pre-generated sentence into a hand
+     */
+    static dealFromSentence(text, tileId) {
+        // Strip punctuation for word processing but keep for last token
+        // Simple tokenizer
+        const cleanText = text.replace(/([.?!])$/, " $1");
+        const tokens = cleanText.split(/\s+/).filter(t => t.length > 0);
+
+        const words = [];
+        let wordId = 1;
+
+        tokens.forEach((token, index) => {
+            // Check if it's punctuation
+            const isPunctuation = ['.', '?', '!'].includes(token);
+
+            // Try to find type in library
+            let type = 'noun'; // Default
+            if (isPunctuation) {
+                type = 'punctuation';
+            } else {
+                // Look up in word library (case insensitive)
+                const match = wordLibrary.find(w => w.text.toLowerCase() === token.toLowerCase());
+                if (match) type = match.type;
+                else {
+                    // Heuristics
+                    if (index === 0) type = 'article'; // Often starts with article
+                    // Could add more heuristics here
+                }
+            }
+
+            const isCapitalized = index === 0; // Only capitalize first word in sentence
+
+            words.push(new WordItem(
+                wordId,
+                token,
+                type,
+                isCapitalized
+            ));
+            wordId++;
+        });
+
+        const correctOrder = words.map(w => w.id);
+
+        return {
+            words: words,
+            correctOrder: correctOrder,
+            hint: text,
+            skeleton: null // Not generated from skeleton
+        };
     }
 
     /**
@@ -571,17 +675,20 @@ class Dealer {
      * Assign difficulty based on position (gradual increase)
      */
     static assignDifficulty(tileId, total) {
-        // First third: mostly level 1
-        // Second third: mostly level 2
-        // Last third: mostly level 3
+        // First quarter: Level 1
+        // Second quarter: Level 2
+        // Third quarter: Level 3
+        // Last quarter: Level 4 (Silly/Challenge)
         const position = tileId / total;
 
-        if (position <= 0.33) {
-            return Math.random() < 0.7 ? 1 : 2;
-        } else if (position <= 0.66) {
-            return Math.random() < 0.5 ? 2 : (Math.random() < 0.5 ? 1 : 3);
+        if (position <= 0.25) {
+            return 1;
+        } else if (position <= 0.50) {
+            return 2;
+        } else if (position <= 0.75) {
+            return 3;
         } else {
-            return Math.random() < 0.6 ? 3 : 2;
+            return 4;
         }
     }
 

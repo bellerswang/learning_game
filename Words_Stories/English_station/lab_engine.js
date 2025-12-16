@@ -1,9 +1,36 @@
 /**
- * May's Sentence Lab - Engine
- * ============================
- * Magnetic Poetry style drag-and-drop sentence builder
+ * May's Sentence Lab - Engine v3
+ * ================================
+ * Mission Board Grid + "Dealer" System
+ * Ensures unique word distribution across tiles
  * For UK Key Stage 1/2 (ages 6-10)
  */
+
+// ============================================
+// CONSTANTS
+// ============================================
+
+const TILE_COUNT = 20;
+const TILE_COLORS = ['pink', 'blue', 'green', 'yellow', 'purple', 'orange'];
+const TILE_ICONS = ['📝', '✏️', '📖', '🎯', '💡', '🌟', '🔤', '📚'];
+const STORAGE_KEY = 'may_mission_board_v1';
+const SESSION_KEY = 'may_current_board';
+
+// ============================================
+// SENTENCE SKELETONS (Grammar Templates)
+// ============================================
+
+const SKELETONS = {
+    1: [  // Simple (Level 1)
+        ['article', 'noun', 'verb', 'punctuation'],
+    ],
+    2: [  // Medium (Level 2)
+        ['article', 'adjective', 'noun', 'verb', 'punctuation'],
+    ],
+    3: [  // Complex (Level 3)
+        ['article', 'adjective', 'noun', 'verb', 'adverb', 'punctuation'],
+    ]
+};
 
 // ============================================
 // DATA STRUCTURES
@@ -13,7 +40,7 @@ class WordItem {
     constructor(id, text, type, isCapitalized = false) {
         this.id = id;
         this.text = text;
-        this.type = type; // article, noun, verb, adjective, connective, punctuation
+        this.type = type;
         this.isCapitalized = isCapitalized;
     }
 }
@@ -23,304 +50,763 @@ class WordItem {
 // ============================================
 
 const gameState = {
-    currentLevel: 1,
-    score: 0,
-    mode: 'strict', // 'strict' or 'silly'
-    currentLevelData: [],
-    correctAnswer: [],
+    currentTileIndex: null,
+    currentStreak: 0,
     isDragging: false,
     draggedElement: null,
     dragOffsetX: 0,
-    dragOffsetY: 0
+    dragOffsetY: 0,
 };
 
-// ============================================
-// WORD BANK - Loaded from JSON
-// ============================================
+// Board data (generated for current session)
+let boardData = [];
 
-let wordBank = [];
-let levelData = {};
-
-// Sentence templates for each level
-const sentenceTemplates = {
-    1: [
-        // Simple: Article + Noun + Verb + Punctuation
-        { structure: ['article', 'noun', 'verb', 'punctuation'], levelFilter: 1 }
-    ],
-    2: [
-        // Add adjective: Article + Adjective + Noun + Verb + Punctuation
-        { structure: ['article', 'adjective', 'noun', 'verb', 'punctuation'], levelFilter: 2 }
-    ],
-    3: [
-        // Adverb: Article + Noun + Verb + Adverb + Punctuation
-        { structure: ['article', 'adjective', 'noun', 'verb', 'adverb', 'punctuation'], levelFilter: 3 }
-    ],
-    4: [
-        // Connective: Article + Noun + Verb + Connective + Verb + Punctuation
-        { structure: ['article', 'adjective', 'noun', 'verb', 'connective', 'verb', 'punctuation'], levelFilter: 4 }
-    ],
-    5: [
-        // Complex with preposition: Article + Adjective + Noun + Verb + Preposition + Article + Noun + Punctuation
-        { structure: ['article', 'adjective', 'noun', 'verb', 'preposition', 'article', 'noun', 'punctuation'], levelFilter: 5 }
-    ]
+// User progress (persisted)
+let userState = {
+    completedTiles: [],
+    totalScore: 0,
+    highestStreak: 0,
 };
 
-// Load word bank from JSON
-async function loadWordBank() {
-    try {
-        const response = await fetch('word_bank_v2.json');
-        if (!response.ok) throw new Error('Failed to load word bank');
-        wordBank = await response.json();
-        console.log(`✅ Word bank loaded: ${wordBank.length} words`);
-        generateAllLevels();
-        return true;
-    } catch (error) {
-        console.error('Error loading word bank:', error);
-        // Fallback to hardcoded data
-        useFallbackData();
-        return false;
-    }
-}
+// Word library
+let wordLibrary = [];
 
-// Generate level data from word bank
-function generateAllLevels() {
-    for (let level = 1; level <= 5; level++) {
-        levelData[level] = generateLevel(level);
-    }
-}
-
-// Generate a single level's sentence
-function generateLevel(level) {
-    const template = sentenceTemplates[level][0];
-    const words = [];
-    let wordId = 1;
-
-    for (const wordType of template.structure) {
-        const word = pickRandomWord(wordType, level);
-        if (word) {
-            const isCapitalized = wordId === 1 || word.isCapitalized === true;
-            words.push(new WordItem(
-                wordId,
-                isCapitalized ? capitalizeFirst(word.text) : word.text,
-                word.type,
-                isCapitalized
-            ));
-            wordId++;
-        }
-    }
-
-    return {
-        words: words,
-        correctOrder: words.map((_, idx) => idx + 1),
-        hint: words.map(w => w.text).join(' ')
-    };
-}
-
-// Pick a random word of a specific type
-function pickRandomWord(type, maxLevel) {
-    const candidates = wordBank.filter(w =>
-        w.type === type &&
-        w.level <= maxLevel
-    );
-
-    if (candidates.length === 0) {
-        // Fallback: try without level filter
-        const fallbackCandidates = wordBank.filter(w => w.type === type);
-        if (fallbackCandidates.length === 0) return null;
-        return fallbackCandidates[Math.floor(Math.random() * fallbackCandidates.length)];
-    }
-
-    return candidates[Math.floor(Math.random() * candidates.length)];
-}
-
-// Capitalize first letter
-function capitalizeFirst(str) {
-    if (!str) return str;
-    return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-// Fallback data if JSON fails to load
-function useFallbackData() {
-    console.log('Using fallback data');
-    levelData = {
-        1: {
-            words: [
-                new WordItem(1, "The", "article", true),
-                new WordItem(2, "cat", "noun", false),
-                new WordItem(3, "sleeps", "verb", false),
-                new WordItem(4, ".", "punctuation", false)
-            ],
-            correctOrder: [1, 2, 3, 4],
-            hint: "The cat sleeps."
-        },
-        2: {
-            words: [
-                new WordItem(1, "A", "article", true),
-                new WordItem(2, "happy", "adjective", false),
-                new WordItem(3, "dog", "noun", false),
-                new WordItem(4, "runs", "verb", false),
-                new WordItem(5, ".", "punctuation", false)
-            ],
-            correctOrder: [1, 2, 3, 4, 5],
-            hint: "A happy dog runs."
-        },
-        3: {
-            words: [
-                new WordItem(1, "The", "article", true),
-                new WordItem(2, "little", "adjective", false),
-                new WordItem(3, "bird", "noun", false),
-                new WordItem(4, "sings", "verb", false),
-                new WordItem(5, "loudly", "adverb", false),
-                new WordItem(6, ".", "punctuation", false)
-            ],
-            correctOrder: [1, 2, 3, 4, 5, 6],
-            hint: "The little bird sings loudly."
-        },
-        4: {
-            words: [
-                new WordItem(1, "The", "article", true),
-                new WordItem(2, "brave", "adjective", false),
-                new WordItem(3, "knight", "noun", false),
-                new WordItem(4, "fights", "verb", false),
-                new WordItem(5, "and", "connective", false),
-                new WordItem(6, "wins", "verb", false),
-                new WordItem(7, ".", "punctuation", false)
-            ],
-            correctOrder: [1, 2, 3, 4, 5, 6, 7],
-            hint: "The brave knight fights and wins."
-        },
-        5: {
-            words: [
-                new WordItem(1, "The", "article", true),
-                new WordItem(2, "mysterious", "adjective", false),
-                new WordItem(3, "wizard", "noun", false),
-                new WordItem(4, "travels", "verb", false),
-                new WordItem(5, "through", "preposition", false),
-                new WordItem(6, "the", "article", false),
-                new WordItem(7, "forest", "noun", false),
-                new WordItem(8, ".", "punctuation", false)
-            ],
-            correctOrder: [1, 2, 3, 4, 5, 6, 7, 8],
-            hint: "The mysterious wizard travels through the forest."
-        }
-    };
-}
+// Dealer's deck (shuffled word pools)
+let dealerDeck = {
+    nouns: [],
+    verbs: [],
+    adjectives: [],
+    adverbs: [],
+    articles: [],
+    connectives: [],
+    prepositions: [],
+    punctuation: []
+};
 
 // ============================================
 // DOM REFERENCES
 // ============================================
 
-let sentenceContainer;
-let bankContainer;
-let sentenceStrip;
-let checkBtn;
-let resetBtn;
-let nextBtn;
-let feedbackArea;
-let feedbackMessage;
-let scoreValue;
-let levelIndicator;
-let sillyModeToggle;
-let confettiCanvas;
-let confettiCtx;
+let boardView, missionBoard, gameModal, successModal;
+let sentenceContainer, bankContainer, sentenceStrip;
+let checkBtn, resetBtn, closeGameBtn;
+let feedbackArea, feedbackMessage;
+let streakValue, totalScoreEl, progressText;
+let streakOverlay, sillyIndicator;
+let confettiCanvas, confettiCtx;
+
+// Library version - increment this to force board regeneration
+const LIBRARY_VERSION = 3;
 
 // ============================================
 // INITIALIZATION
 // ============================================
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // Get DOM references
+    initDOMReferences();
+    loadUserState();
+    await loadWordLibrary();
+
+    // Check if library was updated - force new board if so
+    const storedVersion = sessionStorage.getItem('library_version');
+    if (storedVersion !== String(LIBRARY_VERSION)) {
+        console.log('📚 Word library updated, generating fresh board...');
+        sessionStorage.removeItem(SESSION_KEY);
+        sessionStorage.setItem('library_version', String(LIBRARY_VERSION));
+    }
+
+    initOrRestoreBoard();
+    setupEventListeners();
+    updateUI();
+});
+
+function initDOMReferences() {
+    // Views
+    boardView = document.getElementById('board-view');
+    missionBoard = document.getElementById('mission-board');
+    gameModal = document.getElementById('game-modal');
+    successModal = document.getElementById('success-modal');
+
+    // Game elements
     sentenceContainer = document.getElementById('sentence-container');
     bankContainer = document.getElementById('bank-container');
     sentenceStrip = document.getElementById('sentence-strip');
+
+    // Buttons
     checkBtn = document.getElementById('check-btn');
     resetBtn = document.getElementById('reset-btn');
-    nextBtn = document.getElementById('next-btn');
+    closeGameBtn = document.getElementById('close-game-btn');
+
+    // Displays
     feedbackArea = document.getElementById('feedback-area');
     feedbackMessage = document.getElementById('feedback-message');
-    scoreValue = document.getElementById('score-value');
-    levelIndicator = document.getElementById('level-indicator');
-    sillyModeToggle = document.getElementById('silly-mode-toggle');
+    streakValue = document.getElementById('streak-value');
+    totalScoreEl = document.getElementById('total-score');
+    progressText = document.getElementById('progress-text');
+
+    // Overlays
+    streakOverlay = document.getElementById('streak-overlay');
+    sillyIndicator = document.getElementById('silly-indicator');
+
+    // Canvas
     confettiCanvas = document.getElementById('confetti-canvas');
-    confettiCtx = confettiCanvas.getContext('2d');
+    if (confettiCanvas) {
+        confettiCtx = confettiCanvas.getContext('2d');
+        resizeConfettiCanvas();
+        window.addEventListener('resize', resizeConfettiCanvas);
+    }
+}
 
-    // Setup canvas size
-    resizeConfettiCanvas();
-    window.addEventListener('resize', resizeConfettiCanvas);
+function setupEventListeners() {
+    // Game controls
+    if (checkBtn) checkBtn.addEventListener('click', checkSentence);
+    if (resetBtn) resetBtn.addEventListener('click', resetCurrentTile);
+    if (closeGameBtn) closeGameBtn.addEventListener('click', closeGameModal);
 
-    // Event listeners
-    checkBtn.addEventListener('click', checkSentence);
-    resetBtn.addEventListener('click', resetLevel);
-    nextBtn.addEventListener('click', nextLevel);
-    sillyModeToggle.addEventListener('change', toggleMode);
+    // Board controls
+    const refreshBtn = document.getElementById('refresh-board-btn');
+    if (refreshBtn) refreshBtn.addEventListener('click', refreshBoard);
 
-    // Back button - go to main menu
-    document.getElementById('back-btn').addEventListener('click', () => {
+    const resetDataBtn = document.getElementById('reset-data-btn');
+    if (resetDataBtn) resetDataBtn.addEventListener('click', confirmResetData);
+
+    const homeBtn = document.getElementById('home-btn');
+    if (homeBtn) homeBtn.addEventListener('click', () => {
         window.location.href = '../../index.html';
     });
 
-    // Global mouse/touch events for dragging
+    // Modal buttons
+    const successCloseBtn = document.getElementById('success-close-btn');
+    if (successCloseBtn) successCloseBtn.addEventListener('click', closeSuccessModal);
+
+    const newBoardBtn = document.getElementById('new-board-btn');
+    if (newBoardBtn) newBoardBtn.addEventListener('click', refreshBoard);
+
+    // Modal backdrop click
+    const gameBackdrop = document.getElementById('game-modal-backdrop');
+    if (gameBackdrop) gameBackdrop.addEventListener('click', closeGameModal);
+
+    // Drag events
     document.addEventListener('mousemove', handleDragMove);
     document.addEventListener('mouseup', handleDragEnd);
     document.addEventListener('touchmove', handleDragMove, { passive: false });
     document.addEventListener('touchend', handleDragEnd);
-
-    // Load word bank first, then initialize game
-    await loadWordBank();
-    loadLevel(gameState.currentLevel);
-});
-
-function resizeConfettiCanvas() {
-    confettiCanvas.width = window.innerWidth;
-    confettiCanvas.height = window.innerHeight;
 }
 
 // ============================================
-// LEVEL MANAGEMENT
+// PERSISTENCE
 // ============================================
 
-function loadLevel(level) {
-    const data = levelData[level];
-    if (!data) {
-        console.log('No more levels!');
-        return;
+function loadUserState() {
+    try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+            userState = { ...userState, ...JSON.parse(saved) };
+            console.log('✅ User state loaded:', userState);
+        }
+    } catch (e) {
+        console.error('Error loading user state:', e);
+    }
+}
+
+function saveUserState() {
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(userState));
+    } catch (e) {
+        console.error('Error saving user state:', e);
+    }
+}
+
+function saveBoardToSession() {
+    try {
+        sessionStorage.setItem(SESSION_KEY, JSON.stringify(boardData));
+    } catch (e) {
+        console.error('Error saving board to session:', e);
+    }
+}
+
+function loadBoardFromSession() {
+    try {
+        const saved = sessionStorage.getItem(SESSION_KEY);
+        if (saved) {
+            boardData = JSON.parse(saved);
+            return true;
+        }
+    } catch (e) {
+        console.error('Error loading board from session:', e);
+    }
+    return false;
+}
+
+function confirmResetData() {
+    if (confirm('🗑️ Reset ALL progress?\n\nThis will delete all completed tiles and scores.\n\nThis cannot be undone!')) {
+        resetAllData();
+    }
+}
+
+function resetAllData() {
+    userState = {
+        completedTiles: [],
+        totalScore: 0,
+        highestStreak: 0,
+    };
+    localStorage.removeItem(STORAGE_KEY);
+    sessionStorage.removeItem(SESSION_KEY);
+
+    gameState.currentStreak = 0;
+
+    generateNewBoard();
+    updateUI();
+
+    alert('✅ Progress has been reset!');
+}
+
+// ============================================
+// WORD LIBRARY
+// ============================================
+
+async function loadWordLibrary() {
+    try {
+        const response = await fetch('word_library_expanded.json');
+        if (!response.ok) throw new Error('Failed to load');
+        wordLibrary = await response.json();
+        console.log(`✅ Word library loaded: ${wordLibrary.length} words`);
+
+        // Count by type
+        const counts = {};
+        wordLibrary.forEach(w => {
+            counts[w.type] = (counts[w.type] || 0) + 1;
+        });
+        console.log('📊 Word distribution:', counts);
+    } catch (error) {
+        console.error('Error loading word library:', error);
+        wordLibrary = getDefaultWordLibrary();
+    }
+}
+
+function getDefaultWordLibrary() {
+    console.log('⚠️ Using embedded word library (fetch failed)');
+    return [
+        // ARTICLES (8)
+        { id: "art_the", text: "The", type: "article", level: 1, isSilly: false, isCapitalized: true },
+        { id: "art_a", text: "A", type: "article", level: 1, isSilly: false, isCapitalized: true },
+        { id: "art_an", text: "An", type: "article", level: 1, isSilly: false, isCapitalized: true },
+        { id: "art_my", text: "My", type: "article", level: 1, isSilly: false, isCapitalized: true },
+        { id: "art_his", text: "His", type: "article", level: 2, isSilly: false, isCapitalized: true },
+        { id: "art_her", text: "Her", type: "article", level: 2, isSilly: false, isCapitalized: true },
+        { id: "art_our", text: "Our", type: "article", level: 2, isSilly: false, isCapitalized: true },
+        { id: "art_their", text: "Their", type: "article", level: 3, isSilly: false, isCapitalized: true },
+
+        // NOUNS - Animals (25)
+        { id: "n_cat", text: "cat", type: "noun", level: 1, isSilly: false },
+        { id: "n_dog", text: "dog", type: "noun", level: 1, isSilly: false },
+        { id: "n_bird", text: "bird", type: "noun", level: 1, isSilly: false },
+        { id: "n_fish", text: "fish", type: "noun", level: 1, isSilly: false },
+        { id: "n_rabbit", text: "rabbit", type: "noun", level: 1, isSilly: false },
+        { id: "n_horse", text: "horse", type: "noun", level: 1, isSilly: false },
+        { id: "n_pig", text: "pig", type: "noun", level: 1, isSilly: false },
+        { id: "n_cow", text: "cow", type: "noun", level: 1, isSilly: false },
+        { id: "n_sheep", text: "sheep", type: "noun", level: 1, isSilly: false },
+        { id: "n_frog", text: "frog", type: "noun", level: 1, isSilly: false },
+        { id: "n_bee", text: "bee", type: "noun", level: 1, isSilly: false },
+        { id: "n_spider", text: "spider", type: "noun", level: 2, isSilly: false },
+        { id: "n_butterfly", text: "butterfly", type: "noun", level: 2, isSilly: false },
+        { id: "n_dragon", text: "dragon", type: "noun", level: 2, isSilly: false },
+        { id: "n_unicorn", text: "unicorn", type: "noun", level: 2, isSilly: false },
+        { id: "n_dinosaur", text: "dinosaur", type: "noun", level: 2, isSilly: false },
+        { id: "n_monster", text: "monster", type: "noun", level: 2, isSilly: false },
+        { id: "n_toad", text: "toad", type: "noun", level: 2, isSilly: true },
+        { id: "n_slug", text: "slug", type: "noun", level: 2, isSilly: true },
+        { id: "n_worm", text: "worm", type: "noun", level: 1, isSilly: true },
+
+        // NOUNS - People (15)
+        { id: "n_mum", text: "mum", type: "noun", level: 1, isSilly: false },
+        { id: "n_dad", text: "dad", type: "noun", level: 1, isSilly: false },
+        { id: "n_boy", text: "boy", type: "noun", level: 1, isSilly: false },
+        { id: "n_girl", text: "girl", type: "noun", level: 1, isSilly: false },
+        { id: "n_baby", text: "baby", type: "noun", level: 1, isSilly: false },
+        { id: "n_teacher", text: "teacher", type: "noun", level: 1, isSilly: false },
+        { id: "n_friend", text: "friend", type: "noun", level: 1, isSilly: false },
+        { id: "n_wizard", text: "wizard", type: "noun", level: 2, isSilly: false },
+        { id: "n_witch", text: "witch", type: "noun", level: 2, isSilly: false },
+        { id: "n_princess", text: "princess", type: "noun", level: 2, isSilly: false },
+        { id: "n_knight", text: "knight", type: "noun", level: 2, isSilly: false },
+        { id: "n_pirate", text: "pirate", type: "noun", level: 2, isSilly: false },
+        { id: "n_robot", text: "robot", type: "noun", level: 2, isSilly: false },
+        { id: "n_alien", text: "alien", type: "noun", level: 2, isSilly: false },
+        { id: "n_giant", text: "giant", type: "noun", level: 2, isSilly: false },
+
+        // NOUNS - Things (20)
+        { id: "n_ball", text: "ball", type: "noun", level: 1, isSilly: false },
+        { id: "n_book", text: "book", type: "noun", level: 1, isSilly: false },
+        { id: "n_cake", text: "cake", type: "noun", level: 1, isSilly: false },
+        { id: "n_pizza", text: "pizza", type: "noun", level: 1, isSilly: false },
+        { id: "n_apple", text: "apple", type: "noun", level: 1, isSilly: false },
+        { id: "n_banana", text: "banana", type: "noun", level: 1, isSilly: false },
+        { id: "n_car", text: "car", type: "noun", level: 1, isSilly: false },
+        { id: "n_train", text: "train", type: "noun", level: 1, isSilly: false },
+        { id: "n_bus", text: "bus", type: "noun", level: 1, isSilly: false },
+        { id: "n_tree", text: "tree", type: "noun", level: 1, isSilly: false },
+        { id: "n_house", text: "house", type: "noun", level: 1, isSilly: false },
+        { id: "n_castle", text: "castle", type: "noun", level: 2, isSilly: false },
+        { id: "n_spaceship", text: "spaceship", type: "noun", level: 2, isSilly: false },
+        { id: "n_wand", text: "wand", type: "noun", level: 2, isSilly: false },
+        { id: "n_potion", text: "potion", type: "noun", level: 2, isSilly: false },
+        { id: "n_slime", text: "slime", type: "noun", level: 1, isSilly: true },
+        { id: "n_bogey", text: "bogey", type: "noun", level: 2, isSilly: true },
+        { id: "n_pants", text: "pants", type: "noun", level: 1, isSilly: true },
+        { id: "n_sausage", text: "sausage", type: "noun", level: 1, isSilly: true },
+        { id: "n_jelly", text: "jelly", type: "noun", level: 1, isSilly: true },
+
+        // VERBS (40)
+        { id: "v_runs", text: "runs", type: "verb", level: 1, isSilly: false },
+        { id: "v_jumps", text: "jumps", type: "verb", level: 1, isSilly: false },
+        { id: "v_eats", text: "eats", type: "verb", level: 1, isSilly: false },
+        { id: "v_sleeps", text: "sleeps", type: "verb", level: 1, isSilly: false },
+        { id: "v_plays", text: "plays", type: "verb", level: 1, isSilly: false },
+        { id: "v_reads", text: "reads", type: "verb", level: 1, isSilly: false },
+        { id: "v_sings", text: "sings", type: "verb", level: 1, isSilly: false },
+        { id: "v_dances", text: "dances", type: "verb", level: 1, isSilly: false },
+        { id: "v_swims", text: "swims", type: "verb", level: 1, isSilly: false },
+        { id: "v_flies", text: "flies", type: "verb", level: 2, isSilly: false },
+        { id: "v_walks", text: "walks", type: "verb", level: 1, isSilly: false },
+        { id: "v_climbs", text: "climbs", type: "verb", level: 2, isSilly: false },
+        { id: "v_laughs", text: "laughs", type: "verb", level: 1, isSilly: false },
+        { id: "v_cries", text: "cries", type: "verb", level: 1, isSilly: false },
+        { id: "v_shouts", text: "shouts", type: "verb", level: 2, isSilly: false },
+        { id: "v_hides", text: "hides", type: "verb", level: 2, isSilly: false },
+        { id: "v_loves", text: "loves", type: "verb", level: 1, isSilly: false },
+        { id: "v_throws", text: "throws", type: "verb", level: 2, isSilly: false },
+        { id: "v_catches", text: "catches", type: "verb", level: 2, isSilly: false },
+        { id: "v_kicks", text: "kicks", type: "verb", level: 1, isSilly: false },
+        { id: "v_drinks", text: "drinks", type: "verb", level: 1, isSilly: false },
+        { id: "v_cooks", text: "cooks", type: "verb", level: 2, isSilly: false },
+        { id: "v_builds", text: "builds", type: "verb", level: 2, isSilly: false },
+        { id: "v_explodes", text: "explodes", type: "verb", level: 2, isSilly: false },
+        { id: "v_zooms", text: "zooms", type: "verb", level: 1, isSilly: false },
+        { id: "v_crashes", text: "crashes", type: "verb", level: 2, isSilly: false },
+        { id: "v_vanishes", text: "vanishes", type: "verb", level: 3, isSilly: false },
+        { id: "v_sparkles", text: "sparkles", type: "verb", level: 2, isSilly: false },
+        { id: "v_glows", text: "glows", type: "verb", level: 2, isSilly: false },
+        { id: "v_roars", text: "roars", type: "verb", level: 2, isSilly: false },
+        { id: "v_stomps", text: "stomps", type: "verb", level: 2, isSilly: false },
+        { id: "v_splashes", text: "splashes", type: "verb", level: 2, isSilly: false },
+        { id: "v_wobbles", text: "wobbles", type: "verb", level: 2, isSilly: true },
+        { id: "v_wiggles", text: "wiggles", type: "verb", level: 2, isSilly: true },
+        { id: "v_squishes", text: "squishes", type: "verb", level: 2, isSilly: true },
+        { id: "v_splats", text: "splats", type: "verb", level: 2, isSilly: true },
+        { id: "v_burps", text: "burps", type: "verb", level: 1, isSilly: true },
+        { id: "v_giggles", text: "giggles", type: "verb", level: 2, isSilly: true },
+        { id: "v_snores", text: "snores", type: "verb", level: 2, isSilly: true },
+        { id: "v_chomps", text: "chomps", type: "verb", level: 2, isSilly: true },
+
+        // ADJECTIVES (35)
+        { id: "adj_big", text: "big", type: "adjective", level: 1, isSilly: false },
+        { id: "adj_small", text: "small", type: "adjective", level: 1, isSilly: false },
+        { id: "adj_happy", text: "happy", type: "adjective", level: 1, isSilly: false },
+        { id: "adj_sad", text: "sad", type: "adjective", level: 1, isSilly: false },
+        { id: "adj_angry", text: "angry", type: "adjective", level: 2, isSilly: false },
+        { id: "adj_scared", text: "scared", type: "adjective", level: 2, isSilly: false },
+        { id: "adj_brave", text: "brave", type: "adjective", level: 2, isSilly: false },
+        { id: "adj_clever", text: "clever", type: "adjective", level: 2, isSilly: false },
+        { id: "adj_fast", text: "fast", type: "adjective", level: 1, isSilly: false },
+        { id: "adj_slow", text: "slow", type: "adjective", level: 1, isSilly: false },
+        { id: "adj_hot", text: "hot", type: "adjective", level: 1, isSilly: false },
+        { id: "adj_cold", text: "cold", type: "adjective", level: 1, isSilly: false },
+        { id: "adj_noisy", text: "noisy", type: "adjective", level: 2, isSilly: false },
+        { id: "adj_quiet", text: "quiet", type: "adjective", level: 2, isSilly: false },
+        { id: "adj_beautiful", text: "beautiful", type: "adjective", level: 2, isSilly: false },
+        { id: "adj_shiny", text: "shiny", type: "adjective", level: 2, isSilly: false },
+        { id: "adj_sparkly", text: "sparkly", type: "adjective", level: 2, isSilly: false },
+        { id: "adj_fluffy", text: "fluffy", type: "adjective", level: 2, isSilly: false },
+        { id: "adj_scary", text: "scary", type: "adjective", level: 2, isSilly: false },
+        { id: "adj_magical", text: "magical", type: "adjective", level: 2, isSilly: false },
+        { id: "adj_invisible", text: "invisible", type: "adjective", level: 3, isSilly: false },
+        { id: "adj_giant", text: "giant", type: "adjective", level: 2, isSilly: false },
+        { id: "adj_tiny", text: "tiny", type: "adjective", level: 2, isSilly: false },
+        { id: "adj_brilliant", text: "brilliant", type: "adjective", level: 2, isSilly: false },
+        { id: "adj_lovely", text: "lovely", type: "adjective", level: 2, isSilly: false },
+        { id: "adj_grumpy", text: "grumpy", type: "adjective", level: 2, isSilly: false },
+        { id: "adj_hungry", text: "hungry", type: "adjective", level: 1, isSilly: false },
+        { id: "adj_sleepy", text: "sleepy", type: "adjective", level: 1, isSilly: false },
+        { id: "adj_silly", text: "silly", type: "adjective", level: 1, isSilly: true },
+        { id: "adj_funny", text: "funny", type: "adjective", level: 1, isSilly: true },
+        { id: "adj_smelly", text: "smelly", type: "adjective", level: 1, isSilly: true },
+        { id: "adj_stinky", text: "stinky", type: "adjective", level: 1, isSilly: true },
+        { id: "adj_slimy", text: "slimy", type: "adjective", level: 2, isSilly: true },
+        { id: "adj_wobbly", text: "wobbly", type: "adjective", level: 2, isSilly: true },
+        { id: "adj_bonkers", text: "bonkers", type: "adjective", level: 2, isSilly: true },
+
+        // ADVERBS (15)
+        { id: "adv_quickly", text: "quickly", type: "adverb", level: 3, isSilly: false },
+        { id: "adv_slowly", text: "slowly", type: "adverb", level: 3, isSilly: false },
+        { id: "adv_loudly", text: "loudly", type: "adverb", level: 3, isSilly: false },
+        { id: "adv_quietly", text: "quietly", type: "adverb", level: 3, isSilly: false },
+        { id: "adv_happily", text: "happily", type: "adverb", level: 3, isSilly: false },
+        { id: "adv_sadly", text: "sadly", type: "adverb", level: 3, isSilly: false },
+        { id: "adv_angrily", text: "angrily", type: "adverb", level: 3, isSilly: false },
+        { id: "adv_suddenly", text: "suddenly", type: "adverb", level: 3, isSilly: false },
+        { id: "adv_carefully", text: "carefully", type: "adverb", level: 3, isSilly: false },
+        { id: "adv_bravely", text: "bravely", type: "adverb", level: 3, isSilly: false },
+        { id: "adv_wildly", text: "wildly", type: "adverb", level: 3, isSilly: false },
+        { id: "adv_noisily", text: "noisily", type: "adverb", level: 3, isSilly: true },
+        { id: "adv_messily", text: "messily", type: "adverb", level: 3, isSilly: true },
+        { id: "adv_crazily", text: "crazily", type: "adverb", level: 3, isSilly: true },
+        { id: "adv_greedily", text: "greedily", type: "adverb", level: 3, isSilly: false },
+
+        // PUNCTUATION (3)
+        { id: "punc_dot", text: ".", type: "punctuation", level: 1, isSilly: false },
+        { id: "punc_question", text: "?", type: "punctuation", level: 2, isSilly: false },
+        { id: "punc_exclaim", text: "!", type: "punctuation", level: 2, isSilly: false }
+    ];
+}
+
+// ============================================
+// THE DEALER ENGINE
+// ============================================
+
+class Dealer {
+
+    /**
+     * Generate board data with unique word distribution
+     * @param {number} tileCount - Number of tiles to generate
+     * @returns {Array} Array of tile objects with pre-dealt word hands
+     */
+    static generateBoard(tileCount) {
+        console.log(`🎲 Dealing ${tileCount} unique missions...`);
+
+        // Step A: Master Shuffle - Create shuffled pools by type
+        this.shuffleDecks();
+
+        const tiles = [];
+
+        // Step B: Deal words to each tile
+        for (let i = 0; i < tileCount; i++) {
+            const tileId = i + 1;
+
+            // Assign random difficulty (1-3)
+            const difficulty = this.assignDifficulty(tileId, tileCount);
+
+            // 20% chance of silly tile
+            const isSilly = Math.random() < 0.2;
+
+            // Get skeleton for this difficulty
+            const skeleton = this.pickSkeleton(difficulty);
+
+            // Deal words for this skeleton
+            const hand = this.dealHand(skeleton, isSilly, tileId);
+
+            // Random color and icon
+            const color = TILE_COLORS[i % TILE_COLORS.length];
+            const icon = TILE_ICONS[Math.floor(Math.random() * TILE_ICONS.length)];
+
+            tiles.push({
+                id: tileId,
+                difficulty: difficulty,
+                isSilly: isSilly,
+                color: color,
+                icon: icon,
+                hand: hand,
+                skeleton: skeleton
+            });
+
+            // Log the generated sentence
+            console.log(`   Tile ${tileId}: "${hand.hint}" ${isSilly ? '👾' : ''}`);
+        }
+
+        console.log(`✅ Board generated with ${tiles.length} unique tiles`);
+        return tiles;
     }
 
-    gameState.currentLevel = level;
-    gameState.currentLevelData = [...data.words];
-    gameState.correctAnswer = data.correctOrder;
+    /**
+     * Shuffle the entire word library into separate pools
+     */
+    static shuffleDecks() {
+        // Reset decks
+        dealerDeck = {
+            nouns: [],
+            verbs: [],
+            adjectives: [],
+            adverbs: [],
+            articles: [],
+            connectives: [],
+            prepositions: [],
+            punctuation: []
+        };
 
-    // Update UI
-    levelIndicator.textContent = `Level ${level}: Build the Sentence`;
+        // Sort words into pools and shuffle
+        wordLibrary.forEach(word => {
+            const pool = this.getPool(word.type);
+            if (pool) pool.push({ ...word });
+        });
 
-    // Clear containers
+        // Shuffle each pool
+        Object.keys(dealerDeck).forEach(key => {
+            dealerDeck[key] = this.shuffle(dealerDeck[key]);
+        });
+
+        console.log('🃏 Dealer decks shuffled:');
+        console.log(`   📦 Nouns: ${dealerDeck.nouns.length}`);
+        console.log(`   📦 Verbs: ${dealerDeck.verbs.length}`);
+        console.log(`   📦 Adjectives: ${dealerDeck.adjectives.length}`);
+        console.log(`   📦 Adverbs: ${dealerDeck.adverbs.length}`);
+        console.log(`   📦 Articles: ${dealerDeck.articles.length}`);
+    }
+
+    static getPool(type) {
+        const map = {
+            'noun': dealerDeck.nouns,
+            'verb': dealerDeck.verbs,
+            'adjective': dealerDeck.adjectives,
+            'adverb': dealerDeck.adverbs,
+            'article': dealerDeck.articles,
+            'connective': dealerDeck.connectives,
+            'preposition': dealerDeck.prepositions,
+            'punctuation': dealerDeck.punctuation
+        };
+        return map[type];
+    }
+
+    /**
+     * Assign difficulty based on position (gradual increase)
+     */
+    static assignDifficulty(tileId, total) {
+        // First third: mostly level 1
+        // Second third: mostly level 2
+        // Last third: mostly level 3
+        const position = tileId / total;
+
+        if (position <= 0.33) {
+            return Math.random() < 0.7 ? 1 : 2;
+        } else if (position <= 0.66) {
+            return Math.random() < 0.5 ? 2 : (Math.random() < 0.5 ? 1 : 3);
+        } else {
+            return Math.random() < 0.6 ? 3 : 2;
+        }
+    }
+
+    static pickSkeleton(difficulty) {
+        const skeletons = SKELETONS[difficulty] || SKELETONS[1];
+        return skeletons[Math.floor(Math.random() * skeletons.length)];
+    }
+
+    /**
+     * Deal a unique hand of words for a tile
+     */
+    static dealHand(skeleton, isSilly, tileId) {
+        const words = [];
+        let wordId = 1;
+
+        for (const wordType of skeleton) {
+            const word = this.drawWord(wordType, isSilly);
+            if (word) {
+                const isCapitalized = wordId === 1 || word.isCapitalized === true;
+                words.push(new WordItem(
+                    wordId,
+                    isCapitalized ? this.capitalizeFirst(word.text) : word.text,
+                    word.type,
+                    isCapitalized
+                ));
+                wordId++;
+            }
+        }
+
+        // Build correct order
+        const correctOrder = words.map(w => w.id);
+        const hint = words.map(w => w.text).join(' ');
+
+        return {
+            words: words,
+            correctOrder: correctOrder,
+            hint: hint
+        };
+    }
+
+    /**
+     * Draw a word from the deck (with preference for silly words if enabled)
+     */
+    static drawWord(type, preferSilly = false) {
+        const pool = this.getPool(type);
+        if (!pool || pool.length === 0) {
+            // Deck exhausted - reshuffle this type from library
+            console.warn(`⚠️ ${type} deck exhausted, reshuffling...`);
+            this.reshuffleType(type);
+            if (pool.length === 0) return null;
+        }
+
+        // If preferSilly, try to find a silly word first
+        if (preferSilly) {
+            const sillyIndex = pool.findIndex(w => w.isSilly === true);
+            if (sillyIndex !== -1) {
+                return pool.splice(sillyIndex, 1)[0];
+            }
+        }
+
+        // Pop from front of deck
+        return pool.shift();
+    }
+
+    static reshuffleType(type) {
+        const pool = this.getPool(type);
+        const words = wordLibrary.filter(w => w.type === type);
+        pool.push(...this.shuffle(words.map(w => ({ ...w }))));
+    }
+
+    static capitalizeFirst(str) {
+        if (!str) return str;
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    static shuffle(array) {
+        const shuffled = [...array];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled;
+    }
+}
+
+// ============================================
+// BOARD MANAGEMENT
+// ============================================
+
+function initOrRestoreBoard() {
+    // Try to restore from session first
+    if (loadBoardFromSession()) {
+        console.log('📋 Board restored from session');
+        renderBoard();
+    } else {
+        generateNewBoard();
+    }
+}
+
+function generateNewBoard() {
+    boardData = Dealer.generateBoard(TILE_COUNT);
+    saveBoardToSession();
+    renderBoard();
+}
+
+function refreshBoard() {
+    if (confirm('🔄 Generate new missions?\n\nCurrent board will be replaced.')) {
+        generateNewBoard();
+        updateUI();
+    }
+}
+
+function renderBoard() {
+    if (!missionBoard) return;
+
+    missionBoard.innerHTML = '';
+
+    boardData.forEach((tile, index) => {
+        const tileEl = document.createElement('div');
+        tileEl.className = `mission-tile color-${tile.color}`;
+        tileEl.dataset.tileIndex = index;
+
+        // Add completed class if done
+        if (userState.completedTiles.includes(tile.id)) {
+            tileEl.classList.add('completed');
+        }
+
+        // Add silly class
+        if (tile.isSilly) {
+            tileEl.classList.add('silly-tile');
+        }
+
+        // Tile content
+        const isCompleted = userState.completedTiles.includes(tile.id);
+
+        tileEl.innerHTML = `
+            <span class="tile-stars">${'⭐'.repeat(tile.difficulty)}</span>
+            ${isCompleted
+                ? '<span class="tile-checkmark">✅</span>'
+                : `<span class="tile-icon">${tile.icon}</span>`
+            }
+            <span class="tile-number">#${tile.id}</span>
+        `;
+
+        // Click handler (only if not completed)
+        if (!isCompleted) {
+            tileEl.addEventListener('click', () => openTile(index));
+        }
+
+        missionBoard.appendChild(tileEl);
+    });
+
+    checkBoardCompletion();
+}
+
+function checkBoardCompletion() {
+    const completedCount = userState.completedTiles.filter(id =>
+        boardData.some(t => t.id === id)
+    ).length;
+
+    if (completedCount >= TILE_COUNT) {
+        showBoardComplete();
+    }
+}
+
+function showBoardComplete() {
+    const boardComplete = document.getElementById('board-complete');
+    if (boardComplete) {
+        boardComplete.classList.remove('hidden');
+        triggerConfetti();
+    }
+}
+
+// ============================================
+// GAME MODAL
+// ============================================
+
+function openTile(tileIndex) {
+    const tile = boardData[tileIndex];
+    if (!tile) return;
+
+    gameState.currentTileIndex = tileIndex;
+
+    // Update modal header
+    const missionTitle = document.getElementById('mission-title');
+    const missionStars = document.getElementById('mission-stars');
+
+    if (missionTitle) missionTitle.textContent = `Mission #${tile.id}`;
+    if (missionStars) missionStars.textContent = '⭐'.repeat(tile.difficulty);
+
+    // Show/hide silly indicator
+    if (sillyIndicator) {
+        sillyIndicator.classList.toggle('hidden', !tile.isSilly);
+    }
+
+    // Load the pre-dealt hand
+    renderHand(tile.hand);
+
+    // Show modal
+    gameModal.classList.remove('hidden');
+
+    console.log(`📝 Opened tile ${tile.id}: "${tile.hand.hint}" (Silly: ${tile.isSilly})`);
+}
+
+function renderHand(hand) {
     sentenceContainer.innerHTML = '';
     bankContainer.innerHTML = '';
 
-    // Hide feedback and next button
     feedbackArea.classList.add('hidden');
-    nextBtn.classList.add('hidden');
-    checkBtn.classList.remove('hidden');
 
-    // Shuffle words and render to word bank
-    const shuffledWords = [...data.words].sort(() => Math.random() - 0.5);
-    shuffledWords.forEach(word => {
+    // Shuffle words for the bank
+    const shuffled = Dealer.shuffle(hand.words);
+    shuffled.forEach(word => {
         const card = createWordCard(word);
         bankContainer.appendChild(card);
     });
+
+    // Store correct answer
+    gameState.correctAnswer = hand.correctOrder;
+    gameState.currentHint = hand.hint;
 }
 
-function resetLevel() {
-    loadLevel(gameState.currentLevel);
-}
-
-function nextLevel() {
-    if (levelData[gameState.currentLevel + 1]) {
-        loadLevel(gameState.currentLevel + 1);
-    } else {
-        // Loop back to level 1 or show completion
-        loadLevel(1);
-    }
+function closeGameModal() {
+    gameModal.classList.add('hidden');
+    gameState.currentTileIndex = null;
 }
 
 // ============================================
@@ -335,7 +821,6 @@ function createWordCard(wordItem) {
     card.dataset.wordType = wordItem.type;
     card.dataset.isCapitalized = wordItem.isCapitalized;
 
-    // Event listeners for drag
     card.addEventListener('mousedown', handleDragStart);
     card.addEventListener('touchstart', handleDragStart, { passive: false });
 
@@ -346,10 +831,6 @@ function createWordCard(wordItem) {
 // DRAG AND DROP ENGINE
 // ============================================
 
-let dragStartX = 0;
-let dragStartY = 0;
-let originalParent = null;
-
 function handleDragStart(e) {
     e.preventDefault();
 
@@ -358,26 +839,20 @@ function handleDragStart(e) {
 
     gameState.isDragging = true;
     gameState.draggedElement = card;
-    originalParent = card.parentElement;
 
-    // Get cursor/touch position
     const clientX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
     const clientY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
 
-    // Store initial position
     const rect = card.getBoundingClientRect();
     gameState.dragOffsetX = clientX - rect.left;
     gameState.dragOffsetY = clientY - rect.top;
-    dragStartX = rect.left;
-    dragStartY = rect.top;
 
-    // Style for dragging - use fixed positioning
     card.classList.add('dragging');
     card.style.position = 'fixed';
     card.style.left = rect.left + 'px';
     card.style.top = rect.top + 'px';
     card.style.width = rect.width + 'px';
-    card.style.zIndex = '1000';
+    card.style.zIndex = '2000';
     card.style.margin = '0';
 }
 
@@ -389,13 +864,9 @@ function handleDragMove(e) {
     const clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
     const clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
 
-    // Move the card
-    const newLeft = clientX - gameState.dragOffsetX;
-    const newTop = clientY - gameState.dragOffsetY;
-    gameState.draggedElement.style.left = newLeft + 'px';
-    gameState.draggedElement.style.top = newTop + 'px';
+    gameState.draggedElement.style.left = (clientX - gameState.dragOffsetX) + 'px';
+    gameState.draggedElement.style.top = (clientY - gameState.dragOffsetY) + 'px';
 
-    // Check if over sentence strip for visual feedback
     const stripRect = sentenceStrip.getBoundingClientRect();
     if (isPointInRect(clientX, clientY, stripRect)) {
         sentenceStrip.classList.add('drag-over');
@@ -411,12 +882,10 @@ function handleDragEnd(e) {
     card.classList.remove('dragging');
     sentenceStrip.classList.remove('drag-over');
 
-    // Get final position (center of card)
     const cardRect = card.getBoundingClientRect();
     const cardCenterX = cardRect.left + cardRect.width / 2;
     const cardCenterY = cardRect.top + cardRect.height / 2;
 
-    // Reset card inline styles first
     card.style.position = '';
     card.style.left = '';
     card.style.top = '';
@@ -424,62 +893,34 @@ function handleDragEnd(e) {
     card.style.zIndex = '';
     card.style.margin = '';
 
-    // Check drop zones
     const stripRect = sentenceStrip.getBoundingClientRect();
-    const bankRect = document.getElementById('word-bank').getBoundingClientRect();
-
-    let targetContainer = null;
-    let insertPosition = null;
 
     if (isPointInRect(cardCenterX, cardCenterY, stripRect)) {
-        // Dropped on sentence strip - calculate insert position
-        targetContainer = sentenceContainer;
-        insertPosition = findInsertPosition(cardCenterX);
-    } else if (isPointInRect(cardCenterX, cardCenterY, bankRect)) {
-        // Dropped on word bank
-        targetContainer = bankContainer;
-    } else {
-        // Dropped elsewhere - return to word bank
-        targetContainer = bankContainer;
-    }
-
-    // Move card to target container
-    if (targetContainer === sentenceContainer && insertPosition !== null) {
+        const insertPos = findInsertPosition(cardCenterX);
         const existingCards = Array.from(sentenceContainer.querySelectorAll('.word-card'));
-        if (insertPosition >= existingCards.length) {
+        if (insertPos >= existingCards.length) {
             sentenceContainer.appendChild(card);
         } else {
-            sentenceContainer.insertBefore(card, existingCards[insertPosition]);
+            sentenceContainer.insertBefore(card, existingCards[insertPos]);
         }
     } else {
-        targetContainer.appendChild(card);
+        bankContainer.appendChild(card);
     }
 
-    // Add pop animation
     card.classList.add('pop-in');
     setTimeout(() => card.classList.remove('pop-in'), 300);
 
-    // Reset drag state
     gameState.isDragging = false;
     gameState.draggedElement = null;
-    originalParent = null;
 }
 
 function findInsertPosition(dropX) {
     const existingCards = Array.from(sentenceContainer.querySelectorAll('.word-card'));
 
-    if (existingCards.length === 0) {
-        return 0;
-    }
-
-    // Find where to insert based on X coordinate
     for (let i = 0; i < existingCards.length; i++) {
         const cardRect = existingCards[i].getBoundingClientRect();
         const cardCenterX = cardRect.left + cardRect.width / 2;
-
-        if (dropX < cardCenterX) {
-            return i;
-        }
+        if (dropX < cardCenterX) return i;
     }
 
     return existingCards.length;
@@ -511,36 +952,27 @@ function checkSentence() {
         return;
     }
 
-    const userOrder = sentence.map(w => w.id);
-    const correctOrder = gameState.correctAnswer;
-
-    // Validation rules
     let isCorrect = true;
     let errorType = null;
 
     // Rule A: First word must be capitalized
-    if (sentence.length > 0 && !sentence[0].isCapitalized) {
+    if (!sentence[0].isCapitalized) {
         isCorrect = false;
         errorType = 'capitalization';
     }
 
     // Rule B: Last word must be punctuation
-    if (sentence.length > 0 && sentence[sentence.length - 1].type !== 'punctuation') {
+    if (sentence[sentence.length - 1].type !== 'punctuation') {
         isCorrect = false;
         errorType = 'punctuation';
     }
 
-    // Rule C: Word order must match (in strict mode)
-    if (gameState.mode === 'strict') {
-        if (userOrder.length !== correctOrder.length ||
-            !userOrder.every((id, idx) => id === correctOrder[idx])) {
-            isCorrect = false;
-            if (!errorType) errorType = 'order';
-        }
-    } else {
-        // Silly Mode: Check structure only
-        isCorrect = checkStructure(sentence);
-        if (!isCorrect && !errorType) errorType = 'structure';
+    // Rule C: Word order check
+    const userOrder = sentence.map(w => w.id);
+    if (userOrder.length !== gameState.correctAnswer.length ||
+        !userOrder.every((id, idx) => id === gameState.correctAnswer[idx])) {
+        isCorrect = false;
+        if (!errorType) errorType = 'order';
     }
 
     if (isCorrect) {
@@ -550,43 +982,53 @@ function checkSentence() {
     }
 }
 
-function checkStructure(sentence) {
-    // Basic structure check for Silly Mode
-    // [Article] ... [Punctuation]
-    if (sentence.length < 2) return false;
-    if (sentence[0].type !== 'article') return false;
-    if (sentence[sentence.length - 1].type !== 'punctuation') return false;
-
-    // Must have at least one noun and one verb
-    const hasNoun = sentence.some(w => w.type === 'noun');
-    const hasVerb = sentence.some(w => w.type === 'verb');
-
-    return hasNoun && hasVerb;
-}
-
 function handleCorrect() {
-    // Update score
-    gameState.score += 10;
-    scoreValue.textContent = gameState.score;
+    const tile = boardData[gameState.currentTileIndex];
 
-    // Show success feedback
-    showFeedback("🎉 Brilliant! That's correct!", 'success');
+    // Update streak
+    gameState.currentStreak++;
 
-    // Play success sound (placeholder)
-    playSound('success');
+    // Calculate points
+    const basePoints = tile.difficulty * 10;
+    const streakBonus = Math.min(gameState.currentStreak - 1, 5) * 5;
+    const points = basePoints + streakBonus;
 
-    // Trigger confetti
+    // Update user state
+    userState.totalScore += points;
+
+    if (!userState.completedTiles.includes(tile.id)) {
+        userState.completedTiles.push(tile.id);
+    }
+
+    if (gameState.currentStreak > userState.highestStreak) {
+        userState.highestStreak = gameState.currentStreak;
+    }
+
+    saveUserState();
+
+    // Build sentence text
+    const sentenceText = getSentenceFromStrip().map(w => w.text).join(' ');
+
+    // Close game modal and show success
+    closeGameModal();
+    showSuccessModal(points, sentenceText);
+
+    // Re-render board to show completed tile
+    renderBoard();
+    updateUI();
+
+    // Speech
+    speakSentence(sentenceText);
+
+    // Confetti
     triggerConfetti();
-
-    // Hide check button, show next button
-    checkBtn.classList.add('hidden');
-    nextBtn.classList.remove('hidden');
-
-    // Speak the sentence
-    speakSentence();
 }
 
 function handleIncorrect(errorType) {
+    // Reset streak
+    gameState.currentStreak = 0;
+    updateStreakDisplay();
+
     let message = "Try again!";
     let elementsToShake = [];
 
@@ -605,16 +1047,10 @@ function handleIncorrect(errorType) {
             message = "🤔 The words are in the wrong order. Try again!";
             elementsToShake = Array.from(sentenceContainer.querySelectorAll('.word-card'));
             break;
-        case 'structure':
-            message = "🤔 Your sentence needs a subject and a verb!";
-            elementsToShake = Array.from(sentenceContainer.querySelectorAll('.word-card'));
-            break;
     }
 
     showFeedback(message, 'error');
-    playSound('error');
 
-    // Shake the relevant elements
     elementsToShake.forEach(el => {
         el.classList.add('shake');
         setTimeout(() => el.classList.remove('shake'), 500);
@@ -627,38 +1063,88 @@ function showFeedback(message, type) {
     feedbackMessage.textContent = message;
 }
 
+function resetCurrentTile() {
+    const tile = boardData[gameState.currentTileIndex];
+    if (tile) {
+        renderHand(tile.hand);
+    }
+}
+
 // ============================================
-// MODE TOGGLE
+// SUCCESS MODAL
 // ============================================
 
-function toggleMode() {
-    gameState.mode = sillyModeToggle.checked ? 'silly' : 'strict';
-    console.log('Mode switched to:', gameState.mode);
+function showSuccessModal(points, sentence) {
+    const successSentence = document.getElementById('success-sentence');
+    const successPoints = document.getElementById('success-points');
+    const successStreak = document.getElementById('success-streak');
+
+    if (successSentence) successSentence.textContent = `"${sentence}"`;
+    if (successPoints) successPoints.textContent = `+${points}`;
+    if (successStreak) successStreak.textContent = `🔥 ${gameState.currentStreak}`;
+
+    successModal.classList.remove('hidden');
+}
+
+function closeSuccessModal() {
+    successModal.classList.add('hidden');
+}
+
+// ============================================
+// UI UPDATES
+// ============================================
+
+function updateUI() {
+    // Score
+    if (totalScoreEl) totalScoreEl.textContent = userState.totalScore;
+
+    // Progress
+    if (progressText) {
+        const completed = userState.completedTiles.filter(id =>
+            boardData.some(t => t.id === id)
+        ).length;
+        progressText.textContent = `${completed} / ${TILE_COUNT} Complete`;
+    }
+
+    updateStreakDisplay();
+}
+
+function updateStreakDisplay() {
+    if (streakValue) {
+        streakValue.textContent = gameState.currentStreak;
+    }
+
+    const streakDisplay = document.querySelector('.streak-display');
+
+    // Update fire overlay
+    if (streakOverlay) {
+        streakOverlay.classList.remove('streak-orange', 'streak-blue');
+    }
+    if (streakDisplay) {
+        streakDisplay.classList.remove('on-fire', 'blue-fire');
+    }
+
+    if (gameState.currentStreak >= 5) {
+        if (streakOverlay) streakOverlay.classList.add('streak-blue');
+        if (streakDisplay) streakDisplay.classList.add('blue-fire');
+    } else if (gameState.currentStreak >= 3) {
+        if (streakOverlay) streakOverlay.classList.add('streak-orange');
+        if (streakDisplay) streakDisplay.classList.add('on-fire');
+    }
 }
 
 // ============================================
 // AUDIO
 // ============================================
 
-function playSound(type) {
-    // Placeholder for sound effects
-    console.log('Playing sound:', type);
-}
-
-function speakSentence() {
-    const sentence = getSentenceFromStrip();
-    const text = sentence.map(w => w.text).join(' ');
-
+function speakSentence(text) {
     if ('speechSynthesis' in window) {
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = 'en-GB';
         utterance.rate = 0.9;
 
-        // Try to use a British voice
         const voices = speechSynthesis.getVoices();
-        const britishVoice = voices.find(v => v.lang === 'en-GB') ||
-            voices.find(v => v.name.includes('UK')) ||
-            voices.find(v => v.name.includes('British'));
+        const britishVoice = voices.find(v => v.lang === 'en-GB');
         if (britishVoice) utterance.voice = britishVoice;
 
         speechSynthesis.speak(utterance);
@@ -666,14 +1152,20 @@ function speakSentence() {
 }
 
 // ============================================
-// CONFETTI ANIMATION
+// CONFETTI
 // ============================================
+
+function resizeConfettiCanvas() {
+    if (confettiCanvas) {
+        confettiCanvas.width = window.innerWidth;
+        confettiCanvas.height = window.innerHeight;
+    }
+}
 
 const confettiParticles = [];
 
 function triggerConfetti() {
-    // Create particles
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 80; i++) {
         confettiParticles.push({
             x: Math.random() * confettiCanvas.width,
             y: -20,
@@ -686,25 +1178,24 @@ function triggerConfetti() {
         });
     }
 
-    // Start animation if not already running
-    if (confettiParticles.length === 100) {
+    if (confettiParticles.length <= 80) {
         animateConfetti();
     }
 }
 
 function animateConfetti() {
+    if (!confettiCtx) return;
+
     confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
 
     for (let i = confettiParticles.length - 1; i >= 0; i--) {
         const p = confettiParticles[i];
 
-        // Update position
         p.x += p.speedX;
         p.y += p.speedY;
         p.rotation += p.rotationSpeed;
-        p.speedY += 0.1; // Gravity
+        p.speedY += 0.1;
 
-        // Draw
         confettiCtx.save();
         confettiCtx.translate(p.x, p.y);
         confettiCtx.rotate((p.rotation * Math.PI) / 180);
@@ -712,7 +1203,6 @@ function animateConfetti() {
         confettiCtx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
         confettiCtx.restore();
 
-        // Remove if off screen
         if (p.y > confettiCanvas.height + 50) {
             confettiParticles.splice(i, 1);
         }

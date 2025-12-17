@@ -17,29 +17,94 @@
 
 body {
     font-family: var(--font-main);
-    background-color: var(--bg-color);
-    background-image: radial-gradient(#e0e0e0 1px, transparent 1px);
-    background-size: 20px 20px;
+    /* Animated Gradient Background */
+    background: linear-gradient(-45deg, #FF6B6B, #FF8E53, #4ECDC4, #2ecc71);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
     color: var(--text-color);
     min-height: 100vh;
     display: flex;
     justify-content: center;
     padding: 20px;
+    overflow-x: hidden;
+    cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'  width='40' height='48' viewport='0 0 100 100' style='fill:black;font-size:24px;'><text y='50%'>🪄</text></svg>") 16 0, auto;
+    /* Magic Wand Cursor */
+}
+
+@keyframes gradientBG {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Interactive Cursor */
+button,
+input,
+.sticker {
+    cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'  width='40' height='48' viewport='0 0 100 100' style='fill:black;font-size:24px;'><text y='50%'>👆</text></svg>") 16 0, pointer;
 }
 
 .container {
     width: 100%;
     max-width: 600px;
-    background-color: rgba(255, 255, 255, 0.9);
-    border-radius: 25px;
+    /* Glassmorphism */
+    background-color: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    border-radius: 30px;
     padding: 30px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    border: 5px solid var(--secondary-color);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    animation: floatUp 0.8s ease-out;
+}
+
+@keyframes floatUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 header {
     text-align: center;
     margin-bottom: 30px;
+    position: relative;
+    padding-top: 40px;
+    /* Make space for the button */
+}
+
+.home-btn {
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform: none;
+    /* Remove vertical centering */
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.5);
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-weight: bold;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    transition: all 0.2s;
+}
+
+.home-btn:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: scale(1.05);
 }
 
 h1 {
@@ -80,7 +145,8 @@ button {
     cursor: pointer;
     font-family: var(--font-heading);
     border: none;
-    transition: transform 0.1s;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    /* Jelly Physics */
 }
 
 button:active {
@@ -88,17 +154,21 @@ button:active {
 }
 
 #searchBtn {
-    background-color: var(--primary-color);
+    background: linear-gradient(135deg, #FF6B6B, #FF8E53);
     color: white;
     padding: 10px 30px;
     border-radius: 50px;
     font-size: 1.2rem;
-    box-shadow: 0 4px 0 #d45050;
+    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+}
+
+#searchBtn:hover {
+    transform: scale(1.05) rotate(-2deg);
+    box-shadow: 0 8px 20px rgba(255, 107, 107, 0.6);
 }
 
 #searchBtn:active {
-    box-shadow: 0 2px 0 #d45050;
-    transform: translateY(2px);
+    transform: scale(0.95);
 }
 
 .word-card,
@@ -302,4 +372,181 @@ button:active {
 /* Utility - Placed at the end for specificity */
 .hidden {
     display: none !important;
+}
+
+/* --- AI Features Styling --- */
+
+/* 1. Microphone Button */
+#micBtn {
+    background-color: var(--secondary-color);
+    color: white;
+    font-size: 1.5rem;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 0 #3aa8a0;
+    transition: all 0.2s;
+}
+
+#micBtn:active {
+    box-shadow: 0 2px 0 #3aa8a0;
+    transform: translateY(2px);
+}
+
+#micBtn.listening {
+    animation: listenPulse 1s infinite alternate;
+    background-color: #ff4081;
+    /* Pink when listening */
+    box-shadow: 0 0 15px #ff4081;
+}
+
+@keyframes listenPulse {
+    from {
+        transform: scale(1);
+    }
+
+    to {
+        transform: scale(1.1);
+    }
+}
+
+/* 2. Sticker Section */
+.sticker-section {
+    margin-top: 40px;
+    border-top: 3px dashed #ddd;
+    padding-top: 20px;
+    text-align: center;
+}
+
+.sticker-section h2 {
+    font-family: var(--font-heading);
+    color: #8e44ad;
+    margin-bottom: 20px;
+}
+
+.sticker-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 15px;
+    justify-items: center;
+}
+
+.sticker {
+    width: 80px;
+    height: 100px;
+    background: white;
+    border: 3px solid white;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5px;
+    cursor: pointer;
+    transition: transform 0.2s;
+    overflow: hidden;
+}
+
+.sticker:hover {
+    transform: rotate(5deg) scale(1.1);
+    z-index: 10;
+    border-color: var(--accent-color);
+}
+
+.sticker img {
+    width: 100%;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.sticker span {
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #555;
+    margin-top: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
+/* 3. Settings Button */
+#settingsBtn {
+    position: fixed;
+    bottom: 15px;
+    right: 15px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    opacity: 0.3;
+    transition: opacity 0.3s;
+    background: white;
+    padding: 8px;
+    border-radius: 50%;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+#settingsBtn:hover {
+    opacity: 1;
+    transform: rotate(45deg);
+}
+
+/* --- Animation Utilities --- */
+.slide-in-up {
+    animation: slideInUp 0.5s ease-out forwards;
+    opacity: 0;
+    /* Start hidden */
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.delay-1 {
+    animation-delay: 0.1s;
+}
+
+.delay-2 {
+    animation-delay: 0.2s;
+}
+
+.delay-3 {
+    animation-delay: 0.3s;
+}
+
+.pop-in {
+    animation: popInSticker 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popInSticker {
+    from {
+        transform: scale(0);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Confetti Particle (Generated by JS) */
+.confetti-particle {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
 }

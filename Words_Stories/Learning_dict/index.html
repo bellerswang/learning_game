@@ -18,12 +18,14 @@
 <body>
     <div class="container">
         <header>
-            <h1>✨ Magic Dictionary ✨</h1>
+            <a href="../../index.html" class="home-btn" title="Back to Toolbox">🏠 Home</a>
+            <h1>Magic Dictionary ✨</h1>
             <p>Type a word to discover its magic!</p>
         </header>
 
         <div class="search-box">
             <input type="text" id="searchInput" placeholder="Type a word here... (e.g., Apple, Cat)" autocomplete="off">
+            <button id="micBtn" title="Speak magic word">🎤</button>
             <button id="searchBtn">Go!</button>
         </div>
 
@@ -57,6 +59,15 @@
         <div id="noResult" class="hidden">
             <p>Oops! I don't know that word yet. Try "Apple", "Cat", or "Rainbow"!</p>
         </div>
+
+        <div class="sticker-section">
+            <h2>🎒 May's Word Collection</h2>
+            <div id="stickerGrid" class="sticker-grid">
+                <!-- Stickers go here -->
+            </div>
+            <button id="clearStickers" class="action-btn" style="background-color: #ff8a65; margin-top: 20px;">Start
+                Over</button>
+        </div>
     </div>
 
     <!-- Modal for Large Chinese Character -->
@@ -69,6 +80,8 @@
 
     <script src="data.js"></script>
     <script src="script.js"></script>
+
+    <div id="settingsBtn" title="Settings">⚙️</div>
 </body>
 
 </html>

@@ -69,8 +69,10 @@ let userState = {
 };
 
 // Word library
+// Word library
 let wordLibrary = [];
 let sentenceLibrary = null; // New: Container for pre-generated sentences
+let currentTheme = null;    // Current selected theme
 
 // Dealer's deck (shuffled word pools)
 let dealerDeck = {
@@ -92,31 +94,34 @@ let boardView, missionBoard, gameModal, successModal;
 let sentenceContainer, bankContainer, sentenceStrip;
 let checkBtn, resetBtn, closeGameBtn;
 let feedbackArea, feedbackMessage;
-let streakValue, totalScoreEl, progressText;
+let streakValue, totalScoreEl, progressText, themeTag;
 let streakOverlay, sillyIndicator;
 let confettiCanvas, confettiCtx;
 
 // Library version - increment this to force board regeneration
-const LIBRARY_VERSION = 3;
+const LIBRARY_VERSION = 5;
 
 // ============================================
 // INITIALIZATION
 // ============================================
 
 document.addEventListener('DOMContentLoaded', () => {
-    initDOMReferences();
-    loadUserState();
-    loadWordLibrary();      // Uses embedded word library
-    loadSentenceLibrary();  // Uses embedded sentence database (from sentence_data.js)
-
-    // Check if library was updated - force new board if so
-    const storedVersion = sessionStorage.getItem('library_version');
-    if (storedVersion !== String(LIBRARY_VERSION)) {
-        console.log('📚 Word library updated, generating fresh board...');
+    // 🔄 RESET ON LOAD (User Request)
+    // Clear all persistence to ensure fresh game every refresh
+    try {
+        localStorage.removeItem(STORAGE_KEY);
         sessionStorage.removeItem(SESSION_KEY);
-        sessionStorage.setItem('library_version', String(LIBRARY_VERSION));
+        console.log('🔄 Game state reset for fresh session');
+    } catch (e) {
+        console.warn('Could not clear storage', e);
     }
 
+    initDOMReferences();
+    loadUserState();      // Will load empty state since storage is cleared
+    loadWordLibrary();      // Uses embedded word library
+    loadSentenceLibrary();  // Uses embedded sentence database
+
+    // Always generate fresh board since we wiped session
     initOrRestoreBoard();
     setupEventListeners();
     updateUI();
@@ -145,6 +150,7 @@ function initDOMReferences() {
     streakValue = document.getElementById('streak-value');
     totalScoreEl = document.getElementById('total-score');
     progressText = document.getElementById('progress-text');
+    themeTag = document.getElementById('theme-tag');
 
     // Overlays
     streakOverlay = document.getElementById('streak-overlay');
@@ -221,7 +227,10 @@ function saveUserState() {
 
 function saveBoardToSession() {
     try {
-        sessionStorage.setItem(SESSION_KEY, JSON.stringify(boardData));
+        sessionStorage.setItem(SESSION_KEY, JSON.stringify({
+            boardData: boardData,
+            currentTheme: currentTheme
+        }));
     } catch (e) {
         console.error('Error saving board to session:', e);
     }
@@ -231,8 +240,12 @@ function loadBoardFromSession() {
     try {
         const saved = sessionStorage.getItem(SESSION_KEY);
         if (saved) {
-            boardData = JSON.parse(saved);
-            return true;
+            const data = JSON.parse(saved);
+            if (data.boardData && data.currentTheme) {
+                boardData = data.boardData;
+                currentTheme = data.currentTheme;
+                return true;
+            }
         }
     } catch (e) {
         console.error('Error loading board from session:', e);
@@ -276,21 +289,23 @@ function loadWordLibrary() {
 
 function loadSentenceLibrary() {
     // Use embedded sentence database (from sentence_data.js)
-    // This avoids CORS issues when opening via file:// protocol
-    if (typeof SENTENCE_DATABASE !== 'undefined' && SENTENCE_DATABASE.levels) {
-        sentenceLibrary = SENTENCE_DATABASE.levels;
-        console.log(`✅ Sentence library loaded: ${SENTENCE_DATABASE.metadata.total_count} sentences (embedded)`);
+    if (typeof SENTENCE_DATABASE !== 'undefined' && SENTENCE_DATABASE.themes) {
+        sentenceLibrary = SENTENCE_DATABASE;
+        console.log(`✅ Sentence library loaded: ${Object.keys(sentenceLibrary.themes).length} themes available`);
     } else {
-        console.error('❌ SENTENCE_DATABASE not found! Check that sentence_data.js is loaded.');
+        console.error('❌ SENTENCE_DATABASE not found or invalid format! Check sentence_data.js');
         sentenceLibrary = null;
     }
 }
 
 function getMissionSentences(level, count) {
-    if (!sentenceLibrary || !sentenceLibrary[level]) return null;
+    if (!sentenceLibrary || !currentTheme) return null;
+
+    const themeData = sentenceLibrary.themes[currentTheme];
+    if (!themeData || !themeData.levels || !themeData.levels[level]) return null;
 
     // Pick unique random sentences
-    const pool = [...sentenceLibrary[level]];
+    const pool = [...themeData.levels[level]];
     const picked = [];
 
     for (let i = 0; i < count; i++) {
@@ -788,7 +803,15 @@ function initOrRestoreBoard() {
     }
 }
 
+
 function generateNewBoard() {
+    // Pick a random theme
+    if (sentenceLibrary && sentenceLibrary.themes) {
+        const themeKeys = Object.keys(sentenceLibrary.themes);
+        currentTheme = themeKeys[Math.floor(Math.random() * themeKeys.length)];
+        console.log(`🎨 Selected theme: ${currentTheme}`);
+    }
+
     boardData = Dealer.generateBoard(TILE_COUNT);
     saveBoardToSession();
     renderBoard();
@@ -1211,6 +1234,23 @@ function updateUI() {
             boardData.some(t => t.id === id)
         ).length;
         progressText.textContent = `${completed} / ${TILE_COUNT} Complete`;
+    }
+
+    // Update Theme Tag
+    if (themeTag && currentTheme) {
+        themeTag.textContent = `Theme: ${currentTheme}`;
+        // Optional: Change badge color based on theme?
+        const colors = {
+            'Peppa Pig': '#ffadd6',
+            'Bluey': '#8abced',
+            'Seaside Holiday': '#4ecdc4',
+            'Magical Forest': '#a78bfa',
+            'School Life': '#fde047',
+            'Family Life': '#fb923c',
+            'The Park': '#4ade80',
+            'Supermarket': '#f87171'
+        };
+        // themeTag.style.backgroundColor = colors[currentTheme] || 'rgba(255,255,255,0.2)';
     }
 
     updateStreakDisplay();

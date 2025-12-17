@@ -19,6 +19,8 @@
             /* Pink Accent */
             --success-color: #00E676;
             /* Green */
+            --tertiary-color: #D500F9;
+            /* Purple Accent */
             --text-white: #ffffff;
             --text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 
@@ -474,6 +476,74 @@
         .hidden {
             display: none !important;
         }
+
+        /* --- HINT SYSTEM --- */
+        .hint-container {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            z-index: 110;
+        }
+
+        .hint-btn {
+            background: linear-gradient(135deg, #FFD700, #FFA000);
+            /* Gold */
+            color: #3e2723;
+            border: 2px solid #FFECB3;
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .hint-btn:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6);
+            filter: brightness(1.1);
+        }
+
+        .hint-btn:active:not(:disabled) {
+            transform: scale(0.95);
+        }
+
+        .hint-btn:disabled,
+        .hint-btn.disabled {
+            filter: grayscale(100%);
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        @keyframes hintPulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7);
+                border-color: #FFD700;
+            }
+
+            70% {
+                box-shadow: 0 0 0 15px rgba(255, 215, 0, 0);
+                border-color: #FFF;
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 215, 0, 0);
+                border-color: #FFD700;
+            }
+        }
+
+        .card-hint {
+            animation: hintPulse 1.5s infinite;
+            border-color: #FFD700 !important;
+            transform: scale(1.05);
+            z-index: 20;
+        }
     </style>
 </head>
 
@@ -493,6 +563,14 @@
                     </div>
                     <div class="md-icon">🌱</div>
                 </div>
+                <div class="menu-card glass-panel" onclick="startMathGame(20)"
+                    style="border-left: 5px solid var(--tertiary-color);">
+                    <div>
+                        <div class="md-title" style="color: var(--tertiary-color);">Make 20</div>
+                        <div class="md-sub">Bridge • 4 Numbers</div>
+                    </div>
+                    <div class="md-icon">🚀</div>
+                </div>
                 <div class="menu-card glass-panel" onclick="startMathGame(24)"
                     style="border-left: 5px solid var(--secondary-color);">
                     <div>
@@ -510,8 +588,13 @@
                 <button class="nav-btn" onclick="goHome()">
                     <span>🏠</span> Exit
                 </button>
+                <div class="hint-container">
+                    <button id="hint-btn" class="hint-btn" onclick="useHint()">
+                        <span>💡</span> Hint (<span id="hint-count">3</span>)
+                    </button>
+                </div>
                 <div id="mode-badge"
-                    style="background: rgba(255,255,255,0.15); padding: 5px 15px; border-radius: 20px; font-size: 0.9rem;">
+                    style="background: rgba(255,255,255,0.15); padding: 5px 15px; border-radius: 20px; font-size: 0.9rem; position: absolute; left: 50%; transform: translateX(-50%); white-space: nowrap;">
                     Mode: Make 10</div>
             </div>
 
@@ -604,6 +687,7 @@
         let numbers = [];
         let selectedIdx = null;
         let selectedOp = null;
+        let hintsLeft = 3;
 
         // --- NAVIGATION ---
         function startMathGame(target) {
@@ -620,6 +704,11 @@
             }
 
             if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            // Reset Hints
+            hintsLeft = 3;
+            updateHintUI();
+
             generateNewPuzzle();
         }
 
@@ -643,7 +732,7 @@
 
         // --- GAME LOGIC ---
         function generateNewPuzzle() {
-            const count = targetValue === 24 ? 4 : 3;
+            const count = targetValue === 10 ? 3 : 4;
             const allowMult = targetValue === 24;
             numbers = generateSolvableNumbers(targetValue, count, allowMult);
             selectedIdx = null;
@@ -882,6 +971,113 @@
 
         function removeAllConfetti() {
             document.querySelectorAll('.confetti').forEach(e => e.remove());
+        }
+
+        /* --- HINT LOGIC --- */
+
+        function updateHintUI() {
+            const btn = document.getElementById('hint-btn');
+            const countSpan = document.getElementById('hint-count');
+            countSpan.innerText = hintsLeft;
+            if (hintsLeft <= 0) {
+                btn.classList.add('disabled');
+                btn.disabled = true;
+            } else {
+                btn.classList.remove('disabled');
+                btn.disabled = false;
+            }
+        }
+
+        function useHint() {
+            if (hintsLeft <= 0) {
+                speak("No hints left");
+                return;
+            }
+
+            // First check if already solvable directly (e.g. 24 itself?) 
+            // But we need a pair step.
+
+            const bestPairIndices = solveMath(numbers, targetValue);
+
+            if (bestPairIndices) {
+                hintsLeft--;
+                updateHintUI();
+
+                // Highlight
+                const cards = document.querySelectorAll('.num-card');
+                const [idx1, idx2] = bestPairIndices;
+
+                if (cards[idx1]) cards[idx1].classList.add('card-hint');
+                if (cards[idx2]) cards[idx2].classList.add('card-hint');
+
+                playSound('select');
+                speak("Try these two");
+            } else {
+                speak("I assume it is solvable!"); // Should not happen given generator
+            }
+        }
+
+        // Returns [i, j] of the next best move
+        function solveMath(currentNums, target) {
+            const ops = (target === 24) ? ['+', '-', '*', '/'] : ['+', '-'];
+
+            // Iterate all pairs
+            for (let i = 0; i < currentNums.length; i++) {
+                for (let j = i + 1; j < currentNums.length; j++) {
+                    const a = currentNums[i];
+                    const b = currentNums[j];
+                    const others = currentNums.filter((_, idx) => idx !== i && idx !== j);
+
+                    // Try all ops
+                    const results = [];
+                    results.push(a + b);
+                    results.push(a - b);
+                    results.push(b - a);
+
+                    if (ops.includes('*')) results.push(a * b);
+                    if (ops.includes('/')) {
+                        if (b !== 0 && a % b === 0) results.push(a / b);
+                        if (a !== 0 && b % a === 0) results.push(b / a);
+                    }
+
+                    // Check if any result leads to solution
+                    for (let res of results) {
+                        if (canSolve([res, ...others], target)) {
+                            return [i, j];
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
+        function canSolve(nums, target) {
+            if (nums.length === 1) return Math.abs(nums[0] - target) < 0.001;
+
+            const ops = (targetValue === 24) ? ['+', '-', '*', '/'] : ['+', '-'];
+
+            for (let i = 0; i < nums.length; i++) {
+                for (let j = i + 1; j < nums.length; j++) {
+                    const a = nums[i];
+                    const b = nums[j];
+                    const others = nums.filter((_, idx) => idx !== i && idx !== j);
+
+                    const results = [];
+                    results.push(a + b);
+                    results.push(a - b);
+                    results.push(b - a);
+                    if (ops.includes('*')) results.push(a * b);
+                    if (ops.includes('/')) {
+                        if (b !== 0 && a % b === 0) results.push(a / b);
+                        if (a !== 0 && b % a === 0) results.push(b / a);
+                    }
+
+                    for (let res of results) {
+                        if (canSolve([res, ...others], target)) return true;
+                    }
+                }
+            }
+            return false;
         }
 
     </script>

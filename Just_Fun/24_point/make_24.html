@@ -544,6 +544,83 @@
             transform: scale(1.05);
             z-index: 20;
         }
+
+        /* Mobile Optimization */
+        @media (max-width: 600px) {
+            .app-title {
+                font-size: 2.5rem;
+                margin-bottom: 20px;
+            }
+
+            .menu-card {
+                padding: 15px;
+            }
+
+            .md-title {
+                font-size: 1.4rem;
+            }
+
+            .game-header {
+                padding: 0 10px;
+                top: 10px;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px;
+            }
+
+            .nav-btn,
+            .hint-btn {
+                padding: 6px 12px;
+                font-size: 0.85rem;
+            }
+
+            /* Reposition Mode Badge */
+            #mode-badge {
+                position: relative;
+                transform: none;
+                left: auto;
+                width: 100%;
+                text-align: center;
+                margin-top: 5px;
+                order: 3;
+            }
+
+            /* Game Area Scale Down */
+            .target-value {
+                font-size: 4rem;
+            }
+
+            .target-container {
+                margin-bottom: 10px;
+            }
+
+            .num-card {
+                width: 85px;
+                height: 115px;
+                font-size: 2.5rem;
+            }
+
+            .cards-container {
+                gap: 10px;
+                min-height: 140px;
+            }
+
+            .operators-dock {
+                gap: 15px;
+                padding: 10px 20px;
+                margin-top: 15px;
+            }
+
+            .op-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.8rem;
+            }
+
+            .victory-title {
+                font-size: 3rem;
+            }
+        }
     </style>
 </head>
 

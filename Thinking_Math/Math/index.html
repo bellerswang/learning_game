@@ -856,6 +856,50 @@
             border-color: #ea580c;
             background: #fff7ed;
         }
+
+        /* Mobile/iPhone Optimization */
+        @media (max-width: 768px) {
+            .room {
+                min-height: auto;
+                border-width: 4px;
+            }
+
+            .ten-frame-grid {
+                height: auto;
+                padding: 10px;
+                gap: 5px;
+            }
+
+            .frame-slot {
+                width: 42px;
+                height: 42px;
+            }
+
+            .block-one {
+                width: 38px;
+                height: 38px;
+            }
+
+            /* Stack rooms with gap */
+            .flex-tens {
+                min-height: 100px;
+            }
+
+            /* Adjust fonts */
+            .room-header {
+                font-size: 1rem;
+                padding: 8px;
+            }
+
+            h1#mainTitle {
+                font-size: 1.8rem;
+            }
+
+            .btn {
+                padding: 12px 16px !important;
+                font-size: 1rem !important;
+            }
+        }
     </style>
 </head>
 
@@ -921,7 +965,7 @@
         </div>
 
         <!-- The Farm (Game Board) -->
-        <div class="flex gap-4 h-[420px]">
+        <div class="flex flex-col md:flex-row gap-4 h-auto md:h-[420px]">
 
             <!-- Tens Room (Hives) -->
             <div class="flex-1 flex flex-col">

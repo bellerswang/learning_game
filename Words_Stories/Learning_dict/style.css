@@ -353,19 +353,114 @@ button:active {
 }
 
 /* Responsive */
+/* Responsive / iPhone Optimization */
 @media (max-width: 480px) {
+    .container {
+        padding: 15px;
+        /* Recover screen real estate */
+        border-radius: 20px;
+    }
+
+    header {
+        padding-top: 35px;
+        margin-bottom: 20px;
+    }
+
     h1 {
+        font-size: 1.8rem;
+    }
+
+    .home-btn {
+        padding: 5px 10px;
+        font-size: 0.9rem;
+    }
+
+    /* Compact Search Box */
+    .search-box {
+        gap: 5px;
+        margin-bottom: 20px;
+    }
+
+    input {
+        padding: 12px 15px;
+        font-size: 1rem;
+        /* Prevent iOS zoom */
+        border-width: 2px;
+    }
+
+    #searchBtn {
+        padding: 10px 20px;
+        font-size: 1rem;
+    }
+
+    #micBtn {
+        width: 44px;
+        height: 44px;
+        /* Standard iOS touch target minimum */
+        font-size: 1.2rem;
+    }
+
+    /* Result Card Tweaks */
+    .word-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    #displayWord {
         font-size: 2rem;
+    }
+
+    .speak-btn {
+        padding: 10px;
+        /* Larger hit area */
+        background-color: #f0f0f0;
+        /* More visible on mobile */
     }
 
     .chinese-section {
         flex-direction: column;
-        gap: 10px;
+        gap: 15px;
         text-align: center;
+        padding: 15px;
     }
 
     .chinese-text-group {
-        justify-content: center;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    #chineseMeaning {
+        font-size: 1.8rem;
+        /* Larger for readability */
+    }
+
+    /* Sticker Grid */
+    .sticker-grid {
+        grid-template-columns: repeat(3, 1fr);
+        /* Force 3 columns */
+        gap: 10px;
+    }
+
+    .sticker {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 4/5;
+    }
+
+    .sticker img {
+        height: 65%;
+    }
+
+    /* Modal */
+    .modal-content {
+        width: 85vw;
+        height: 85vw;
+        padding: 20px;
+    }
+
+    #largeCharDisplay {
+        font-size: 6rem;
     }
 }
 

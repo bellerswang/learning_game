@@ -5,6 +5,8 @@ class HiveRenderer {
         this.engine = engine;
         this.hexSize = 45; // Larger pieces
         this.camera = { x: 0, y: 0 };
+        this.logicalWidth = 0;
+        this.logicalHeight = 0;
 
         // Interaction state
         this.selectedHex = null;
@@ -37,15 +39,32 @@ class HiveRenderer {
     }
 
     resize() {
-        this.canvas.width = this.canvas.parentElement.clientWidth;
-        this.canvas.height = this.canvas.parentElement.clientHeight;
+        const parent = this.canvas.parentElement;
+        const dpr = window.devicePixelRatio || 1;
+
+        // Logical size
+        this.logicalWidth = parent.clientWidth;
+        this.logicalHeight = parent.clientHeight;
+
+        // Physical size
+        this.canvas.width = this.logicalWidth * dpr;
+        this.canvas.height = this.logicalHeight * dpr;
+
+        // CSS size
+        this.canvas.style.width = `${this.logicalWidth}px`;
+        this.canvas.style.height = `${this.logicalHeight}px`;
+
+        // Scale context
+        this.ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset transform compatible
+        this.ctx.scale(dpr, dpr);
+
         this.centerCamera();
         this.draw();
     }
 
     centerCamera() {
-        this.camera.x = this.canvas.width / 2;
-        this.camera.y = this.canvas.height / 2;
+        this.camera.x = this.logicalWidth / 2;
+        this.camera.y = this.logicalHeight / 2;
     }
 
     // Convert screen (pixel) to Axial (q, r)

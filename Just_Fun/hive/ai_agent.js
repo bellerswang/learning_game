@@ -3,19 +3,27 @@ class HiveAI {
         this.engine = engine;
     }
 
+    // Returns move details via callback to support animation
     makeMove(callback) {
         const move = this.getBestMove();
+
         if (move) {
             if (move.type === 'place') {
                 this.engine.placePiece(move.q, move.r, move.pieceType, 'black');
+                if (callback) callback({ type: 'place', q: move.q, r: move.r });
             } else {
                 this.engine.movePiece(move.fromQ, move.fromR, move.toQ, move.toR);
+                if (callback) callback({
+                    type: 'move',
+                    fromQ: move.fromQ, fromR: move.fromR,
+                    toQ: move.toQ, toR: move.toR
+                });
             }
         } else {
             console.log("AI Pass");
             this.engine.endTurn();
+            if (callback) callback(null);
         }
-        if (callback) callback();
     }
 
     getBestMove() {

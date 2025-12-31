@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hive Game - Human vs AI</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="game-container">
+        <div id="ui-panel">
+            <h1>Hive</h1>
+            <div id="status">Player's Turn</div>
+            <div id="controls">
+                <button id="restart-btn">Restart Game</button>
+            </div>
+            <div id="player-hand" class="hand">
+                <h3>Your Pieces</h3>
+                <div id="player-pieces"></div>
+            </div>
+            <div id="ai-hand" class="hand">
+                <h3>AI Pieces</h3>
+                <div id="ai-pieces"></div>
+            </div>
+        </div>
+        <canvas id="hive-canvas"></canvas>
+
+        <!-- Victory Overlay -->
+        <div id="victory-overlay" class="overlay hidden">
+            <div class="overlay-content">
+                <h1 id="winner-text">White Wins!</h1>
+                <button id="play-again-btn">Play Again</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="hive_engine.js"></script>
+    <script src="ai_agent.js"></script>
+    <script src="renderer.js"></script>
+    <script src="controller.js"></script>
+    <script>
+        // Main game initialization
+        window.onload = () => {
+            const canvas = document.getElementById('hive-canvas');
+            const engine = new HiveEngine();
+            const renderer = new HiveRenderer(canvas, engine);
+            const controller = new HiveController(engine, renderer);
+            const ai = new HiveAI(engine); // AI not fully hooked up yet
+
+            // Expose for debugging
+            window.game = { engine, renderer, controller, ai };
+
+            renderer.resize();
+            window.addEventListener('resize', () => renderer.resize());
+
+            // Initial Draw
+            renderer.draw();
+        };
+    </script>
+</body>
+
+</html>

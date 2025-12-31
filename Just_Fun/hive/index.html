@@ -6,32 +6,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Hive Game - Human vs AI</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
     <div id="game-container">
-        <div id="ui-panel">
-            <h1>Hive</h1>
-            <div id="status">Player's Turn</div>
-            <div id="controls">
-                <button id="restart-btn">Restart Game</button>
+        <!-- Top Header Bar -->
+        <header id="header-bar">
+            <div class="header-left">
+                <h1>🪲 Hive</h1>
+                <div id="status">White's Turn</div>
             </div>
-            <div id="player-hand" class="hand">
-                <h3>Your Pieces</h3>
-                <div id="player-pieces"></div>
+            <div class="header-right">
+                <button id="restart-btn">🔄 Restart</button>
+                <a href="../../index.html" class="home-btn">🏠 Home</a>
             </div>
-            <div id="ai-hand" class="hand">
-                <h3>AI Pieces</h3>
-                <div id="ai-pieces"></div>
+        </header>
+
+        <!-- Main Game Area -->
+        <div id="game-area">
+            <!-- Canvas takes most space -->
+            <canvas id="hive-canvas"></canvas>
+
+            <!-- Floating Piece Panels -->
+            <div id="player-panel" class="piece-panel">
+                <div class="panel-header">
+                    <span class="panel-icon">⚪</span>
+                    <span>Your Pieces</span>
+                </div>
+                <div id="player-pieces" class="pieces-grid"></div>
+            </div>
+
+            <div id="ai-panel" class="piece-panel ai">
+                <div class="panel-header">
+                    <span class="panel-icon">⚫</span>
+                    <span>AI Pieces</span>
+                </div>
+                <div id="ai-pieces" class="pieces-grid"></div>
             </div>
         </div>
-        <canvas id="hive-canvas"></canvas>
 
         <!-- Victory Overlay -->
         <div id="victory-overlay" class="overlay hidden">
             <div class="overlay-content">
                 <h1 id="winner-text">White Wins!</h1>
-                <button id="play-again-btn">Play Again</button>
+                <button id="play-again-btn">🎮 Play Again</button>
             </div>
         </div>
 
@@ -49,7 +68,7 @@
             const engine = new HiveEngine();
             const renderer = new HiveRenderer(canvas, engine);
             const controller = new HiveController(engine, renderer);
-            const ai = new HiveAI(engine); // AI not fully hooked up yet
+            const ai = new HiveAI(engine);
 
             // Expose for debugging
             window.game = { engine, renderer, controller, ai };

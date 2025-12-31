@@ -22,13 +22,60 @@ class HiveController {
     }
 
     initInput() {
-        // Mouse Click
+        // Mouse Drag State
+        let isDragging = false;
+        let dragStart = { x: 0, y: 0 };
+        let cameraStart = { x: 0, y: 0 };
+        let hasDragged = false;
+        const DRAG_THRESHOLD = 5; // Pixels before considered a drag
+
+        // Mouse Down - Start potential drag or click
         this.renderer.canvas.addEventListener('mousedown', (e) => {
-            if (this.aiThinking) return;
             const rect = this.renderer.canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            this.handleCanvasClick(x, y);
+            dragStart = { x: e.clientX, y: e.clientY };
+            cameraStart = { x: this.renderer.camera.x, y: this.renderer.camera.y };
+            isDragging = true;
+            hasDragged = false;
+        });
+
+        // Mouse Move - Drag to pan
+        this.renderer.canvas.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+
+            const dx = e.clientX - dragStart.x;
+            const dy = e.clientY - dragStart.y;
+
+            // Check if moved enough to be considered a drag
+            if (Math.abs(dx) > DRAG_THRESHOLD || Math.abs(dy) > DRAG_THRESHOLD) {
+                hasDragged = true;
+            }
+
+            if (hasDragged) {
+                this.renderer.camera.x = cameraStart.x + dx;
+                this.renderer.camera.y = cameraStart.y + dy;
+                this.renderer.draw();
+            }
+        });
+
+        // Mouse Up - End drag or trigger click
+        this.renderer.canvas.addEventListener('mouseup', (e) => {
+            if (!isDragging) return;
+            isDragging = false;
+
+            // If it was a click (not a drag), handle it
+            if (!hasDragged && !this.aiThinking) {
+                const rect = this.renderer.canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                this.handleCanvasClick(x, y);
+            }
+            hasDragged = false;
+        });
+
+        // Mouse Leave - Cancel drag
+        this.renderer.canvas.addEventListener('mouseleave', (e) => {
+            isDragging = false;
+            hasDragged = false;
         });
 
         // Mouse Wheel Zoom

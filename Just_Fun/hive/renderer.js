@@ -15,11 +15,151 @@ class HiveRenderer {
         // Interaction state
         this.selectedHex = null;
         this.validMoves = [];
+        this.highlightHex = null;
         this.animatingPieces = new Map(); // key -> {x, y, targetX, targetY, startTime, duration, piece}
         this.lastFrameTime = 0;
+        this.isAnimating = false;
+
+        // Color Palette
+        this.colors = {
+            background: '#e8f4f8',
+            whitePiece: '#f5f5f5',
+            blackPiece: '#3a3a3a',
+            whitePieceText: '#333',
+            blackPieceText: '#fff',
+            selected: 'rgba(255, 200, 50, 0.6)',
+            validMove: 'rgba(100, 200, 100, 0.5)',
+            highlight: 'rgba(100, 150, 255, 0.4)'
+        };
+
+        // Piece Symbols
+        this.pieceSymbols = {
+            [PieceType.QUEEN]: '👑',
+            [PieceType.ANT]: '🐜',
+            [PieceType.SPIDER]: '🕷️',
+            [PieceType.BEETLE]: '🪲',
+            [PieceType.GRASSHOPPER]: '🦗',
+            [PieceType.MOSQUITO]: '🦟',
+            [PieceType.LADYBUG]: '🐞',
+            [PieceType.PILLBUG]: '🐛'
+        };
     }
 
-    // ... hexSize, setZoom, resize, centerCamera, pixelToHex, hexRound, hexToPixel ...
+    get hexSize() {
+        return this.baseHexSize * this.zoom;
+    }
+
+    setZoom(newZoom) {
+        this.zoom = Math.max(this.minZoom, Math.min(this.maxZoom, newZoom));
+        this.draw();
+    }
+
+    resize() {
+        const container = this.canvas.parentElement;
+        const dpr = window.devicePixelRatio || 1;
+
+        // Get available size from container
+        const rect = container.getBoundingClientRect();
+
+        this.logicalWidth = Math.max(400, rect.width);
+        this.logicalHeight = Math.max(400, rect.height);
+
+        this.canvas.width = this.logicalWidth * dpr;
+        this.canvas.height = this.logicalHeight * dpr;
+        this.canvas.style.width = `${this.logicalWidth}px`;
+        this.canvas.style.height = `${this.logicalHeight}px`;
+
+        this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        this.centerCamera();
+        this.draw();
+    }
+
+    centerCamera() {
+        // Center on the hive or the canvas center if empty
+        if (this.engine.board.size === 0) {
+            this.camera.x = this.logicalWidth / 2;
+            this.camera.y = this.logicalHeight / 2;
+        } else {
+            let sumX = 0, sumY = 0;
+            this.engine.board.forEach((_, key) => {
+                const [q, r] = key.split(',').map(Number);
+                const pos = this.hexToPixelRaw(q, r);
+                sumX += pos.x;
+                sumY += pos.y;
+            });
+            const avgX = sumX / this.engine.board.size;
+            const avgY = sumY / this.engine.board.size;
+
+            this.camera.x = this.logicalWidth / 2 - avgX;
+            this.camera.y = this.logicalHeight / 2 - avgY;
+        }
+    }
+
+    // Raw hex to pixel without camera offset (for centering calculation)
+    hexToPixelRaw(q, r) {
+        const size = this.hexSize;
+        const x = size * (3 / 2 * q);
+        const y = size * (Math.sqrt(3) / 2 * q + Math.sqrt(3) * r);
+        return { x, y };
+    }
+
+    hexToPixel(q, r) {
+        const raw = this.hexToPixelRaw(q, r);
+        return {
+            x: raw.x + this.camera.x,
+            y: raw.y + this.camera.y
+        };
+    }
+
+    pixelToHex(x, y) {
+        const size = this.hexSize;
+        const px = x - this.camera.x;
+        const py = y - this.camera.y;
+
+        const q = (2 / 3 * px) / size;
+        const r = (-1 / 3 * px + Math.sqrt(3) / 3 * py) / size;
+
+        return this.hexRound(q, r);
+    }
+
+    hexRound(q, r) {
+        const s = -q - r;
+
+        let rq = Math.round(q);
+        let rr = Math.round(r);
+        let rs = Math.round(s);
+
+        const qDiff = Math.abs(rq - q);
+        const rDiff = Math.abs(rr - r);
+        const sDiff = Math.abs(rs - s);
+
+        if (qDiff > rDiff && qDiff > sDiff) {
+            rq = -rr - rs;
+        } else if (rDiff > sDiff) {
+            rr = -rq - rs;
+        }
+
+        return { q: rq, r: rr };
+    }
+
+    // Animation for dropping a new piece
+    animateDrop(key, q, r, duration = 250) {
+        const end = this.hexToPixel(q, r);
+        const piece = this.engine.board.get(key);
+
+        if (!piece) return;
+
+        this.animatingPieces.set(key, {
+            sx: end.x, sy: end.y - 100, // Start above
+            ex: end.x, ey: end.y,
+            startTime: performance.now(),
+            duration: duration,
+            piece: piece
+        });
+
+        this.startAnimationLoop();
+    }
 
     // Helper to start animation
     animateMove(key, fromQ, fromR, toQ, toR, duration = 300) {

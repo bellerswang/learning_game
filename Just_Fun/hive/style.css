@@ -1,111 +1,211 @@
 :root {
-    --bg-color: #f0f4f8;
-    --panel-bg: rgba(255, 255, 255, 0.9);
+    --bg-color: #e8f4f8;
+    --panel-bg: rgba(255, 255, 255, 0.95);
     --text-color: #2c3e50;
     --accent-color: #3498db;
+    --accent-hover: #2980b9;
     --white-piece-color: #fdfdfd;
     --black-piece-color: #34495e;
     --white-piece-text: #2c3e50;
     --black-piece-text: #ecf0f1;
     --highlight-color: #f1c40f;
     --valid-move-color: #2ecc71;
+    --header-height: 60px;
+}
+
+* {
+    box-sizing: border-box;
 }
 
 body {
     margin: 0;
     padding: 0;
     background-color: var(--bg-color);
-    background-image: radial-gradient(#dfe4ea 1px, transparent 1px);
+    background-image: radial-gradient(#d0dce0 1px, transparent 1px);
     background-size: 20px 20px;
     color: var(--text-color);
     font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     overflow: hidden;
     height: 100vh;
-    display: flex;
 }
 
 #game-container {
     display: flex;
+    flex-direction: column;
     width: 100%;
     height: 100%;
     position: relative;
-    /* Default: Row for desktop */
-    flex-direction: row;
 }
 
-#ui-panel {
-    width: 320px;
-    background-color: var(--panel-bg);
-    backdrop-filter: blur(10px);
-    padding: 30px;
-    box-shadow: 5px 0 15px rgba(0, 0, 0, 0.05);
+/* ============ HEADER BAR ============ */
+#header-bar {
     display: flex;
-    flex-direction: column;
-    z-index: 10;
-    border-right: 1px solid rgba(0, 0, 0, 0.05);
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background: var(--panel-bg);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    z-index: 20;
+    height: var(--header-height);
     flex-shrink: 0;
 }
 
-#hive-canvas {
-    flex-grow: 1;
-    cursor: default;
-    touch-action: none;
-    /* Prevent scroll on canvas */
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
 }
 
-/* Typography & Elements */
-h1 {
-    font-size: 2.5em;
-    font-weight: 800;
-    background: linear-gradient(135deg, #2c3e50, #3498db);
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#header-bar h1 {
+    font-size: 1.8em;
+    font-weight: 700;
+    background: linear-gradient(135deg, #f39c12, #e74c3c);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    margin-bottom: 5px;
-    margin-top: 0;
+    margin: 0;
 }
 
 #status {
-    font-size: 1.2em;
-    margin-bottom: 20px;
+    font-size: 1.1em;
     font-weight: 600;
     color: #7f8c8d;
+    padding: 6px 14px;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 20px;
 }
 
-.hand {
-    margin-top: 20px;
-    padding: 15px;
-    background: rgba(255, 255, 255, 0.5);
+#header-bar button,
+.home-btn {
+    background: var(--accent-color);
+    border: none;
+    padding: 10px 18px;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+#header-bar button:hover,
+.home-btn:hover {
+    background: var(--accent-hover);
+    transform: translateY(-1px);
+}
+
+.home-btn {
+    background: #95a5a6;
+}
+
+.home-btn:hover {
+    background: #7f8c8d;
+}
+
+/* ============ GAME AREA ============ */
+#game-area {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+#hive-canvas {
+    width: 100%;
+    height: 100%;
+    cursor: grab;
+    touch-action: none;
+}
+
+#hive-canvas:active {
+    cursor: grabbing;
+}
+
+/* ============ FLOATING PIECE PANELS ============ */
+.piece-panel {
+    position: absolute;
+    background: var(--panel-bg);
+    backdrop-filter: blur(10px);
     border-radius: 16px;
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 12px 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    z-index: 15;
+    transition: transform 0.2s ease;
 }
 
-.hand h3 {
-    margin-top: 0;
-    font-size: 0.9em;
+.piece-panel:hover {
+    transform: scale(1.02);
+}
+
+#player-panel {
+    bottom: 20px;
+    left: 20px;
+}
+
+#ai-panel {
+    bottom: 20px;
+    right: 20px;
+}
+
+.piece-panel.ai {
+    opacity: 0.85;
+}
+
+.panel-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85em;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    color: #95a5a6;
+    letter-spacing: 0.5px;
+    color: #7f8c8d;
     margin-bottom: 10px;
+}
+
+.panel-icon {
+    font-size: 1.2em;
+}
+
+/* ============ PIECES GRID ============ */
+.pieces-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    max-width: 280px;
 }
 
 .piece-btn {
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    width: 45px;
-    height: 45px;
-    margin: 4px;
+    width: 48px;
+    height: 48px;
     border-radius: 12px;
     border: 2px solid transparent;
     background-color: white;
     cursor: pointer;
-    font-size: 22px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    transition: all 0.2s ease;
+    font-size: 24px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.15s ease;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
-    /* Remove highlight on mobile tap */
+}
+
+.piece-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
 }
 
 .piece-btn:active {
@@ -115,35 +215,11 @@ h1 {
 .piece-btn.selected {
     border-color: var(--accent-color);
     background-color: #ebf5fb;
-    transform: scale(1.05);
+    transform: scale(1.1);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3);
 }
 
-/* Hands should wrap on desktop but scroll on mobile if needed */
-#player-pieces,
-#ai-pieces {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-#controls {
-    margin-top: auto;
-}
-
-button {
-    background: var(--accent-color);
-    border: none;
-    padding: 14px 24px;
-    color: white;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    border-radius: 12px;
-    width: 100%;
-    transition: background 0.2s;
-    -webkit-tap-highlight-color: transparent;
-}
-
-/* Overlay */
+/* ============ OVERLAY ============ */
 .overlay {
     position: absolute;
     top: 0;
@@ -151,7 +227,7 @@ button {
     right: 0;
     bottom: 0;
     background: rgba(44, 62, 80, 0.85);
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(8px);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -168,179 +244,289 @@ button {
 
 .overlay-content {
     background: white;
-    padding: 40px;
+    padding: 50px 60px;
     border-radius: 24px;
     text-align: center;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
-    max-width: 400px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+    max-width: 420px;
     width: 90%;
 }
 
 .overlay-content h1 {
     font-size: 2.5em;
-    margin-bottom: 20px;
-    background: none;
-    -webkit-text-fill-color: initial;
-    color: #2c3e50;
-    /* Reset fill for overlay text */
-    background-clip: border-box;
-    -webkit-background-clip: border-box;
+    margin: 0 0 25px 0;
+    background: linear-gradient(135deg, #f39c12, #e74c3c);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
-/* Mobile Portrait (or very narrow width) */
+.overlay-content button {
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+    border: none;
+    padding: 16px 40px;
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 14px;
+    transition: all 0.2s ease;
+}
+
+.overlay-content button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(46, 204, 113, 0.4);
+}
+
+/* ============ TOOLTIP ============ */
+.tooltip {
+    position: absolute;
+    background: rgba(44, 62, 80, 0.95);
+    color: white;
+    padding: 12px 18px;
+    border-radius: 12px;
+    font-size: 0.9em;
+    pointer-events: none;
+    z-index: 50;
+    max-width: 220px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(4px);
+    transition: opacity 0.2s, transform 0.2s;
+    transform: translateY(-10px);
+}
+
+.tooltip.hidden {
+    opacity: 0;
+    transform: translateY(0);
+    visibility: hidden;
+}
+
+.tooltip h4 {
+    margin: 0 0 6px 0;
+    color: #f1c40f;
+    font-size: 1.1em;
+}
+
+.tooltip p {
+    margin: 0;
+    line-height: 1.5;
+    font-size: 0.9em;
+    color: #ecf0f1;
+}
+
+/* ============ MOBILE: PORTRAIT ============ */
 @media (max-width: 768px) and (orientation: portrait) {
-    #game-container {
-        flex-direction: column;
+    #header-bar {
+        padding: 8px 12px;
+        height: 50px;
     }
 
-    #ui-panel {
-        width: 100%;
-        height: auto;
-        max-height: 40vh;
-        padding: 10px;
-        order: 2;
-        border-right: none;
-        border-top: 1px solid rgba(0, 0, 0, 0.1);
-        overflow-y: auto;
-    }
-
-    #hive-canvas {
-        order: 1;
-        width: 100%;
-        height: 60vh;
-    }
-
-    .hand {
-        padding: 8px;
-        display: flex;
-        flex-direction: row;
-        overflow-x: auto;
-        white-space: nowrap;
-    }
-
-    #player-pieces,
-    #ai-pieces {
-        flex-wrap: nowrap;
-    }
-}
-
-/* Landscape Mobile (Short height) */
-@media (max-height: 500px) and (orientation: landscape) {
-    #game-container {
-        flex-direction: row;
-    }
-
-    #ui-panel {
-        width: 260px;
-        /* Narrower width for landscape */
-        height: 100vh;
-        padding: 15px;
-        order: 1;
-        /* Left side */
-        overflow-y: auto;
-    }
-
-    #hive-canvas {
-        order: 2;
-        width: auto;
-        height: 100vh;
-    }
-
-    h1 {
-        font-size: 1.5em;
+    #header-bar h1 {
+        font-size: 1.3em;
     }
 
     #status {
-        font-size: 1em;
-        margin-bottom: 10px;
+        font-size: 0.9em;
+        padding: 4px 10px;
     }
 
-    .hand {
-        padding: 8px;
-        margin-top: 10px;
+    .header-right button,
+    .home-btn {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+
+    .piece-panel {
+        padding: 8px 12px;
+        border-radius: 12px;
+    }
+
+    #player-panel {
+        bottom: 10px;
+        left: 10px;
+        right: 10px;
+        max-width: none;
+    }
+
+    #ai-panel {
+        top: 60px;
+        right: 10px;
+        bottom: auto;
+    }
+
+    .pieces-grid {
+        max-width: 100%;
+        flex-wrap: nowrap;
+        overflow-x: auto;
     }
 
     .piece-btn {
-        width: 35px;
-        /* Smaller buttons */
-        height: 35px;
-        font-size: 18px;
+        width: 42px;
+        height: 42px;
+        font-size: 20px;
+        flex-shrink: 0;
+    }
+}
+
+/* ============ MOBILE: LANDSCAPE (iPhone) ============ */
+@media (max-height: 500px) and (orientation: landscape) {
+    :root {
+        --header-height: 40px;
     }
 
-    button {
-        padding: 8px;
+    #header-bar {
+        height: 40px;
+        padding: 4px 10px;
+        gap: 8px;
+    }
+
+    .header-left {
+        gap: 10px;
+    }
+
+    .header-right {
+        gap: 6px;
+    }
+
+    #header-bar h1 {
+        font-size: 1.1em;
+    }
+
+    #status {
+        font-size: 0.75em;
+        padding: 3px 8px;
+    }
+
+    #header-bar button,
+    .home-btn {
+        padding: 6px 10px;
+        font-size: 11px;
+        border-radius: 6px;
+    }
+
+    /* Piece panels - compact and positioned to sides */
+    .piece-panel {
+        padding: 6px 8px;
+        border-radius: 10px;
+    }
+
+    .panel-header {
+        font-size: 0.7em;
+        margin-bottom: 6px;
+        gap: 4px;
+    }
+
+    .panel-icon {
+        font-size: 1em;
+    }
+
+    /* Position panels on left and right sides in landscape */
+    #player-panel {
+        bottom: auto;
+        top: 50px;
+        left: 8px;
+    }
+
+    #ai-panel {
+        bottom: auto;
+        top: 50px;
+        right: 8px;
+    }
+
+    /* Vertical layout for pieces in landscape */
+    .pieces-grid {
+        flex-direction: column;
+        max-width: none;
+        max-height: calc(100vh - 100px);
+        overflow-y: auto;
+        gap: 4px;
+    }
+
+    .piece-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+        margin: 0;
+        border-radius: 8px;
+    }
+
+    /* Tooltip adjustments */
+    .tooltip {
+        font-size: 0.8em;
+        padding: 8px 12px;
+        max-width: 180px;
+    }
+}
+
+/* Extra compact for very short screens (iPhone SE landscape ~320px height) */
+@media (max-height: 380px) and (orientation: landscape) {
+    #header-bar {
+        height: 36px;
+        padding: 2px 8px;
+    }
+
+    #header-bar h1 {
+        font-size: 1em;
+    }
+
+    #status {
+        display: none;
+        /* Hide status on very small screens */
+    }
+
+    .piece-panel {
+        padding: 4px 6px;
+    }
+
+    .panel-header {
+        display: none;
+        /* Hide panel headers to save space */
+    }
+
+    #player-panel {
+        top: 42px;
+        left: 6px;
+    }
+
+    #ai-panel {
+        top: 42px;
+        right: 6px;
+    }
+
+    .pieces-grid {
+        max-height: calc(100vh - 60px);
+    }
+
+    .piece-btn {
+        width: 28px;
+        height: 28px;
         font-size: 14px;
     }
 }
 
-/* Tooltip */
-.tooltip {
-    position: absolute;
-    background: rgba(44, 62, 80, 0.9);
-    color: white;
-    padding: 10px 15px;
-    border-radius: 8px;
-    font-size: 0.9em;
-    pointer-events: none;
-    z-index: 50;
-    max-width: 200px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(4px);
-    transition: opacity 0.2s, transform 0.2s;
-    transform: translateY(-10px);
-}
+/* ============ LARGE SCREENS ============ */
+@media (min-width: 1200px) {
+    #header-bar {
+        padding: 12px 30px;
+    }
 
-.tooltip.hidden {
-    opacity: 0;
-    transform: translateY(0);
-    visibility: hidden;
-}
+    #player-panel {
+        left: 30px;
+        bottom: 30px;
+    }
 
-.tooltip h4 {
-    margin: 0 0 5px 0;
-    color: #f1c40f;
-    font-size: 1.1em;
-}
+    #ai-panel {
+        right: 30px;
+        bottom: 30px;
+    }
 
-.tooltip p {
-    margin: 0;
-    line-height: 1.4;
-    font-size: 0.9em;
-    color: #ecf0f1;
-}
+    .pieces-grid {
+        max-width: 320px;
+    }
 
-/* Tooltip */
-.tooltip {
-    position: absolute;
-    background: rgba(44, 62, 80, 0.9);
-    color: white;
-    padding: 10px 15px;
-    border-radius: 8px;
-    font-size: 0.9em;
-    pointer-events: none;
-    z-index: 50;
-    max-width: 200px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(4px);
-    transition: opacity 0.2s, transform 0.2s;
-    transform: translateY(-10px);
-}
-
-.tooltip.hidden {
-    opacity: 0;
-    transform: translateY(0);
-    visibility: hidden;
-}
-
-.tooltip h4 {
-    margin: 0 0 5px 0;
-    color: #f1c40f;
-    font-size: 1.1em;
-}
-
-.tooltip p {
-    margin: 0;
-    line-height: 1.4;
-    font-size: 0.9em;
-    color: #ecf0f1;
+    .piece-btn {
+        width: 52px;
+        height: 52px;
+        font-size: 26px;
+    }
 }

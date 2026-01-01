@@ -99,6 +99,41 @@ body {
     gap: 5px;
 }
 
+/* Header center - difficulty selector */
+.header-center {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.header-center label {
+    font-weight: 600;
+    color: #7f8c8d;
+    font-size: 0.9em;
+}
+
+#difficulty-select {
+    padding: 8px 14px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    background: white;
+    color: var(--text-color);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#difficulty-select:hover {
+    border-color: var(--accent-color);
+}
+
+#difficulty-select:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+}
+
 #header-bar button:hover,
 .home-btn:hover {
     background: var(--accent-hover);
@@ -395,6 +430,15 @@ body {
     #status {
         font-size: 0.75em;
         padding: 3px 8px;
+    }
+
+    .header-center label {
+        display: none;
+    }
+
+    #difficulty-select {
+        padding: 4px 8px;
+        font-size: 11px;
     }
 
     #header-bar button,

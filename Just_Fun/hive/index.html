@@ -17,6 +17,14 @@
                 <h1>🪲 Hive</h1>
                 <div id="status">White's Turn</div>
             </div>
+            <div class="header-center">
+                <label for="difficulty-select">AI:</label>
+                <select id="difficulty-select">
+                    <option value="easy">😊 Easy</option>
+                    <option value="medium" selected>🧠 Medium</option>
+                    <option value="hard">🔥 Hard</option>
+                </select>
+            </div>
             <div class="header-right">
                 <button id="restart-btn">🔄 Restart</button>
                 <a href="../../index.html" class="home-btn">🏠 Home</a>
@@ -68,10 +76,19 @@
             const engine = new HiveEngine();
             const renderer = new HiveRenderer(canvas, engine);
             const controller = new HiveController(engine, renderer);
-            const ai = new HiveAI(engine);
+
+            // Get initial difficulty from selector
+            const difficultySelect = document.getElementById('difficulty-select');
+            const ai = new HiveAI(engine, difficultySelect.value);
 
             // Expose for debugging
             window.game = { engine, renderer, controller, ai };
+
+            // Handle difficulty change
+            difficultySelect.addEventListener('change', (e) => {
+                ai.setDifficulty(e.target.value);
+                console.log('AI difficulty set to:', e.target.value);
+            });
 
             renderer.resize();
             window.addEventListener('resize', () => renderer.resize());

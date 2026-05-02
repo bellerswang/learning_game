@@ -1,169 +1,326 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- View Toggles ---
-    const toggles = document.querySelectorAll('.toggle');
-    const views = document.querySelectorAll('.view');
 
+    // ─── ELEMENTS ────────────────────────────────────────────────
+    const workspace    = document.getElementById('workspace');
+    const fab          = document.getElementById('fab');
+    const panel        = document.getElementById('tool-panel');
+    const overlay      = document.getElementById('panel-overlay');
+    const eqDisplay    = document.getElementById('equation-display');
+    const btnNewQ      = document.getElementById('btn-new-question');
+    const btnClear     = document.getElementById('btn-clear');
+    const btnZoneBox   = document.getElementById('btn-zone-box');
+    const btnZoneArray = document.getElementById('btn-zone-array');
+    const btnZoneHoops = document.getElementById('btn-zone-hoops');
+    const subtractHint = document.getElementById('subtract-hint');
+    const removeCounter= document.getElementById('remove-counter');
+    const removeCount  = document.getElementById('remove-count');
+    const toggles      = document.querySelectorAll('.toggle');
+    const views        = document.querySelectorAll('.view');
+    const spawnBtns    = document.querySelectorAll('.spawn-btn');
+
+    let zIndex = 10;
+    let spawnRow = { rod: 0, dot: 0 };
+    let isSubtractMode = false;
+
+    // ─── FAB + PANEL ─────────────────────────────────────────────
+    function openPanel() {
+        panel.classList.add('open');
+        overlay.classList.add('visible');
+        fab.classList.add('open');
+        fab.setAttribute('aria-expanded', 'true');
+    }
+    function closePanel() {
+        panel.classList.remove('open');
+        overlay.classList.remove('visible');
+        fab.classList.remove('open');
+        fab.setAttribute('aria-expanded', 'false');
+    }
+
+    fab.addEventListener('click', () => fab.classList.contains('open') ? closePanel() : openPanel());
+    overlay.addEventListener('click', closePanel);
+
+    // Close panel after spawning so child sees the stage
+    spawnBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const type  = btn.dataset.type;
+            const count = parseInt(btn.dataset.count);
+            for (let i = 0; i < count; i++) {
+                setTimeout(() => spawnManipulative(type), i * 60);
+            }
+            closePanel();
+        });
+    });
+
+    btnClear.addEventListener('click', () => { clearStage(); closePanel(); });
+    btnZoneBox.addEventListener('click',   () => { generateResultBox();       closePanel(); });
+    btnZoneArray.addEventListener('click', () => { generateArrayGrid(3, 5);   closePanel(); });
+    btnZoneHoops.addEventListener('click', () => { generateHoops(3);          closePanel(); });
+
+    // ─── VIEW TOGGLES ────────────────────────────────────────────
     toggles.forEach(toggle => {
         toggle.addEventListener('click', () => {
             toggles.forEach(t => t.classList.remove('active'));
             toggle.classList.add('active');
-
-            const targetViewId = 'view-' + toggle.dataset.view;
-            views.forEach(view => {
-                view.classList.remove('active');
-                if (view.id === targetViewId) {
-                    view.classList.add('active');
-                }
-            });
+            const id = 'view-' + toggle.dataset.view;
+            views.forEach(v => v.classList.toggle('active', v.id === id));
         });
     });
 
-    // --- Workspace & Manipulatives Spawning ---
-    const workspace = document.getElementById('workspace');
-    const btnClear = document.getElementById('btn-clear');
-    const btnNewQuestion = document.getElementById('btn-new-question');
-    const spawnBtns = document.querySelectorAll('.spawn-btn');
-    
-    // Zone buttons
-    const btnZoneBox = document.getElementById('btn-zone-box');
-    const btnZoneArray = document.getElementById('btn-zone-array');
-    const btnZoneHoops = document.getElementById('btn-zone-hoops');
-
-    let zIndexCounter = 1;
-    let spawnOrderRod = 0;
-    let spawnOrderDot = 0;
-
-    btnNewQuestion.addEventListener('click', () => {
-        generateQuestion();
-        clearStage();
-    });
-
-    spawnBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const type = btn.dataset.type;
-            const count = parseInt(btn.dataset.count);
-            for(let i = 0; i < count; i++) {
-                setTimeout(() => {
-                    spawnManipulative(type);
-                }, i * 50);
-            }
-        });
-    });
-
-    btnClear.addEventListener('click', clearStage);
-
-    function clearStage() {
-        workspace.querySelectorAll('.manipulative').forEach(m => m.remove());
-        spawnOrderRod = 0;
-        spawnOrderDot = 0;
-        updateZoneCounters();
-    }
-
+    // ─── QUESTION GENERATOR ──────────────────────────────────────
     function generateQuestion() {
         const types = ['ADD', 'SUB', 'MISSING', 'HALF', 'DIV', 'MULT'];
-        const type = types[Math.floor(Math.random() * types.length)];
+        const type  = types[Math.floor(Math.random() * types.length)];
         let html = '';
-        
-        switch(type) {
+
+        isSubtractMode = false;
+
+        switch (type) {
             case 'ADD': {
-                const a = Math.floor(Math.random() * 40) + 10;
-                const b = Math.floor(Math.random() * 40) + 10;
-                html = `<span class="number">${a}</span> <span class="operator">+</span> <span class="number">${b}</span> <span class="operator">=</span> <span class="unknown">?</span>`;
+                const a = rnd(10, 49), b = rnd(10, 39);
+                html = eq(a, '+', b, '?');
                 generateResultBox();
                 break;
             }
             case 'SUB': {
-                const a = Math.floor(Math.random() * 50) + 30;
-                const b = Math.floor(Math.random() * 20) + 5;
-                html = `<span class="number">${a}</span> <span class="operator">-</span> <span class="number">${b}</span> <span class="operator">=</span> <span class="unknown">?</span>`;
+                const a = rnd(30, 79), b = rnd(5, 25);
+                html = eq(a, '−', b, '?');
+                isSubtractMode = true;
                 generateResultBox();
                 break;
             }
             case 'MISSING': {
-                const total = Math.floor(Math.random() * 40) + 20;
-                const a = Math.floor(Math.random() * (total - 10)) + 5;
-                html = `<span class="number">${a}</span> <span class="operator">+</span> <span class="unknown">?</span> <span class="operator">=</span> <span class="number">${total}</span>`;
+                const total = rnd(20, 60);
+                const a = rnd(5, total - 10);
+                html = `<span class="number">${a}</span><span class="operator">+</span><span class="unknown">?</span><span class="operator">=</span><span class="number">${total}</span>`;
                 generateResultBox();
                 break;
             }
             case 'HALF': {
-                const even = (Math.floor(Math.random() * 10) + 1) * 2;
-                html = `<span class="operator">½ of</span> <span class="number">${even}</span> <span class="operator">=</span> <span class="unknown">?</span>`;
+                const val = rnd(2, 10) * 2;
+                html = `<span class="operator">½ of</span><span class="number">${val}</span><span class="operator">=</span><span class="unknown">?</span>`;
                 generateHoops(2);
                 break;
             }
             case 'DIV': {
-                const divisors = [2, 5, 10];
-                const d = divisors[Math.floor(Math.random() * divisors.length)];
-                const result = Math.floor(Math.random() * 6) + 1;
-                const a = d * result;
-                html = `<span class="number">${a}</span> <span class="operator">÷</span> <span class="number">${d}</span> <span class="operator">=</span> <span class="unknown">?</span>`;
+                const d = [2, 5, 10][Math.floor(Math.random() * 3)];
+                const r = rnd(1, 5);
+                html = eq(d * r, '÷', d, '?');
                 generateHoops(d);
                 break;
             }
             case 'MULT': {
-                const factors = [2, 5, 10];
-                const a = factors[Math.floor(Math.random() * factors.length)];
-                const b = Math.floor(Math.random() * 5) + 2;
-                html = `<span class="number">${a}</span> <span class="operator">×</span> <span class="number">${b}</span> <span class="operator">=</span> <span class="unknown">?</span>`;
+                const a = [2, 5, 10][Math.floor(Math.random() * 3)];
+                const b = rnd(2, 6);
+                html = eq(a, '×', b, '?');
                 generateArrayGrid(a, b);
                 break;
             }
         }
-        
-        document.querySelector('#equation-display').innerHTML = html;
+
+        eqDisplay.innerHTML = html;
+        updateSubtractUI();
     }
 
-    btnZoneBox.addEventListener('click', () => generateResultBox());
-    btnZoneArray.addEventListener('click', () => generateArrayGrid(3, 5));
-    btnZoneHoops.addEventListener('click', () => generateHoops(3));
+    function eq(a, op, b, ans) {
+        const ansHtml = ans === '?' 
+            ? `<span class="unknown">?</span>` 
+            : `<span class="number">${ans}</span>`;
+        return `<span class="number">${a}</span><span class="operator">${op}</span><span class="number">${b}</span><span class="operator">=</span>${ansHtml}`;
+    }
+
+    function rnd(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+    function updateSubtractUI() {
+        subtractHint.classList.toggle('hidden', !isSubtractMode);
+        removeCounter.classList.toggle('hidden', !isSubtractMode);
+        if (isSubtractMode) updateRemovedCount();
+    }
+
+    function updateRemovedCount() {
+        const n = workspace.querySelectorAll('.manipulative.removed').length;
+        removeCount.textContent = n;
+    }
+
+    // ─── CLEAR ───────────────────────────────────────────────────
+    function clearStage() {
+        workspace.querySelectorAll('.manipulative').forEach(m => m.remove());
+        spawnRow = { rod: 0, dot: 0 };
+        updateZoneCounters();
+        updateRemovedCount();
+    }
+
+    // ─── SPAWN ───────────────────────────────────────────────────
+    const DOT_W = 36, DOT_H = 36;
+    const ROD_W = 34, ROD_H = 160;
+    const PAD   = 16;
 
     function spawnManipulative(type, x = null, y = null) {
         const el = document.createElement('div');
         el.classList.add('manipulative', type);
-        
-        const width = 30;
-        const height = type === 'rod' ? 150 : 30;
 
-        let finalX, finalY;
-        
-        if (x !== null && y !== null) {
-            finalX = x;
-            finalY = y;
-        } else {
+        if (x === null) {
             if (type === 'rod') {
-                finalX = 40 + (spawnOrderRod % 8) * 45;
-                finalY = 40 + Math.floor(spawnOrderRod / 8) * 170;
-                spawnOrderRod++;
+                const col = spawnRow.rod % 7;
+                const row = Math.floor(spawnRow.rod / 7);
+                x = PAD + col * (ROD_W + 12);
+                y = PAD + row * (ROD_H + 12);
+                spawnRow.rod++;
             } else {
-                finalX = 40 + (spawnOrderDot % 10) * 40;
-                finalY = 240 + Math.floor(spawnOrderDot / 10) * 40;
-                spawnOrderDot++;
+                const col = spawnRow.dot % 10;
+                const row = Math.floor(spawnRow.dot / 10);
+                x = PAD + col * (DOT_W + 10);
+                y = PAD + 20 + row * (DOT_H + 10);
+
+                // Push dots below rods if rods are present
+                const rodRows = Math.ceil(spawnRow.rod / 7);
+                if (rodRows > 0) y += rodRows * (ROD_H + 12);
+                spawnRow.dot++;
             }
         }
 
-        el.style.left = `${finalX}px`;
-        el.style.top = `${finalY}px`;
-        
-        setupDrag(el);
+        el.style.left = `${x}px`;
+        el.style.top  = `${y}px`;
+
+        setupInteraction(el);
         workspace.appendChild(el);
         updateZoneCounters();
         return el;
     }
 
-    // --- Zone Generators ---
-    function clearZones() {
-        workspace.querySelectorAll('.zone').forEach(z => z.remove());
+    // ─── INTERACTION: DRAG + LONG-PRESS-TO-REMOVE ────────────────
+    let dragged = null, offsetX = 0, offsetY = 0, downX = 0, downY = 0;
+    let longPressTimer = null;
+    const LONG_PRESS_MS = 450;
+
+    function setupInteraction(el) {
+
+        el.addEventListener('pointerdown', e => {
+            if (e.button !== 0 && e.pointerType === 'mouse') return;
+            e.preventDefault();
+
+            downX = e.clientX; downY = e.clientY;
+
+            // Long press — mark as removed (subtraction mode & general)
+            longPressTimer = setTimeout(() => {
+                el.classList.remove('pressing');
+                el.classList.toggle('removed');
+                updateRemovedCount();
+                updateZoneCounters();
+                longPressTimer = null;
+            }, LONG_PRESS_MS);
+
+            el.classList.add('pressing');
+
+            dragged = el;
+            zIndex++;
+            el.style.zIndex = zIndex;
+            el.classList.add('dragging');
+            el.setPointerCapture(e.pointerId);
+
+            const rect = el.getBoundingClientRect();
+            offsetX = e.clientX - rect.left;
+            offsetY = e.clientY - rect.top;
+        });
+
+        el.addEventListener('pointermove', e => {
+            // Cancel long press if moved
+            if (longPressTimer && Math.hypot(e.clientX - downX, e.clientY - downY) > 8) {
+                clearTimeout(longPressTimer);
+                longPressTimer = null;
+                el.classList.remove('pressing');
+            }
+
+            if (dragged !== el) return;
+
+            const wsRect = workspace.getBoundingClientRect();
+            let nx = e.clientX - wsRect.left - offsetX;
+            let ny = e.clientY - wsRect.top  - offsetY;
+            nx = Math.max(0, Math.min(nx, wsRect.width  - el.offsetWidth));
+            ny = Math.max(0, Math.min(ny, wsRect.height - el.offsetHeight));
+            el.style.left = `${nx}px`;
+            el.style.top  = `${ny}px`;
+            updateZoneCounters();
+        });
+
+        const release = e => {
+            if (longPressTimer) { clearTimeout(longPressTimer); longPressTimer = null; }
+            el.classList.remove('pressing');
+
+            if (dragged !== el) return;
+            dragged = null;
+            el.classList.remove('dragging');
+            el.releasePointerCapture(e.pointerId);
+
+            const dist = Math.hypot(e.clientX - downX, e.clientY - downY);
+
+            // Tap on rod = shatter (only if not removed)
+            if (dist < 8) {
+                if (el.classList.contains('rod') && !el.classList.contains('removed')) {
+                    shatterRod(el);
+                }
+                return;
+            }
+
+            // Drag of dot = check fusing (only if not removed)
+            if (el.classList.contains('dot') && !el.classList.contains('removed')) {
+                checkFusing(el);
+            }
+            updateZoneCounters();
+        };
+
+        el.addEventListener('pointerup',    release);
+        el.addEventListener('pointercancel', release);
     }
+
+    // ─── FUSING ──────────────────────────────────────────────────
+    function checkFusing(dropped) {
+        const dots = [...workspace.querySelectorAll('.dot:not(.removed)')];
+        if (dots.length < 10) return;
+
+        const RADIUS = 130;
+        const nearby = dots
+            .filter(d => dist2d(dropped, d) < RADIUS)
+            .sort((a, b) => dist2d(dropped, a) - dist2d(dropped, b));
+
+        if (nearby.length >= 10) {
+            const ten = nearby.slice(0, 10);
+            const nx = parseFloat(dropped.style.left);
+            const ny = parseFloat(dropped.style.top) - 75;
+            ten.forEach(d => d.remove());
+            spawnRow.dot -= 10;
+            if (spawnRow.dot < 0) spawnRow.dot = 0;
+            const rod = spawnManipulative('rod', nx, ny);
+            rod.classList.add('fuse-animation');
+            setTimeout(() => { rod.classList.remove('fuse-animation'); updateZoneCounters(); }, 600);
+        }
+    }
+
+    // ─── SHATTERING ──────────────────────────────────────────────
+    function shatterRod(rod) {
+        const rect   = rod.getBoundingClientRect();
+        const wsRect = workspace.getBoundingClientRect();
+        const cx     = rect.left - wsRect.left + rect.width  / 2;
+        const cy     = rect.top  - wsRect.top  + rect.height / 2;
+        rod.remove();
+
+        for (let i = 0; i < 10; i++) {
+            const angle  = (i / 10) * Math.PI * 2;
+            const radius = 35 + Math.random() * 40;
+            const dot    = spawnManipulative('dot', cx + Math.cos(angle) * radius - 18, cy + Math.sin(angle) * radius - 18);
+            dot.classList.add('shatter-animation');
+            setTimeout(() => dot.classList.remove('shatter-animation'), 600);
+        }
+        updateZoneCounters();
+    }
+
+    // ─── ZONES ───────────────────────────────────────────────────
+    function clearZones() { workspace.querySelectorAll('.zone').forEach(z => z.remove()); }
 
     function generateResultBox() {
         clearZones();
         const box = document.createElement('div');
         box.className = 'zone result-box';
-        box.innerHTML = `
-            <div class="zone-label">Result Box</div>
-            <div class="hoop-counter">0</div>
-        `;
+        box.innerHTML = `<div class="zone-label">Result</div><div class="zone-count">0</div>`;
         workspace.appendChild(box);
         updateZoneCounters();
     }
@@ -173,8 +330,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const grid = document.createElement('div');
         grid.className = 'zone array-grid';
         grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-        grid.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
-        
         for (let i = 0; i < rows * cols; i++) {
             const cell = document.createElement('div');
             cell.className = 'array-cell';
@@ -186,203 +341,75 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function generateHoops(count) {
         clearZones();
-        const wsWidth = workspace.clientWidth;
-        const wsHeight = workspace.clientHeight;
-        
-        // Dynamic hoop size based on count
-        const size = count > 5 ? 120 : 180;
-        const spacing = wsWidth / (count + 1);
-        
+        const wsRect = workspace.getBoundingClientRect();
+        const size   = count > 5 ? 110 : 160;
+        const spacing = wsRect.width / (count + 1);
         for (let i = 0; i < count; i++) {
             const hoop = document.createElement('div');
             hoop.className = 'zone hoop';
-            hoop.style.width = `${size}px`;
-            hoop.style.height = `${size}px`;
+            hoop.style.cssText = `width:${size}px;height:${size}px;left:${spacing*(i+1)-(size/2)}px;top:${wsRect.height/2-(size/2)}px`;
             hoop.innerHTML = `<div class="hoop-counter">0</div>`;
-            
-            hoop.style.left = `${spacing * (i + 1) - (size/2)}px`;
-            hoop.style.top = `${wsHeight / 2 - (size/2)}px`;
-            
             workspace.appendChild(hoop);
         }
         updateZoneCounters();
     }
 
-    // --- Zone Logic ---
-    function isInside(elRect, zoneRect) {
-        const elCenterX = elRect.left + elRect.width / 2;
-        const elCenterY = elRect.top + elRect.height / 2;
-        return (
-            elCenterX >= zoneRect.left &&
-            elCenterX <= zoneRect.right &&
-            elCenterY >= zoneRect.top &&
-            elCenterY <= zoneRect.bottom
-        );
-    }
-
     function updateZoneCounters() {
-        const resultBox = workspace.querySelector('.result-box');
-        if (resultBox) {
-            const rect = resultBox.getBoundingClientRect();
+        // Helper: only count non-removed blocks
+        const active = sel => [...workspace.querySelectorAll(sel + ':not(.removed)')];
+
+        const box = workspace.querySelector('.result-box');
+        if (box) {
+            const r = box.getBoundingClientRect();
             let total = 0;
-            workspace.querySelectorAll('.manipulative').forEach(m => {
-                if (isInside(m.getBoundingClientRect(), rect)) {
+            active('.manipulative').forEach(m => {
+                if (inside(m.getBoundingClientRect(), r))
                     total += m.classList.contains('rod') ? 10 : 1;
-                }
             });
-            resultBox.querySelector('.hoop-counter').textContent = total;
+            box.querySelector('.zone-count').textContent = total;
         }
 
-        const hoops = workspace.querySelectorAll('.hoop');
-        hoops.forEach(hoop => {
-            const rect = hoop.getBoundingClientRect();
-            const hCenterX = rect.left + rect.width / 2;
-            const hCenterY = rect.top + rect.height / 2;
-            const radius = rect.width / 2;
-
+        workspace.querySelectorAll('.hoop').forEach(hoop => {
+            const r  = hoop.getBoundingClientRect();
+            const cx = r.left + r.width / 2, cy = r.top + r.height / 2, rad = r.width / 2;
             let total = 0;
-            workspace.querySelectorAll('.manipulative').forEach(m => {
-                const mRect = m.getBoundingClientRect();
-                const mCenterX = mRect.left + mRect.width / 2;
-                const mCenterY = mRect.top + mRect.height / 2;
-                const dist = Math.hypot(mCenterX - hCenterX, mCenterY - hCenterY);
-                if (dist < radius) {
+            active('.manipulative').forEach(m => {
+                const mr = m.getBoundingClientRect();
+                if (Math.hypot(mr.left + mr.width/2 - cx, mr.top + mr.height/2 - cy) < rad)
                     total += m.classList.contains('rod') ? 10 : 1;
-                }
             });
             hoop.querySelector('.hoop-counter').textContent = total;
         });
 
         const grid = workspace.querySelector('.array-grid');
         if (grid) {
-            const cells = grid.querySelectorAll('.array-cell');
-            cells.forEach(cell => cell.classList.remove('filled'));
-            
-            workspace.querySelectorAll('.dot').forEach(dot => {
-                const dotRect = dot.getBoundingClientRect();
-                const dotCenterX = dotRect.left + dotRect.width / 2;
-                const dotCenterY = dotRect.top + dotRect.height / 2;
-                
+            const cells = [...grid.querySelectorAll('.array-cell')];
+            cells.forEach(c => c.classList.remove('filled'));
+            active('.dot').forEach(dot => {
+                const dr = dot.getBoundingClientRect();
+                const dcx = dr.left + dr.width/2, dcy = dr.top + dr.height/2;
                 cells.forEach(cell => {
-                    const cellRect = cell.getBoundingClientRect();
-                    if (
-                        dotCenterX >= cellRect.left && dotCenterX <= cellRect.right &&
-                        dotCenterY >= cellRect.top && dotCenterY <= cellRect.bottom
-                    ) {
+                    const cr = cell.getBoundingClientRect();
+                    if (dcx >= cr.left && dcx <= cr.right && dcy >= cr.top && dcy <= cr.bottom)
                         cell.classList.add('filled');
-                    }
                 });
             });
         }
+
+        if (isSubtractMode) updateRemovedCount();
     }
 
-    // --- Logic Engine: Fusing and Shattering ---
-    function getDistance(el1, el2) {
-        const rect1 = el1.getBoundingClientRect();
-        const rect2 = el2.getBoundingClientRect();
-        const center1 = { x: rect1.left + rect1.width/2, y: rect1.top + rect1.height/2 };
-        const center2 = { x: rect2.left + rect2.width/2, y: rect2.top + rect2.height/2 };
-        return Math.hypot(center1.x - center2.x, center1.y - center2.y);
+    // ─── HELPERS ─────────────────────────────────────────────────
+    function dist2d(a, b) {
+        const ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect();
+        return Math.hypot(ra.left+ra.width/2 - (rb.left+rb.width/2), ra.top+ra.height/2 - (rb.top+rb.height/2));
+    }
+    function inside(er, zr) {
+        const cx = er.left + er.width/2, cy = er.top + er.height/2;
+        return cx >= zr.left && cx <= zr.right && cy >= zr.top && cy <= zr.bottom;
     }
 
-    function checkFusing(droppedDot) {
-        const allDots = Array.from(workspace.querySelectorAll('.dot'));
-        if (allDots.length < 10) return;
-
-        const FUSE_RADIUS = 120;
-        const nearbyDots = allDots.filter(dot => getDistance(droppedDot, dot) < FUSE_RADIUS);
-
-        if (nearbyDots.length >= 10) {
-            nearbyDots.sort((a, b) => getDistance(droppedDot, a) - getDistance(droppedDot, b));
-            const dotsToFuse = nearbyDots.slice(0, 10);
-
-            const newLeft = parseFloat(droppedDot.style.left) + 15 - 15;
-            const newTop = parseFloat(droppedDot.style.top) + 15 - 75;
-
-            dotsToFuse.forEach(dot => dot.remove());
-
-            const rod = spawnManipulative('rod', newLeft, newTop);
-            rod.classList.add('fuse-animation');
-            setTimeout(() => {
-                rod.classList.remove('fuse-animation');
-                updateZoneCounters();
-            }, 600);
-        }
-    }
-
-    function shatterRod(rod) {
-        const rect = rod.getBoundingClientRect();
-        const workspaceRect = workspace.getBoundingClientRect();
-        const centerX = rect.left - workspaceRect.left + rect.width/2;
-        const centerY = rect.top - workspaceRect.top + rect.height/2;
-
-        rod.remove();
-
-        for(let i=0; i<10; i++) {
-            const angle = (i / 10) * Math.PI * 2;
-            const radius = Math.random() * 40 + 30;
-            const dotLeft = centerX + Math.cos(angle) * radius - 15;
-            const dotTop = centerY + Math.sin(angle) * radius - 15;
-            
-            const dot = spawnManipulative('dot', dotLeft, dotTop);
-            dot.classList.add('shatter-animation');
-            setTimeout(() => dot.classList.remove('shatter-animation'), 600);
-        }
-        updateZoneCounters();
-    }
-
-    // --- Drag and Drop Engine ---
-    let draggedElement = null;
-    let dragOffsetX = 0;
-    let dragOffsetY = 0;
-    let pointerDownX = 0;
-    let pointerDownY = 0;
-
-    function setupDrag(element) {
-        element.addEventListener('pointerdown', (e) => {
-            if (e.button !== 0 && e.pointerType === 'mouse') return;
-            draggedElement = element;
-            pointerDownX = e.clientX;
-            pointerDownY = e.clientY;
-            zIndexCounter++;
-            draggedElement.style.zIndex = zIndexCounter;
-            draggedElement.classList.add('dragging');
-            draggedElement.setPointerCapture(e.pointerId);
-            const rect = draggedElement.getBoundingClientRect();
-            dragOffsetX = e.clientX - rect.left;
-            dragOffsetY = e.clientY - rect.top;
-        });
-
-        element.addEventListener('pointermove', (e) => {
-            if (!draggedElement || draggedElement !== element) return;
-            const workspaceRect = workspace.getBoundingClientRect();
-            let newX = e.clientX - workspaceRect.left - dragOffsetX;
-            let newY = e.clientY - workspaceRect.top - dragOffsetY;
-            newX = Math.max(0, Math.min(newX, workspaceRect.width - element.offsetWidth));
-            newY = Math.max(0, Math.min(newY, workspaceRect.height - element.offsetHeight));
-            draggedElement.style.left = `${newX}px`;
-            draggedElement.style.top = `${newY}px`;
-            updateZoneCounters();
-        });
-
-        const releaseDrag = (e) => {
-            if (draggedElement === element) {
-                draggedElement.classList.remove('dragging');
-                draggedElement.releasePointerCapture(e.pointerId);
-                const distMoved = Math.hypot(e.clientX - pointerDownX, e.clientY - pointerDownY);
-                if (distMoved < 5) {
-                    if (element.classList.contains('rod')) shatterRod(element);
-                } else {
-                    if (element.classList.contains('dot')) checkFusing(element);
-                }
-                updateZoneCounters();
-                draggedElement = null;
-            }
-        };
-
-        element.addEventListener('pointerup', releaseDrag);
-        element.addEventListener('pointercancel', releaseDrag);
-    }
-
+    // ─── INIT ────────────────────────────────────────────────────
+    btnNewQ.addEventListener('click', () => { clearStage(); generateQuestion(); });
     generateQuestion();
 });

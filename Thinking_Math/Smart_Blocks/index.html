@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maths Magic Builder</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <header>
+            <div id="equation-display">
+                <span class="number">28</span>
+                <span class="operator">+</span>
+                <span class="number">15</span>
+                <span class="operator">=</span>
+                <span class="unknown">?</span>
+            </div>
+            
+            <button id="btn-new-question" class="primary-btn">New Question 🎲</button>
+
+            <div class="view-toggles">
+                <button class="toggle active" data-view="concrete">Blocks</button>
+                <button class="toggle" data-view="pictorial">Number Line</button>
+                <button class="toggle" data-view="abstract">Bar Model</button>
+            </div>
+        </header>
+
+        <main id="stage">
+            <!-- Smart Blocks View -->
+            <div id="view-concrete" class="view active">
+                <div id="workspace"></div>
+            </div>
+
+            <!-- Number Line View -->
+            <div id="view-pictorial" class="view">
+                <canvas id="numberLineCanvas"></canvas>
+            </div>
+
+            <!-- Bar Model View -->
+            <div id="view-abstract" class="view">
+                <div id="bar-model-container"></div>
+            </div>
+        </main>
+
+        <aside id="toolbox">
+            <h3>Manipulatives</h3>
+            
+            <div class="spawn-section">
+                <h4>Add Tens (Rods)</h4>
+                <div class="spawn-grid">
+                    <button class="spawn-btn" data-type="rod" data-count="1">+10</button>
+                    <button class="spawn-btn" data-type="rod" data-count="2">+20</button>
+                    <button class="spawn-btn" data-type="rod" data-count="3">+30</button>
+                </div>
+            </div>
+
+            <div class="spawn-section">
+                <h4>Add Ones (Dots)</h4>
+                <div class="spawn-grid grid-5">
+                    <button class="spawn-btn" data-type="dot" data-count="1">+1</button>
+                    <button class="spawn-btn" data-type="dot" data-count="2">+2</button>
+                    <button class="spawn-btn" data-type="dot" data-count="3">+3</button>
+                    <button class="spawn-btn" data-type="dot" data-count="4">+4</button>
+                    <button class="spawn-btn" data-type="dot" data-count="5">+5</button>
+                </div>
+            </div>
+            
+            <button id="btn-clear" class="danger">Clear Stage</button>
+
+            <h3 style="margin-top: 1rem;">Operation Zones</h3>
+            <div class="tool-buttons">
+                <button id="btn-zone-box" class="zone-btn">+/- Result Box</button>
+                <button id="btn-zone-array" class="zone-btn">× Array Grid</button>
+                <button id="btn-zone-hoops" class="zone-btn">÷ Sharing Hoops</button>
+            </div>
+        </aside>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

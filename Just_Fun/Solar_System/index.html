@@ -69,6 +69,7 @@
           const [showIntro, setShowIntro] = useState(true);
           const [stars, setStars] = useState([]);
           const [visitedPlanets, setVisitedPlanets] = useState([]);
+          const [is3D, setIs3D] = useState(true);
 
           useEffect(() => {
             const newStars = Array.from({ length: 100 }).map((_, i) => ({
@@ -86,8 +87,19 @@
               window.speechSynthesis.cancel();
               const utterance = new SpeechSynthesisUtterance(text);
               utterance.rate = 0.85; // Slower for clarity
-              utterance.pitch = 1.1;
+              utterance.pitch = 1.0; // More natural pitch
               utterance.lang = 'en-GB';
+              
+              // Try to find a high quality or natural voice
+              const voices = window.speechSynthesis.getVoices();
+              const bestVoice = voices.find(v => v.name.includes('Premium') || v.name.includes('Natural') || v.name.includes('Google')) 
+                                || voices.find(v => v.lang.startsWith('en-GB')) 
+                                || voices.find(v => v.lang.startsWith('en'));
+              
+              if (bestVoice) {
+                utterance.voice = bestVoice;
+              }
+              
               window.speechSynthesis.speak(utterance);
             }
           };
@@ -123,14 +135,14 @@
               <div className="relative w-full h-full flex items-center justify-center overflow-auto p-20" style={{ perspective: '1200px' }}>
                 <div 
                   className="relative min-w-[1000px] min-h-[1000px] flex items-center justify-center"
-                  style={{ transformStyle: 'preserve-3d', transform: 'rotateX(65deg) scale(0.9)' }}
+                  style={{ transformStyle: 'preserve-3d', transform: is3D ? 'rotateX(65deg) scale(0.9)' : 'none' }}
                 >
                   
                   {/* The Sun */}
                   <div 
                     className="z-20 w-32 h-32 rounded-full shadow-[0_0_80px_rgba(249,115,22,0.8)] flex items-center justify-center cursor-pointer active:scale-95 transition-transform"
                     style={{
-                      transform: 'rotateX(-65deg)',
+                      transform: is3D ? 'rotateX(-65deg)' : 'none',
                       background: 'radial-gradient(circle at 30% 30%, #fef08a, #f97316 40%, #dc2626 80%)'
                     }}
                     onClick={() => speak("The Sun is a giant star that keeps us warm!")}
@@ -168,7 +180,7 @@
                            {/* Z-axis reverser to cancel orbit rotation */}
                            <div style={{ animation: isRotating ? `spin ${40 / planet.speed}s linear infinite reverse` : 'none', transformStyle: 'preserve-3d' }}>
                                {/* X-axis un-tilter to face camera */}
-                               <div style={{ transform: 'rotateX(-65deg)', transformStyle: 'preserve-3d' }} className="flex flex-col items-center">
+                               <div style={{ transform: is3D ? 'rotateX(-65deg)' : 'none', transformStyle: 'preserve-3d' }} className="flex flex-col items-center">
                                     <div 
                                       className="rounded-full transition-transform group-active:scale-90 relative"
                                       style={{ 
@@ -212,12 +224,20 @@
                     <p className="text-slate-400">Tap a planet to learn its secrets!</p>
                   </div>
                 </div>
-                <button 
-                  onClick={() => setIsRotating(!isRotating)}
-                  className="pointer-events-auto px-6 py-3 bg-slate-800/80 backdrop-blur border border-slate-700 rounded-2xl font-bold active:scale-95 transition-all hover:bg-slate-700"
-                >
-                  {isRotating ? 'Pause Planets' : 'Start Planets'}
-                </button>
+                <div className="pointer-events-auto flex items-center gap-3">
+                  <button 
+                    onClick={() => setIs3D(!is3D)}
+                    className="px-6 py-3 bg-slate-800/80 backdrop-blur border border-slate-700 rounded-2xl font-bold active:scale-95 transition-all hover:bg-slate-700"
+                  >
+                    {is3D ? 'View 2D' : 'View 3D'}
+                  </button>
+                  <button 
+                    onClick={() => setIsRotating(!isRotating)}
+                    className="px-6 py-3 bg-slate-800/80 backdrop-blur border border-slate-700 rounded-2xl font-bold active:scale-95 transition-all hover:bg-slate-700"
+                  >
+                    {isRotating ? 'Pause Planets' : 'Start Planets'}
+                  </button>
+                </div>
               </div>
 
               {/* Planet Detail Overlay */}

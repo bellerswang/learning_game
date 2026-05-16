@@ -9,8 +9,8 @@ const APP_CONFIG = {
         dictionary: true,     // Magic Dictionary
         sentenceLab: true,    // May's Sentence Lab
         fireworks: true,      // Fireworks Launcher
-        make24: true          // Make 24 Game
-
+        make24: true,         // Make 24 Game
+        solarSystem: true     // Space Adventure Game
     },
 
 };

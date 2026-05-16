@@ -142,7 +142,7 @@
 
                   {/* Orbits and Planets */}
                   {PLANETS.map((planet) => (
-                    <div key={planet.name} className="absolute flex items-center justify-center pointer-events-none">
+                    <div key={planet.name} className="absolute flex items-center justify-center pointer-events-none" style={{ transformStyle: 'preserve-3d' }}>
                       {/* Orbit Path */}
                       <div 
                         className="absolute border border-white/10 rounded-full"

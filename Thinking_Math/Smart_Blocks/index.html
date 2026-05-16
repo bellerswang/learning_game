@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Smart Blocks Maths</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Compact Header -->
+        <header>
+            <a href="../../index.html" id="home-btn">🏠</a>
+            <div id="equation-display">
+                <span class="number">28</span>
+                <span class="operator">+</span>
+                <span class="number">15</span>
+                <span class="operator">=</span>
+                <span class="unknown">?</span>
+            </div>
+            <button id="btn-new-question">🎲</button>
+        </header>
+
+        <!-- Full-screen Stage -->
+        <main id="stage">
+            <div id="view-concrete" class="view active">
+                <div id="workspace"></div>
+                <!-- Subtraction hint shown contextually -->
+                <div id="subtract-hint" class="subtract-hint hidden">
+                    Hold a block to cross it out ✕
+                </div>
+                <!-- Live removed counter for subtraction -->
+                <div id="remove-counter" class="remove-counter hidden">
+                    Removed: <strong id="remove-count">0</strong>
+                </div>
+            </div>
+            <div id="view-pictorial" class="view">
+                <canvas id="numberLineCanvas"></canvas>
+            </div>
+            <div id="view-abstract" class="view">
+                <div id="bar-model-container"></div>
+            </div>
+        </main>
+
+        <!-- Floating Action Button -->
+        <button id="fab" aria-label="Open tools">＋</button>
+
+        <!-- Dim overlay when panel open -->
+        <div id="panel-overlay"></div>
+
+        <!-- Slide-up Tool Panel -->
+        <div id="tool-panel">
+            <div class="panel-handle"></div>
+
+            <div class="panel-row">
+                <div class="panel-section">
+                    <h4>Tens (Rods)</h4>
+                    <div class="spawn-grid">
+                        <button class="spawn-btn rod-btn" data-type="rod" data-count="1">+10</button>
+                        <button class="spawn-btn rod-btn" data-type="rod" data-count="2">+20</button>
+                        <button class="spawn-btn rod-btn" data-type="rod" data-count="3">+30</button>
+                    </div>
+                </div>
+
+                <div class="panel-section">
+                    <h4>Ones (Dots)</h4>
+                    <div class="spawn-grid">
+                        <button class="spawn-btn dot-btn" data-type="dot" data-count="1">+1</button>
+                        <button class="spawn-btn dot-btn" data-type="dot" data-count="2">+2</button>
+                        <button class="spawn-btn dot-btn" data-type="dot" data-count="3">+3</button>
+                        <button class="spawn-btn dot-btn" data-type="dot" data-count="4">+4</button>
+                        <button class="spawn-btn dot-btn" data-type="dot" data-count="5">+5</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <h4>Operation Zones</h4>
+                <div class="zone-grid">
+                    <button id="btn-zone-box" class="zone-btn">📦 Result Box</button>
+                    <button id="btn-zone-array" class="zone-btn">⊞ Array Grid</button>
+                    <button id="btn-zone-hoops" class="zone-btn">⬤ Sharing Hoops</button>
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <h4>View Mode</h4>
+                <div class="view-toggles">
+                    <button class="toggle active" data-view="concrete">🟦 Blocks</button>
+                    <button class="toggle" data-view="pictorial">〰 Number Line</button>
+                    <button class="toggle" data-view="abstract">▬ Bar Model</button>
+                </div>
+            </div>
+
+            <button id="btn-clear">🗑 Clear Stage</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -6,7 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>May's Space Adventure</title>
+    <title>Magic Space Adventure</title>
+    <link rel="icon" type="image/png" href="../../favicon.png">
+    <link rel="apple-touch-icon" href="../../apple-touch-icon.png">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- React & ReactDOM (UMD) -->
@@ -220,7 +222,7 @@
                   </button>
                   <div>
                     <h1 className="text-3xl font-bold bg-gradient-to-r from-yellow-300 to-orange-500 bg-clip-text text-transparent">
-                      May's Space Adventure
+                      Magic Space Adventure
                     </h1>
                     <p className="text-slate-400">Tap a planet to learn its secrets!</p>
                   </div>
@@ -334,14 +336,14 @@
                     <div className="w-24 h-24 bg-gradient-to-br from-yellow-400 to-orange-600 rounded-full mx-auto mb-10 flex items-center justify-center shadow-2xl">
                       <div className="w-14 h-14 text-white"><Icons.Sun /></div>
                     </div>
-                    <h2 className="text-5xl font-bold mb-4">Hi May!</h2>
+                    <h2 className="text-5xl font-bold mb-4">Hi Friend!</h2>
                     <p className="text-xl text-slate-400 mb-12">
                       Ready to visit the planets? Tap them to hear what makes each one special!
                     </p>
                     <button 
                       onClick={() => {
                         setShowIntro(false);
-                        speak("Hi May! Let's explore the solar system together.");
+                        speak("Hi Friend! Let's explore the solar system together.");
                       }}
                       className="w-full py-6 bg-blue-600 text-white text-2xl font-bold rounded-[2rem] shadow-xl active:scale-95 transition-transform hover:bg-blue-500"
                     >

@@ -1,5 +1,5 @@
 /**
- * May's Sentence Lab - Engine v3
+ * Magic Sentence Lab - Engine v3
  * ================================
  * Mission Board Grid + "Dealer" System
  * Ensures unique word distribution across tiles
@@ -13,8 +13,8 @@
 const TILE_COUNT = 20;
 const TILE_COLORS = ['pink', 'blue', 'green', 'yellow', 'purple', 'orange'];
 const TILE_ICONS = ['📝', '✏️', '📖', '🎯', '💡', '🌟', '🔤', '📚'];
-const STORAGE_KEY = 'may_mission_board_v1';
-const SESSION_KEY = 'may_current_board';
+const STORAGE_KEY = 'magic_mission_board_v1';
+const SESSION_KEY = 'magic_current_board';
 
 // ============================================
 // SENTENCE SKELETONS (Grammar Templates)

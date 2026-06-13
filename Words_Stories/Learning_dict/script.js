@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const largeCharDisplay = document.getElementById('largeCharDisplay');
 
     let currentWordData = null;
-    let mayWords = JSON.parse(localStorage.getItem('mayStickers')) || [];
+    let magicWords = JSON.parse(localStorage.getItem('magicStickers')) || [];
 
     // --- 2. AUDIO & SPEECH ---
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 3. STICKER BOOK LOGIC ---
     function renderStickers() {
         stickerGrid.innerHTML = '';
-        mayWords.forEach((item, index) => {
+        magicWords.forEach((item, index) => {
             const sticker = document.createElement('div');
             sticker.className = 'sticker pop-in';
             sticker.style.animationDelay = `${index * 0.05}s`; // Staggered load
@@ -120,19 +120,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function addSticker(word, imageUrl) {
         // Prevent duplicates
-        if (mayWords.some(w => w.word.toLowerCase() === word.toLowerCase())) return;
+        if (magicWords.some(w => w.word.toLowerCase() === word.toLowerCase())) return;
 
-        mayWords.unshift({ word: word, image: imageUrl }); // Add to front
-        if (mayWords.length > 50) mayWords.pop(); // Limit history
+        magicWords.unshift({ word: word, image: imageUrl }); // Add to front
+        if (magicWords.length > 50) magicWords.pop(); // Limit history
 
-        localStorage.setItem('mayStickers', JSON.stringify(mayWords));
+        localStorage.setItem('magicStickers', JSON.stringify(magicWords));
         renderStickers();
     }
 
     clearStickersBtn.addEventListener('click', () => {
         if (confirm("Are you sure you want to clear your sticker collection?")) {
-            mayWords = [];
-            localStorage.setItem('mayStickers', JSON.stringify(mayWords));
+            magicWords = [];
+            localStorage.setItem('magicStickers', JSON.stringify(magicWords));
             renderStickers();
         }
     });
@@ -181,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function fetchOpenAIData(word) {
         const systemPrompt = `
-You are a magical dictionary for a 6-year-old girl named May.
+You are a magical dictionary for 6-year-old children.
 Input: A word.
 Output: Valid JSON only. format:
 {

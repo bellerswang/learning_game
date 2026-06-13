@@ -5,7 +5,9 @@
     <meta charset="UTF-8">
     <meta name="google-site-verification" content="bpec6YRoSQnASJe_JJ99l46gR6VpI1HyRpT2P7X1nfU" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>May's Maths Magic</title>
+    <title>Maths Magic</title>
+    <link rel="icon" type="image/png" href="../../favicon.png">
+    <link rel="apple-touch-icon" href="../../apple-touch-icon.png">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         /* --- ACCESSIBILITY CORE & THEME --- */
@@ -622,6 +624,125 @@
                 font-size: 3rem;
             }
         }
+
+        /* --- SPLIT SCREEN DUEL STYLE --- */
+        #split-game-view {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 1500;
+        }
+
+        .player-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            background: rgba(0, 0, 0, 0.15);
+            padding: 20px;
+        }
+
+        #p1-area {
+            border-bottom: 2px dashed rgba(0, 229, 255, 0.3);
+            transform: rotate(180deg);
+        }
+
+        .split-header {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: calc(100% - 40px);
+            z-index: 100;
+        }
+
+        .split-score {
+            font-size: 1.5rem;
+            font-weight: 900;
+            text-shadow: var(--text-shadow);
+        }
+
+        #p1-score-display {
+            color: var(--primary-color);
+        }
+
+        #p2-score-display {
+            color: var(--secondary-color);
+        }
+
+        .split-badge {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .split-win-cover {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            background: rgba(15, 32, 39, 0.95);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        .split-win-title {
+            font-size: 3rem;
+            font-weight: 900;
+            margin: 0;
+            text-shadow: 0 0 20px rgba(0, 229, 255, 0.5);
+            animation: pulseTitle 1.5s infinite;
+        }
+
+        #p1-win-cover .split-win-title {
+            color: var(--primary-color);
+        }
+
+        #p2-win-cover .split-win-title {
+            color: var(--secondary-color);
+        }
+
+        .split-win-sub {
+            font-size: 1.2rem;
+            color: #ccc;
+            margin-top: 10px;
+        }
+
+        /* Scale down split content on small screens */
+        @media (max-width: 600px) {
+            .player-area {
+                padding: 10px;
+            }
+            .player-area .cards-container {
+                transform: scale(0.7);
+            }
+            .player-area .operators-dock {
+                transform: scale(0.7);
+                margin-top: 15px;
+            }
+            .split-header {
+                top: 10px;
+            }
+            .split-score {
+                font-size: 1.2rem;
+            }
+        }
     </style>
 </head>
 
@@ -659,6 +780,31 @@
                         <div class="md-sub">Master • 4 Numbers</div>
                     </div>
                     <div class="md-icon">🔥</div>
+                </div>
+            </div>
+
+            <h2 class="text-xl font-bold mt-8 mb-4 text-pink-400" style="margin-top: 30px; margin-bottom: 15px; font-size: 1.5rem; text-align: center; background: linear-gradient(to right, #00E5FF, #FF4081); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">🧙‍♂️ Wizard Duel (Local Split Screen)</h2>
+            <div class="menu-grid">
+                <div class="menu-card glass-panel" onclick="startSplitGame(10)" style="border-left: 5px solid var(--primary-color);">
+                    <div>
+                        <div class="md-title" style="color: var(--primary-color);">Duel: Make 10</div>
+                        <div class="md-sub">Local 2-Player • 3 Numbers</div>
+                    </div>
+                    <div class="md-icon">🌱⚔️</div>
+                </div>
+                <div class="menu-card glass-panel" onclick="startSplitGame(20)" style="border-left: 5px solid var(--tertiary-color);">
+                    <div>
+                        <div class="md-title" style="color: var(--tertiary-color);">Duel: Make 20</div>
+                        <div class="md-sub">Local 2-Player • 4 Numbers</div>
+                    </div>
+                    <div class="md-icon">🚀⚔️</div>
+                </div>
+                <div class="menu-card glass-panel" onclick="startSplitGame(24)" style="border-left: 5px solid var(--secondary-color);">
+                    <div>
+                        <div class="md-title" style="color: var(--secondary-color);">Duel: Make 24</div>
+                        <div class="md-sub">Local 2-Player • 4 Numbers</div>
+                    </div>
+                    <div class="md-icon">🔥⚔️</div>
                 </div>
             </div>
         </div>
@@ -717,6 +863,79 @@
 
     </div>
 
+    <!-- SPLIT SCREEN GAME VIEW -->
+    <div id="split-game-view" class="hidden">
+        <!-- Top Player (P1) -->
+        <div id="p1-area" class="player-area">
+            <div class="split-header">
+                <button class="nav-btn" onclick="exitSplitGame()">🏠 Exit</button>
+                <div class="split-score" id="p1-score-display">P1: ☆☆☆</div>
+                <div class="split-badge" id="p1-target-badge">Target: 10</div>
+            </div>
+            <div class="cards-container" id="p1-desk"></div>
+            <div class="operators-dock">
+                <div class="op-btn" onclick="selectOpSplit(1, '+')">+</div>
+                <div class="op-btn" onclick="selectOpSplit(1, '-')">−</div>
+                <div class="op-btn hidden" id="p1-op-mult" onclick="selectOpSplit(1, '*')">×</div>
+            </div>
+            <button class="nav-btn" style="margin-top: 15px; font-size: 0.8rem; padding: 6px 15px;" onclick="resetPlayerRound(1)">Reset Round ⟳</button>
+
+            <!-- Round Win Cover -->
+            <div id="p1-win-cover" class="split-win-cover hidden">
+                <h2 id="p1-win-title" class="split-win-title">ROUND WON! 🎉</h2>
+                <p id="p1-win-sub" class="split-win-sub">Get ready for next round...</p>
+            </div>
+
+            <!-- Match Over Overlay -->
+            <div id="p1-match-over" class="split-win-cover hidden" style="background: rgba(15, 32, 39, 0.98);">
+                <div class="victory-content">
+                    <div id="p1-match-icon" style="font-size: 4rem; margin-bottom: 15px;">🏆</div>
+                    <h2 id="p1-match-title" class="split-win-title">VICTORY!</h2>
+                    <p id="p1-match-sub" class="split-win-sub">You won the match!</p>
+                    <div style="display: flex; gap: 15px; justify-content: center; margin-top: 25px;">
+                        <button class="victory-btn" style="font-size: 1.1rem; padding: 10px 25px;" onclick="restartSplitMatch()">Play Again</button>
+                        <button class="nav-btn" style="padding: 10px 25px;" onclick="exitSplitGame()">Exit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Player (P2) -->
+        <div id="p2-area" class="player-area">
+            <div class="split-header">
+                <button class="nav-btn" onclick="exitSplitGame()">🏠 Exit</button>
+                <div class="split-score" id="p2-score-display">P2: ☆☆☆</div>
+                <div class="split-badge" id="p2-target-badge">Target: 10</div>
+            </div>
+            <div class="cards-container" id="p2-desk"></div>
+            <div class="operators-dock">
+                <div class="op-btn" onclick="selectOpSplit(2, '+')">+</div>
+                <div class="op-btn" onclick="selectOpSplit(2, '-')">−</div>
+                <div class="op-btn hidden" id="p2-op-mult" onclick="selectOpSplit(2, '*')">×</div>
+            </div>
+            <button class="nav-btn" style="margin-top: 15px; font-size: 0.8rem; padding: 6px 15px;" onclick="resetPlayerRound(2)">Reset Round ⟳</button>
+
+            <!-- Round Win Cover -->
+            <div id="p2-win-cover" class="split-win-cover hidden">
+                <h2 id="p2-win-title" class="split-win-title">ROUND WON! 🎉</h2>
+                <p id="p2-win-sub" class="split-win-sub">Get ready for next round...</p>
+            </div>
+
+            <!-- Match Over Overlay -->
+            <div id="p2-match-over" class="split-win-cover hidden" style="background: rgba(15, 32, 39, 0.98);">
+                <div class="victory-content">
+                    <div id="p2-match-icon" style="font-size: 4rem; margin-bottom: 15px;">🏆</div>
+                    <h2 id="p2-match-title" class="split-win-title">VICTORY!</h2>
+                    <p id="p2-match-sub" class="split-win-sub">You won the match!</p>
+                    <div style="display: flex; gap: 15px; justify-content: center; margin-top: 25px;">
+                        <button class="victory-btn" style="font-size: 1.1rem; padding: 10px 25px;" onclick="restartSplitMatch()">Play Again</button>
+                        <button class="nav-btn" style="padding: 10px 25px;" onclick="exitSplitGame()">Exit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // --- AUDIO ENGINE ---
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -769,6 +988,307 @@
         let selectedIdx = null;
         let selectedOp = null;
         let hintsLeft = 3;
+
+        // --- SPLIT SCREEN DUEL STATE ---
+        let isSplitMode = false;
+        let splitTarget = 10;
+        let splitRoundStartNums = [];
+
+        let p1State = {
+            numbers: [],
+            selectedIdx: null,
+            selectedOp: null,
+            score: 0
+        };
+
+        let p2State = {
+            numbers: [],
+            selectedIdx: null,
+            selectedOp: null,
+            score: 0
+        };
+
+        // --- SPLIT SCREEN DUEL FUNCTIONS ---
+        function startSplitGame(target) {
+            splitTarget = target;
+            isSplitMode = true;
+
+            document.getElementById('app-container').classList.add('hidden');
+            document.getElementById('split-game-view').classList.remove('hidden');
+
+            p1State.score = 0;
+            p2State.score = 0;
+
+            // Toggle multiplication button
+            if (target === 24) {
+                document.getElementById('p1-op-mult').classList.remove('hidden');
+                document.getElementById('p2-op-mult').classList.remove('hidden');
+            } else {
+                document.getElementById('p1-op-mult').classList.add('hidden');
+                document.getElementById('p2-op-mult').classList.add('hidden');
+            }
+
+            // Hide overlays
+            document.getElementById('p1-win-cover').classList.add('hidden');
+            document.getElementById('p2-win-cover').classList.add('hidden');
+            document.getElementById('p1-match-over').classList.add('hidden');
+            document.getElementById('p2-match-over').classList.add('hidden');
+
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            startNewSplitRound();
+        }
+
+        function startNewSplitRound() {
+            const count = splitTarget === 10 ? 3 : 4;
+            const allowMult = splitTarget === 24;
+            splitRoundStartNums = generateSolvableNumbers(splitTarget, count, allowMult);
+
+            p1State.numbers = [...splitRoundStartNums];
+            p2State.numbers = [...splitRoundStartNums];
+
+            p1State.selectedIdx = null;
+            p1State.selectedOp = null;
+            p2State.selectedIdx = null;
+            p2State.selectedOp = null;
+
+            // Hide round win covers and match over overlays
+            document.getElementById('p1-win-cover').classList.add('hidden');
+            document.getElementById('p2-win-cover').classList.add('hidden');
+            document.getElementById('p1-match-over').classList.add('hidden');
+            document.getElementById('p2-match-over').classList.add('hidden');
+
+            updateSplitUI();
+        }
+
+        function updateSplitUI() {
+            // P1 Desk
+            const p1Desk = document.getElementById('p1-desk');
+            p1Desk.innerHTML = '';
+            p1State.numbers.forEach((num, idx) => {
+                const card = document.createElement('div');
+                card.className = 'num-card';
+                if (idx === p1State.selectedIdx) card.classList.add('selected');
+                card.innerText = num;
+                card.onclick = () => handleCardClickSplit(1, idx);
+                p1Desk.appendChild(card);
+            });
+
+            document.querySelectorAll('#p1-area .op-btn').forEach(btn => btn.classList.remove('selected-op'));
+            if (p1State.selectedOp) {
+                const opChars = {'+': '+', '-': '−', '*': '×'};
+                document.querySelectorAll('#p1-area .op-btn').forEach(btn => {
+                    if (btn.innerText === opChars[p1State.selectedOp]) {
+                        btn.classList.add('selected-op');
+                    }
+                });
+            }
+
+            // P2 Desk
+            const p2Desk = document.getElementById('p2-desk');
+            p2Desk.innerHTML = '';
+            p2State.numbers.forEach((num, idx) => {
+                const card = document.createElement('div');
+                card.className = 'num-card';
+                if (idx === p2State.selectedIdx) card.classList.add('selected');
+                card.innerText = num;
+                card.onclick = () => handleCardClickSplit(2, idx);
+                p2Desk.appendChild(card);
+            });
+
+            document.querySelectorAll('#p2-area .op-btn').forEach(btn => btn.classList.remove('selected-op'));
+            if (p2State.selectedOp) {
+                const opChars = {'+': '+', '-': '−', '*': '×'};
+                document.querySelectorAll('#p2-area .op-btn').forEach(btn => {
+                    if (btn.innerText === opChars[p2State.selectedOp]) {
+                        btn.classList.add('selected-op');
+                    }
+                });
+            }
+
+            // Scores
+            document.getElementById('p1-score-display').innerText = `P1: ` + "⭐".repeat(p1State.score) + "☆".repeat(3 - p1State.score);
+            document.getElementById('p2-score-display').innerText = `P2: ` + "⭐".repeat(p2State.score) + "☆".repeat(3 - p2State.score);
+
+            // Targets
+            document.getElementById('p1-target-badge').innerText = `Target: ${splitTarget}`;
+            document.getElementById('p2-target-badge').innerText = `Target: ${splitTarget}`;
+        }
+
+        function selectOpSplit(playerNum, op) {
+            const state = playerNum === 1 ? p1State : p2State;
+            if (state.selectedIdx === null) {
+                speak("Pick a number first");
+                return;
+            }
+            state.selectedOp = op;
+            playSound('op');
+            speak(op === '+' ? "Plus" : op === '-' ? "Minus" : "Times");
+            updateSplitUI();
+        }
+
+        function resetPlayerRound(playerNum) {
+            const state = playerNum === 1 ? p1State : p2State;
+            state.numbers = [...splitRoundStartNums];
+            state.selectedIdx = null;
+            state.selectedOp = null;
+            updateSplitUI();
+        }
+
+        function restartSplitMatch() {
+            document.getElementById('p1-match-over').classList.add('hidden');
+            document.getElementById('p2-match-over').classList.add('hidden');
+            p1State.score = 0;
+            p2State.score = 0;
+            startNewSplitRound();
+        }
+
+        function exitSplitGame() {
+            isSplitMode = false;
+            document.getElementById('split-game-view').classList.add('hidden');
+            document.getElementById('app-container').classList.remove('hidden');
+            document.getElementById('menu-view').classList.remove('hidden');
+            document.getElementById('game-view').classList.add('hidden');
+            removeAllConfetti();
+        }
+
+        function handleCardClickSplit(playerNum, idx) {
+            playSound('select');
+            const state = playerNum === 1 ? p1State : p2State;
+
+            if (state.selectedIdx === null) {
+                state.selectedIdx = idx;
+                speak(state.numbers[idx]);
+                updateSplitUI();
+                return;
+            }
+
+            if (state.selectedOp === null) {
+                if (state.selectedIdx !== idx) {
+                    state.selectedIdx = idx;
+                    speak(state.numbers[idx]);
+                    updateSplitUI();
+                } else {
+                    state.selectedIdx = null;
+                    updateSplitUI();
+                }
+                return;
+            }
+
+            if (state.selectedIdx === idx) {
+                state.selectedIdx = null;
+                state.selectedOp = null;
+                updateSplitUI();
+                return;
+            }
+
+            // Calc
+            const val1 = state.numbers[state.selectedIdx];
+            const val2 = state.numbers[idx];
+            let result = 0;
+            let phrase = "";
+
+            if (state.selectedOp === '+') {
+                result = val1 + val2;
+                phrase = `${val1} plus ${val2} is ${result}`;
+            } else if (state.selectedOp === '-') {
+                if (val1 >= val2) {
+                    result = val1 - val2;
+                    phrase = `${val1} minus ${val2} is ${result}`;
+                } else {
+                    result = val2 - val1;
+                    phrase = `${val2} minus ${val1} is ${result}`;
+                }
+            } else if (state.selectedOp === '*') {
+                result = val1 * val2;
+                phrase = `${val1} times ${val2} is ${result}`;
+            }
+
+            speak(phrase);
+            playSound('merge');
+
+            const clickEvent = window.event;
+            if (clickEvent) spawnParticles(clickEvent.clientX, clickEvent.clientY, 10);
+
+            const idxA = Math.max(state.selectedIdx, idx);
+            const idxB = Math.min(state.selectedIdx, idx);
+
+            state.numbers.splice(idxA, 1);
+            state.numbers.splice(idxB, 1);
+            state.numbers.push(result);
+
+            state.selectedIdx = null;
+            state.selectedOp = null;
+            updateSplitUI();
+
+            // Check round win
+            if (state.numbers.length === 1) {
+                if (state.numbers[0] === splitTarget) {
+                    // WIN ROUND
+                    state.score++;
+                    playSound('win');
+                    
+                    const opponentNum = playerNum === 1 ? 2 : 1;
+                    
+                    // Show round win screen for winner
+                    const winTitle = document.getElementById(`p${playerNum}-win-title`);
+                    const winSub = document.getElementById(`p${playerNum}-win-sub`);
+                    winTitle.innerText = "ROUND WON! 🎉";
+                    winTitle.style.color = playerNum === 1 ? "var(--primary-color)" : "var(--secondary-color)";
+                    winSub.innerText = "Get ready for next round...";
+                    document.getElementById(`p${playerNum}-win-cover`).classList.remove('hidden');
+
+                    // Show round lost screen for opponent
+                    const loseTitle = document.getElementById(`p${opponentNum}-win-title`);
+                    const loseSub = document.getElementById(`p${opponentNum}-win-sub`);
+                    loseTitle.innerText = "ROUND LOST! ⚡";
+                    loseTitle.style.color = "#ff4d4d"; // Red alert style
+                    loseSub.innerText = `Player ${playerNum} was faster!`;
+                    document.getElementById(`p${opponentNum}-win-cover`).classList.remove('hidden');
+
+                    // Trigger confetti
+                    triggerConfetti();
+
+                    setTimeout(() => {
+                        document.getElementById('p1-win-cover').classList.add('hidden');
+                        document.getElementById('p2-win-cover').classList.add('hidden');
+                        removeAllConfetti();
+                        
+                        if (state.score >= 3) {
+                            // MATCH WIN
+                            // Set winner match screen
+                            const winnerMatchIcon = document.getElementById(`p${playerNum}-match-icon`);
+                            const winnerMatchTitle = document.getElementById(`p${playerNum}-match-title`);
+                            const winnerMatchSub = document.getElementById(`p${playerNum}-match-sub`);
+                            winnerMatchIcon.innerText = "🏆";
+                            winnerMatchTitle.innerText = "VICTORY!";
+                            winnerMatchTitle.style.color = playerNum === 1 ? "var(--primary-color)" : "var(--secondary-color)";
+                            winnerMatchSub.innerText = "You won the match!";
+                            document.getElementById(`p${playerNum}-match-over`).classList.remove('hidden');
+
+                            // Set loser match screen
+                            const loserMatchIcon = document.getElementById(`p${opponentNum}-match-icon`);
+                            const loserMatchTitle = document.getElementById(`p${opponentNum}-match-title`);
+                            const loserMatchSub = document.getElementById(`p${opponentNum}-match-sub`);
+                            loserMatchIcon.innerText = "💀";
+                            loserMatchTitle.innerText = "DEFEAT!";
+                            loserMatchTitle.style.color = "#ff4d4d";
+                            loserMatchSub.innerText = `Player ${playerNum} won the match!`;
+                            document.getElementById(`p${opponentNum}-match-over`).classList.remove('hidden');
+
+                            speak(`Player ${playerNum} wins the match!`);
+                        } else {
+                            startNewSplitRound();
+                        }
+                    }, 2200);
+                } else {
+                    speak(`Try again!`);
+                    setTimeout(() => {
+                        resetPlayerRound(playerNum);
+                    }, 1200);
+                }
+            }
+        }
 
         // --- NAVIGATION ---
         function startMathGame(target) {

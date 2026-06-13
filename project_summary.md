@@ -1,7 +1,7 @@
-# 🌈 May's Learning Toolbox: Project Summary
+# 🌈 Magic Learning Toolbox: Project Summary
 
 ## 📖 Overview
-**May's Learning Toolbox** is a vibrant, interactive collection of web-based games designed specifically for early childhood education (focused on age 6+). The project aims to make learning math, logic, and language fun through gamified experiences, colorful visuals, and intuitive interactions. It is optimized for mobile use, particularly for full-screen "App" experiences on the iPhone.
+**Magic Learning Toolbox** is a vibrant, interactive collection of web-based games designed specifically for early childhood education (focused on age 6+). The project aims to make learning math, logic, and language fun through gamified experiences, colorful visuals, and intuitive interactions. It is optimized for mobile use, particularly for full-screen "App" experiences on the iPhone and iPad.
 
 ---
 
@@ -9,14 +9,13 @@
 
 ### 🧠 Thinking & Math
 Focuses on logical reasoning and arithmetic skills.
-- **进位加减法 (Math Farm)**: A visual approach to addition and subtraction with borrowing/carrying animations.
 - **Maths Magic (24)**: A mental math game where players use four numbers to reach the target of 24.
 - **Probability Games**: (Work in Progress) Interactive modules teaching concepts like certain, impossible, and likely/unlikely.
 
 ### 📚 Words & Stories
 Language and literacy development tools.
 - **Magic Dictionary**: An AI-powered dictionary with definitions, voice synthesis, and visual stickers.
-- **May's Sentence Lab**: A sentence-building game with 1,600+ phrases and various themes (e.g., Peppa Pig, Bluey).
+- **Magic Sentence Lab**: A sentence-building game with 1,600+ phrases and various themes (e.g., Peppa Pig, Bluey).
 
 ### 🎨 Just for Fun
 Engaging interactive experiences for recreation.

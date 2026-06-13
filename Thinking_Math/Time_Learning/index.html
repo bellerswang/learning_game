@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="google-site-verification" content="bpec6YRoSQnASJe_JJ99l46gR6VpI1HyRpT2P7X1nfU" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Time Monster's Train - Stratified Levels</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background: linear-gradient(135deg, #a7f3d0 0%, #fbcfe8 100%);
+            color: #334155;
+            touch-action: manipulation;
+            overflow-y: auto;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 2px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 10px 30px rgba(236, 72, 153, 0.15);
+        }
+        
+        .clock-container {
+            position: relative;
+            /* Responsive sizes: mobile 240px, iPad/desktop 300px */
+            width: 240px;
+            height: 240px;
+            border-radius: 50%;
+            background: white;
+            border: 8px solid #f472b6;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.05), 0 8px 25px rgba(244, 114, 182, 0.4);
+            margin: 0 auto;
+        }
+
+        @media (min-width: 768px) {
+            .clock-container {
+                width: 300px;
+                height: 300px;
+                border-width: 12px;
+            }
+        }
+
+        .clock-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 16px;
+            height: 16px;
+            background: #334155;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+        }
+
+        .hand {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            transform-origin: bottom center;
+            border-radius: 10px;
+            transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .hour-hand {
+            width: 8px;
+            height: 25%;
+            background: #3b82f6; /* blue-500 */
+            margin-left: -4px;
+            z-index: 5;
+        }
+
+        .minute-hand {
+            width: 6px;
+            height: 38%;
+            background: #ef4444; /* red-500 */
+            margin-left: -3px;
+            z-index: 6;
+        }
+
+        @media (min-width: 768px) {
+            .hour-hand { width: 12px; margin-left: -6px; }
+            .minute-hand { width: 8px; margin-left: -4px; }
+            .clock-center { width: 24px; height: 24px; }
+        }
+
+        .clock-number {
+            position: absolute;
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: #475569;
+            transform: translate(-50%, -50%);
+        }
+
+        @media (min-width: 768px) {
+            .clock-number { font-size: 1.85rem; }
+        }
+
+        /* Highlight zones for past/to logic */
+        .clock-half-past {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 50%;
+            height: 100%;
+            background: rgba(59, 130, 246, 0.04); /* blue hint */
+            border-top-right-radius: 200px;
+            border-bottom-right-radius: 200px;
+            pointer-events: none;
+        }
+
+        .clock-half-to {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 50%;
+            height: 100%;
+            background: rgba(239, 68, 68, 0.04); /* red hint */
+            border-top-left-radius: 200px;
+            border-bottom-left-radius: 200px;
+            pointer-events: none;
+        }
+
+        /* Monster & Train */
+        .monster-scene {
+            height: 80px;
+            position: relative;
+            margin-bottom: 5px;
+            pointer-events: none; /* Prevents scene elements from intercepting clicks */
+        }
+
+        @media (min-width: 768px) {
+            .monster-scene { height: 110px; margin-bottom: 10px; }
+        }
+
+        .monster {
+            font-size: 4.5rem;
+            position: absolute;
+            bottom: 5px;
+            left: 20%;
+            transition: all 0.6s ease;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+            pointer-events: none;
+        }
+
+        .train {
+            font-size: 5rem;
+            position: absolute;
+            bottom: 5px;
+            right: 5%;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+            pointer-events: none;
+        }
+
+        @media (min-width: 768px) {
+            .monster { font-size: 5.5rem; }
+            .train { font-size: 6rem; }
+        }
+
+        .monster.happy {
+            animation: jump 0.4s ease infinite alternate;
+        }
+        
+        .monster.boarded {
+            left: calc(95% - 4rem);
+            transform: scale(0.4);
+            opacity: 0;
+        }
+
+        @media (min-width: 768px) {
+            .monster.boarded {
+                left: calc(95% - 6rem);
+            }
+        }
+
+        @keyframes jump {
+            from { transform: translateY(0); }
+            to { transform: translateY(-25px) scale(1.05); }
+        }
+
+        /* Confetti */
+        .confetti {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: red;
+            animation: fall linear forwards;
+            border-radius: 3px;
+            z-index: 50;
+        }
+        @keyframes fall {
+            to { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        .btn-press {
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+        .btn-press:active {
+            transform: translateY(4px);
+            box-shadow: none !important;
+        }
+
+        /* Option buttons */
+        .choice-btn {
+            background-color: white;
+            border: 3px solid #e2e8f0;
+            border-radius: 1.5rem;
+            font-weight: 700;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .choice-btn:hover:not(:disabled) {
+            border-color: #f472b6;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(244, 114, 182, 0.15);
+        }
+
+        .choice-btn:active:not(:disabled) {
+            transform: translateY(2px);
+        }
+
+        .choice-btn.correct {
+            background-color: #10b981 !important;
+            border-color: #059669 !important;
+            color: white !important;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+        }
+
+        .choice-btn.incorrect {
+            background-color: #ef4444 !important;
+            border-color: #dc2626 !important;
+            color: white !important;
+            transform: scale(0.95);
+            opacity: 0.6;
+        }
+
+        .choices-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            width: 100%;
+            max-width: 440px;
+        }
+        @media (min-width: 768px) {
+            .choices-grid { max-width: 600px; gap: 1.25rem; }
+        }
+
+        /* Level Tab Buttons */
+        .lvl-tab {
+            background-color: white;
+            color: #f472b6;
+            border: 2px solid #fbcfe8;
+            font-weight: 700;
+            border-radius: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .lvl-tab.active {
+            background-color: #f472b6;
+            color: white;
+            border-color: #ec4899;
+            box-shadow: 0 4px 10px rgba(244, 114, 182, 0.2);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-3 sm:p-6">
+    
+    <div class="w-full max-w-md md:max-w-2xl glass-panel rounded-[2.5rem] p-4 md:p-6 flex flex-col items-center relative">
+        
+        <!-- Clean Non-Overlapping Top Navbar -->
+        <div class="w-full flex items-center justify-between mb-4 border-b pb-3 border-slate-700/10">
+            <!-- Back Button -->
+            <a href="../../index.html" class="w-10 h-10 md:w-12 md:h-12 bg-white/60 rounded-full flex items-center justify-center text-xl md:text-2xl hover:bg-white hover:scale-105 shadow-sm transition-all btn-press">
+                🏠
+            </a>
+            
+            <!-- Reference / Cheat Sheet Button -->
+            <button onclick="toggleReference(true)" class="flex items-center gap-1.5 bg-sky-400 hover:bg-sky-500 text-white font-bold py-2 px-3 md:px-5 rounded-full shadow-sm text-xs md:text-sm transition-all btn-press">
+                📖 Study Guide
+            </button>
+
+            <!-- Star Counter -->
+            <div class="flex items-center gap-1 bg-white/80 px-3 md:px-4 py-1.5 rounded-full shadow-sm border border-pink-100">
+                <span class="text-xs md:text-sm font-bold text-pink-500 uppercase tracking-wide">Stars:</span>
+                <span class="text-md" id="starCounter">⭐</span>
+            </div>
+        </div>
+
+        <!-- Level Selector Tabs (Raised z-index to stay above scene elements) -->
+        <div class="grid grid-cols-4 gap-1.5 md:gap-3 w-full mb-4 relative z-10">
+            <button class="lvl-tab py-2 px-1 text-xs md:text-sm active btn-press" onclick="selectLevel(1)">Level 1</button>
+            <button class="lvl-tab py-2 px-1 text-xs md:text-sm btn-press" onclick="selectLevel(2)">Level 2</button>
+            <button class="lvl-tab py-2 px-1 text-xs md:text-sm btn-press" onclick="selectLevel(3)">Level 3</button>
+            <button class="lvl-tab py-2 px-1 text-xs md:text-sm btn-press" onclick="selectLevel(4)">Level 4</button>
+        </div>
+
+        <!-- Scene -->
+        <div class="monster-scene w-full border-b-4 md:border-b-8 border-slate-700/10">
+            <div class="train">🚂</div>
+            <div class="monster" id="monster">👾</div>
+        </div>
+
+        <!-- Question Title -->
+        <div class="text-center mt-2 mb-3 md:mt-4 md:mb-5">
+            <h2 class="text-xs md:text-md text-slate-500 font-bold uppercase tracking-widest mb-0.5" id="levelName">Look at the clock!</h2>
+            <!-- Question with Blank -->
+            <div class="text-xl md:text-3xl font-bold text-slate-700 bg-white/90 px-5 py-3 rounded-2xl shadow-sm border-2 border-slate-100 flex items-center justify-center gap-2" id="questionText">
+                <!-- Question injected by JS -->
+            </div>
+        </div>
+
+        <!-- Clock (Static display) -->
+        <div class="clock-container mb-5 md:mb-6" id="clock">
+            <div class="clock-half-to"></div>
+            <div class="clock-half-past"></div>
+            <!-- Numbers injected by JS -->
+            <div class="hour-hand hand" id="hourHand"></div>
+            <div class="minute-hand hand" id="minuteHand"></div>
+            <div class="clock-center"></div>
+        </div>
+
+        <!-- Multiple Choice Options -->
+        <div class="choices-grid mb-1" id="choicesGrid">
+            <!-- 4 Option Buttons injected by JS -->
+        </div>
+    </div>
+
+    <!-- Reference Modal Overlay (Study Guide Clock Mode) -->
+    <div id="referenceModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4 animate-fade-in">
+        <div class="bg-white rounded-[2.5rem] p-5 md:p-8 max-w-lg md:max-w-xl w-full shadow-2xl relative border-4 border-pink-200 overflow-y-auto max-h-[95vh] transition-all">
+            <!-- Close Button -->
+            <button onclick="toggleReference(false)" class="absolute top-4 right-4 w-10 h-10 bg-slate-100 hover:bg-slate-200 rounded-full flex items-center justify-center text-xl font-bold text-slate-500 transition-colors btn-press">
+                ✕
+            </button>
+            
+            <h3 class="text-2xl font-bold text-pink-500 text-center mb-6">⏱️ Telling Time Cheat Sheet</h3>
+            
+            <!-- Clock Mode Layout -->
+            <div class="relative w-[320px] h-[320px] md:w-[420px] md:h-[420px] mx-auto flex items-center justify-center">
+                <!-- Inner Clock Face -->
+                <div class="relative w-[150px] h-[150px] md:w-[220px] md:h-[220px] rounded-full border-4 border-slate-700 bg-white shadow-md flex items-center justify-center">
+                    
+                    <!-- Left Red Half (To) -->
+                    <div class="absolute left-0 top-0 w-1/2 h-full bg-red-50/70 rounded-l-full border-r-2 border-dashed border-slate-400 flex items-center justify-center">
+                        <span class="text-red-500 font-extrabold text-base md:text-3xl tracking-wider">TO</span>
+                    </div>
+                    
+                    <!-- Right Blue Half (Past) -->
+                    <div class="absolute right-0 top-0 w-1/2 h-full bg-blue-50/70 rounded-r-full flex items-center justify-center">
+                        <span class="text-blue-500 font-extrabold text-base md:text-3xl tracking-wider">PAST</span>
+                    </div>
+                    
+                    <!-- Center Dot -->
+                    <div class="w-3 h-3 bg-slate-700 rounded-full z-10"></div>
+                    
+                    <!-- Inside Clock Numbers (1-12) Container -->
+                    <div id="refClockNumbers" class="absolute inset-0"></div>
+                </div>
+                
+                <!-- Outside Clock Reference Labels Container -->
+                <div id="refClockLabels" class="absolute inset-0 pointer-events-none"></div>
+            </div>
+            
+            <p class="text-center text-xs md:text-sm text-slate-400 font-medium mt-6">
+                💡 Hint: Left half counts minutes <b>to</b> the next hour, right half counts minutes <b>past</b> the current hour.
+            </p>
+        </div>
+    </div>
+
+    <!-- Audio Effects -->
+    <script>
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioContext;
+
+        function initAudio() {
+            try {
+                if (!audioContext) {
+                    audioContext = new AudioContext();
+                }
+                if (audioContext.state === 'suspended') {
+                    audioContext.resume();
+                }
+            } catch (e) {
+                console.warn("AudioContext initialization bypassed:", e);
+            }
+        }
+
+        document.addEventListener('touchstart', initAudio, { once: true });
+        document.addEventListener('click', initAudio, { once: true });
+
+        function playSound(type) {
+            try {
+                initAudio();
+                if (!audioContext) return;
+                
+                const osc = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                osc.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+
+                if (type === 'tick') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(600, audioContext.currentTime);
+                    gainNode.gain.setValueAtTime(0.08, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05);
+                    osc.start();
+                    osc.stop(audioContext.currentTime + 0.05);
+                } else if (type === 'success') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(400, audioContext.currentTime);
+                    osc.frequency.setValueAtTime(600, audioContext.currentTime + 0.1);
+                    osc.frequency.setValueAtTime(800, audioContext.currentTime + 0.2);
+                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.5);
+                    osc.start();
+                    osc.stop(audioContext.currentTime + 0.5);
+                } else if (type === 'fail') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, audioContext.currentTime);
+                    osc.frequency.linearRampToValueAtTime(150, audioContext.currentTime + 0.3);
+                    gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
+                    gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(audioContext.currentTime + 0.3);
+                }
+            } catch (e) {
+                console.warn("Sound play bypassed:", e);
+            }
+        }
+    </script>
+
+    <script>
+        // Setup interactive game clock numbers
+        const clockContainer = document.getElementById('clock');
+        const radiusPercent = 40; 
+        for (let i = 1; i <= 12; i++) {
+            const angle = (i * 30 - 90) * (Math.PI / 180);
+            const x = 50 + radiusPercent * Math.cos(angle); 
+            const y = 50 + radiusPercent * Math.sin(angle);
+            const num = document.createElement('div');
+            num.className = 'clock-number';
+            num.style.left = `${x}%`;
+            num.style.top = `${y}%`;
+            num.textContent = i;
+            clockContainer.appendChild(num);
+        }
+
+        // Setup Study Guide Reference Clock Numbers & Labels
+        const refNumbersContainer = document.getElementById('refClockNumbers');
+        const refLabelsContainer = document.getElementById('refClockLabels');
+        
+        const labelTexts = {
+            12: "o'clock",
+            1: "five past",
+            2: "ten past",
+            3: "quarter past",
+            4: "twenty past",
+            5: "twenty-five past",
+            6: "half past",
+            7: "twenty-five to",
+            8: "twenty to",
+            9: "quarter to",
+            10: "ten to",
+            11: "five to"
+        };
+
+        // Draw Reference Clock Numbers - pushed closer to the border (42%) to prevent overlap with TO / PAST
+        for (let i = 1; i <= 12; i++) {
+            const angle = (i * 30 - 90) * (Math.PI / 180);
+            const x = 50 + 41 * Math.cos(angle); 
+            const y = 50 + 41 * Math.sin(angle);
+            const num = document.createElement('div');
+            num.className = 'absolute text-sm md:text-2xl font-extrabold text-slate-600';
+            num.style.left = `${x}%`;
+            num.style.top = `${y}%`;
+            num.style.transform = 'translate(-50%, -50%)';
+            num.textContent = i;
+            refNumbersContainer.appendChild(num);
+        }
+
+        // Draw Reference Clock Labels radially positioned on the outer container
+        for (let i = 1; i <= 12; i++) {
+            const angle = (i * 30 - 90) * (Math.PI / 180);
+            const isLeft = (i > 6 && i < 12);
+            const isRight = (i > 0 && i < 6);
+            
+            // Outer placement radius (43% radius of outer container)
+            const x = 50 + 43 * Math.cos(angle);
+            const y = 50 + 43 * Math.sin(angle);
+            
+            const lbl = document.createElement('div');
+            lbl.className = 'absolute text-xs md:text-sm font-bold py-1 px-1.5 md:py-1.5 md:px-2 rounded-xl shadow-sm border whitespace-nowrap';
+            
+            // Styling based on past/to
+            if (isLeft) {
+                lbl.className += ' bg-red-50 text-red-500 border-red-200';
+            } else if (isRight) {
+                lbl.className += ' bg-blue-50 text-blue-500 border-blue-200';
+            } else if (i === 12) {
+                lbl.className += ' bg-purple-50 text-purple-500 border-purple-200';
+            } else { // 6
+                lbl.className += ' bg-amber-50 text-amber-500 border-amber-200';
+            }
+            
+            lbl.style.left = `${x}%`;
+            lbl.style.top = `${y}%`;
+            
+            // Layout alignment to ensure labels sit neatly outside the central clock ring
+            let xAlign = '-50%';
+            let yAlign = '-50%';
+            if (i === 12) yAlign = '-100%';
+            if (i === 6) yAlign = '0%';
+            if (i >= 1 && i <= 5) xAlign = '0%';
+            if (i >= 7 && i <= 11) xAlign = '-100%';
+            
+            lbl.style.transform = `translate(${xAlign}, ${yAlign})`;
+            lbl.textContent = labelTexts[i];
+            refLabelsContainer.appendChild(lbl);
+        }
+
+        // Word translations for game questions
+        const numWords = {
+            1: "one", 2: "two", 3: "three", 4: "four", 5: "five",
+            6: "six", 7: "seven", 8: "eight", 9: "nine", 10: "ten",
+            11: "eleven", 12: "twelve", 20: "twenty", 25: "twenty-five"
+        };
+        
+        const monsters = ['👾', '👻', '👽', '🦖', '🐙', '🦉'];
+
+        // Differentiated levels config (Matching Silver/Gold challenges)
+        const levelNames = {
+            1: "Level 1: O'clock & Half Past 🥚",
+            2: "Level 2: PAST (Silver Challenge) 🐣",
+            3: "Level 3: TO (Gold Challenge) 🐥",
+            4: "Level 4: Mixed Challenge! 🦖"
+        };
+
+        // Game State
+        let currentLevel = 1;
+        let currentHour = 12;
+        let currentMinute = 0;
+        let correctAnswerText = "";
+        let isAnimating = false;
+        
+        // Stars tracked individually per level
+        let levelStars = { 1: 0, 2: 0, 3: 0, 4: 0 };
+
+        const hourHand = document.getElementById('hourHand');
+        const minuteHand = document.getElementById('minuteHand');
+        const questionText = document.getElementById('questionText');
+        const monster = document.getElementById('monster');
+        const choicesGrid = document.getElementById('choicesGrid');
+        const starCounter = document.getElementById('starCounter');
+        const levelNameEl = document.getElementById('levelName');
+        const referenceModal = document.getElementById('referenceModal');
+
+        // Toggle Study Guide modal
+        function toggleReference(show) {
+            initAudio();
+            if (show) {
+                referenceModal.classList.remove('hidden');
+            } else {
+                referenceModal.classList.add('hidden');
+            }
+        }
+
+        // Select a level
+        function selectLevel(lvl) {
+            if (isAnimating) return;
+            currentLevel = lvl;
+
+            const tabs = document.querySelectorAll('.lvl-tab');
+            tabs.forEach((tab, index) => {
+                if (index + 1 === lvl) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+
+            levelNameEl.textContent = levelNames[lvl];
+            generateQuestion();
+        }
+
+        // Generate target time and options based on clearly stratified levels
+        function generateQuestion() {
+            isAnimating = false;
+            monster.textContent = monsters[Math.floor(Math.random() * monsters.length)];
+
+            // Update star counter visual
+            const starCount = levelStars[currentLevel];
+            starCounter.textContent = starCount > 0 ? "⭐".repeat(starCount) : "0 ⭐";
+
+            // Choose a random time according to the selected stratified level
+            const oldHour = currentHour;
+            const oldMinute = currentMinute;
+            
+            do {
+                currentHour = Math.floor(Math.random() * 12) + 1;
+                
+                if (currentLevel === 1) {
+                    // Level 1: O'clock (0 min) & Half Past (30 min)
+                    currentMinute = Math.random() < 0.5 ? 0 : 30;
+                } else if (currentLevel === 2) {
+                    // Level 2: PAST Only (5, 10, 15, 20, 25 minutes past)
+                    const pastMins = [5, 10, 15, 20, 25];
+                    currentMinute = pastMins[Math.floor(Math.random() * pastMins.length)];
+                } else if (currentLevel === 3) {
+                    // Level 3: TO Only (35, 40, 45, 50, 55 minutes to)
+                    const toMins = [35, 40, 45, 50, 55];
+                    currentMinute = toMins[Math.floor(Math.random() * toMins.length)];
+                } else {
+                    // Level 4: Mixed Challenge (All 5-minute intervals, 0 to 55)
+                    currentMinute = Math.floor(Math.random() * 12) * 5;
+                }
+            } while (currentHour === oldHour && currentMinute === oldMinute);
+
+            // 2. Parse time structure
+            const relation = currentMinute <= 30 ? "past" : "to";
+            const minsToSay = currentMinute <= 30 ? currentMinute : 60 - currentMinute;
+            const targetHour = currentMinute <= 30 ? currentHour : (currentHour === 12 ? 1 : currentHour + 1);
+
+            let minWord = minsToSay === 15 ? "quarter" :
+                          minsToSay === 30 ? "half" :
+                          (numWords[minsToSay] || minsToSay);
+            
+            // Format minutes with 'minutes' label if not quarter/half (except o'clock)
+            let minText = minWord;
+            if (currentMinute !== 0 && minsToSay !== 15 && minsToSay !== 30) {
+                minText = `${minWord} minutes`;
+            }
+
+            const hourText = numWords[targetHour];
+            const blankType = Math.floor(Math.random() * 2);
+
+            let questionHTML = "";
+            let options = [];
+
+            if (currentMinute === 0) {
+                // Special case: o'clock (Level 1 or 4)
+                if (blankType === 0) {
+                    correctAnswerText = "o'clock";
+                    questionHTML = `It's ${hourText} <span class="underline decoration-pink-500 decoration-4 text-pink-500 font-extrabold px-2">______</span>`;
+                    options = [correctAnswerText, "half past", "quarter past", "quarter to"];
+                } else {
+                    correctAnswerText = hourText;
+                    questionHTML = `It's <span class="underline decoration-pink-500 decoration-4 text-pink-500 font-extrabold px-2">______</span> o'clock`;
+                    const allHourTexts = Object.values(numWords).slice(0, 12).filter(t => t !== correctAnswerText);
+                    shuffleArray(allHourTexts);
+                    options = [correctAnswerText, allHourTexts[0], allHourTexts[1], allHourTexts[2]];
+                }
+            } else if (currentMinute === 30) {
+                // Special case: half past (Level 1 or 4)
+                if (blankType === 0) {
+                    correctAnswerText = "half past";
+                    questionHTML = `It's <span class="underline decoration-pink-500 decoration-4 text-pink-500 font-extrabold px-2">______</span> ${hourText}`;
+                    options = [correctAnswerText, "quarter past", "quarter to", "o'clock"];
+                } else {
+                    correctAnswerText = hourText;
+                    questionHTML = `It's half past <span class="underline decoration-pink-500 decoration-4 text-pink-500 font-extrabold px-2">______</span>`;
+                    const allHourTexts = Object.values(numWords).slice(0, 12).filter(t => t !== correctAnswerText);
+                    shuffleArray(allHourTexts);
+                    options = [correctAnswerText, allHourTexts[0], allHourTexts[1], allHourTexts[2]];
+                }
+            } else if (minsToSay === 15) {
+                // Special case: quarters (Level 2, 3 or 4)
+                if (blankType === 0) {
+                    correctAnswerText = `quarter ${relation}`;
+                    questionHTML = `It's <span class="underline decoration-pink-500 decoration-4 text-pink-500 font-extrabold px-2">______</span> ${hourText}`;
+                    options = [
+                        correctAnswerText, 
+                        `quarter ${relation === 'past' ? 'to' : 'past'}`, 
+                        "half past", 
+                        "o'clock"
+                    ];
+                } else {
+                    correctAnswerText = hourText;
+                    questionHTML = `It's quarter ${relation} <span class="underline decoration-pink-500 decoration-4 text-pink-500 font-extrabold px-2">______</span>`;
+                    const allHourTexts = Object.values(numWords).slice(0, 12).filter(t => t !== correctAnswerText);
+                    shuffleArray(allHourTexts);
+                    options = [correctAnswerText, allHourTexts[0], allHourTexts[1], allHourTexts[2]];
+                }
+            } else {
+                // Standard 5 minutes
+                if (blankType === 0) {
+                    correctAnswerText = minText;
+                    questionHTML = `It's <span class="underline decoration-pink-500 decoration-4 text-pink-500 font-extrabold px-2">______</span> ${relation} ${hourText}`;
+                    
+                    const allMinuteTexts = [
+                        "five minutes", "ten minutes", "twenty minutes", "twenty-five minutes"
+                    ].filter(t => t !== correctAnswerText);
+                    
+                    shuffleArray(allMinuteTexts);
+                    options = [correctAnswerText, allMinuteTexts[0], allMinuteTexts[1], allMinuteTexts[2]];
+                } else {
+                    correctAnswerText = hourText;
+                    questionHTML = `It's ${minText} ${relation} <span class="underline decoration-pink-500 decoration-4 text-pink-500 font-extrabold px-2">______</span>`;
+                    
+                    const allHourTexts = Object.values(numWords).slice(0, 12).filter(t => t !== correctAnswerText);
+                    shuffleArray(allHourTexts);
+                    options = [correctAnswerText, allHourTexts[0], allHourTexts[1], allHourTexts[2]];
+                }
+            }
+
+            // Update UI
+            questionText.innerHTML = questionHTML;
+            updateClock(currentHour, currentMinute);
+            renderChoices(options);
+        }
+
+        function updateClock(h, m) {
+            let hAngle = (h * 30) + (m * 0.5);
+            let mAngle = m * 6;
+
+            hourHand.style.transform = `rotate(${hAngle}deg)`;
+            minuteHand.style.transform = `rotate(${mAngle}deg)`;
+        }
+
+        function renderChoices(options) {
+            choicesGrid.innerHTML = "";
+            shuffleArray(options);
+
+            options.forEach(option => {
+                const btn = document.createElement('button');
+                btn.className = "choice-btn text-lg md:text-2xl py-3 md:py-5 px-4";
+                btn.textContent = option;
+                btn.onclick = () => selectOption(btn, option);
+                choicesGrid.appendChild(btn);
+            });
+        }
+
+        function selectOption(button, selectedText) {
+            if (isAnimating) return;
+            isAnimating = true; 
+            
+            if (selectedText === correctAnswerText) {
+                // Correct!
+                playSound('success');
+                button.classList.add('correct');
+                monster.classList.add('happy');
+                createConfetti();
+                
+                // Reward star
+                levelStars[currentLevel]++;
+                if (levelStars[currentLevel] > 5) levelStars[currentLevel] = 1;
+
+                // Disable all buttons
+                const allButtons = choicesGrid.querySelectorAll('button');
+                allButtons.forEach(btn => btn.disabled = true);
+
+                setTimeout(() => {
+                    monster.classList.add('boarded');
+                }, 1000);
+
+                setTimeout(() => {
+                    monster.classList.remove('happy', 'boarded');
+                    generateQuestion();
+                }, 2200);
+            } else {
+                // Incorrect
+                playSound('fail');
+                button.classList.add('incorrect');
+                button.disabled = true; 
+                isAnimating = false; // Allow trying again
+            }
+        }
+
+        function createConfetti() {
+            for(let i=0; i<40; i++) {
+                let conf = document.createElement('div');
+                conf.className = 'confetti';
+                conf.style.left = Math.random() * 100 + 'vw';
+                conf.style.backgroundColor = ['#f472b6', '#3b82f6', '#10b981', '#fbbf24', '#a855f7'][Math.floor(Math.random()*5)];
+                conf.style.animationDuration = (Math.random() * 1.2 + 0.8) * 's';
+                document.body.appendChild(conf);
+                setTimeout(() => conf.remove(), 2500);
+            }
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // Initialize Level 1
+        selectLevel(1);
+    </script>
+</body>
+</html>

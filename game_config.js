@@ -10,7 +10,8 @@ const APP_CONFIG = {
         sentenceLab: true,    // May's Sentence Lab
         fireworks: true,      // Fireworks Launcher
         make24: true,         // Make 24 Game
-        solarSystem: true     // Space Adventure Game
+        solarSystem: true,    // Space Adventure Game
+        timeLearning: true    // Time Monster's Train
     },
 
 };

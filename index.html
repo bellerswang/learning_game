@@ -3,261 +3,250 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="google-site-verification" content="bpec6YRoSQnASJe_JJ99l46gR6VpI1HyRpT2P7X1nfU" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>May's Learning Toolbox</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Fredoka', sans-serif;
-            background-color: #fff1f2;
+        :root {
+            --paper: rgba(255, 255, 255, 0.74);
+            --ink: #334155;
+            --pink: #ec4899;
+            --soft-border: rgba(255, 255, 255, 0.92);
         }
 
-        /* Rose-50 bg */
+        body {
+            font-family: 'Fredoka', sans-serif;
+            color: var(--ink);
+            background:
+                radial-gradient(circle at top left, rgba(251, 207, 232, 0.95), transparent 32rem),
+                radial-gradient(circle at 88% 8%, rgba(186, 230, 253, 0.8), transparent 28rem),
+                radial-gradient(circle at 18% 82%, rgba(254, 240, 138, 0.6), transparent 26rem),
+                linear-gradient(135deg, #fff7ed 0%, #fff1f2 48%, #eef2ff 100%);
+        }
+
+        .toolbox-shell {
+            animation: rise-in 0.45s ease both;
+        }
+
+        .section-card {
+            background: var(--paper);
+            border: 2px solid var(--soft-border);
+            box-shadow: 0 22px 60px rgba(236, 72, 153, 0.13);
+            backdrop-filter: blur(12px);
+            animation: rise-in 0.5s ease both;
+        }
+
+        .section-card:nth-of-type(2) {
+            animation-delay: 0.05s;
+        }
+
+        .section-card:nth-of-type(3) {
+            animation-delay: 0.1s;
+        }
+
         .app-btn {
-            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: 9rem;
+            isolation: isolate;
+            transition: transform 0.18s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.18s ease, filter 0.18s ease;
+        }
+
+        .app-btn::after {
+            content: "";
+            position: absolute;
+            inset: 0.75rem;
+            z-index: -1;
+            border-radius: 1.5rem;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.34), transparent 58%);
+            pointer-events: none;
+        }
+
+        .app-btn:hover {
+            transform: translateY(-4px) rotate(-0.5deg);
+            filter: saturate(1.06);
+            box-shadow: 0 18px 30px rgba(15, 23, 42, 0.16);
         }
 
         .app-btn:active {
-            transform: scale(0.96) translateY(4px);
-            border-bottom-width: 0px;
+            transform: scale(0.97) translateY(4px);
+            border-bottom-width: 0;
             margin-top: 8px;
-            /* Offset the missing border to keep alignment roughly same or bounce */
+        }
+
+        .block-icon {
+            text-shadow: 0 8px 18px rgba(15, 23, 42, 0.18);
+        }
+
+        @keyframes rise-in {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
 
-<body class="min-h-screen flex flex-col items-center p-6 selection:bg-pink-200">
-    <header class="w-full text-center mt-4 mb-8 space-y-2">
-        <h1 class="text-4xl font-bold text-pink-500 drop-shadow-sm tracking-wide">May's Learning Toolbox 🌈</h1>
-        <p class="text-pink-300 font-medium text-lg">Pick a fun activity!</p>
+<body class="min-h-screen flex flex-col items-center p-5 sm:p-6 selection:bg-pink-200">
+    <header class="w-full max-w-5xl text-center mt-4 mb-8 space-y-3 toolbox-shell">
+        <div class="inline-flex items-center gap-2 rounded-full bg-white/75 px-4 py-2 text-sm font-bold text-pink-500 shadow-sm border border-white">
+            <span>May's game shelf</span>
+            <span aria-hidden="true">&#10024;</span>
+        </div>
+        <h1 class="text-4xl sm:text-6xl font-bold text-pink-500 drop-shadow-sm tracking-wide">May's Learning Toolbox</h1>
+        <p class="text-pink-400 font-medium text-lg sm:text-xl">Pick a block and jump straight into an activity.</p>
     </header>
 
-    <main class="w-full max-w-md flex flex-col gap-4 pb-12">
+    <main class="w-full max-w-5xl flex flex-col gap-6 pb-12 toolbox-shell">
+        <section class="section-card rounded-[2rem] p-4 sm:p-5">
+            <div class="flex items-center justify-between gap-4 mb-4 px-1">
+                <div>
+                    <p class="text-sm font-bold uppercase tracking-[0.18em] text-pink-300">Think and build</p>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-pink-500">Thinking & Math</h2>
+                </div>
+                <span class="text-4xl" aria-hidden="true">&#129504;</span>
+            </div>
 
-        <!-- Section: Math & Logic -->
-        <details class="group bg-white rounded-3xl shadow-sm border-2 border-pink-100 overflow-hidden">
-            <summary
-                class="flex items-center justify-between p-4 cursor-pointer list-none bg-pink-50 hover:bg-pink-100 transition-colors">
-                <h2 class="text-xl font-bold text-pink-500">Thinking & Math 🧠</h2>
-                <span class="text-2xl transform group-open:rotate-180 transition-transform">🔽</span>
-            </summary>
-            <div class="p-4 space-y-4 bg-white/50">
+            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
                 <a href="./Thinking_Math/Prob_game/index.html" data-module="probability"
-                    class="app-btn group flex items-center justify-between p-6 rounded-3xl shadow-lg border-b-8 h-28 w-full text-2xl font-bold bg-sky-400 border-sky-600 text-white hover:bg-sky-300">
-                    <div class="flex flex-col text-left">
-                        <span class="drop-shadow-md">Probability Games</span>
-                        <span class="text-xs font-normal opacity-80">(Work in Progress)</span>
-                    </div>
-                    <span class="text-5xl group-hover:scale-110 transition-transform">🎲</span>
+                    class="app-btn relative group flex flex-col justify-between p-6 rounded-3xl shadow-lg border-b-8 w-full text-2xl font-bold bg-sky-400 border-sky-600 text-white hover:bg-sky-300">
+                    <span class="block-icon text-5xl self-end group-hover:scale-110 transition-transform" aria-hidden="true">&#127922;</span>
+                    <span class="drop-shadow-md">Probability Games</span>
+                    <span class="text-xs font-normal opacity-80">(Work in Progress)</span>
                 </a>
 
                 <a href="./Thinking_Math/Smart_Blocks/index.html" data-module="smartblocks"
-                    class="app-btn group flex items-center justify-between p-6 rounded-3xl shadow-lg border-b-8 h-28 w-full text-2xl font-bold bg-rose-400 border-rose-600 text-white hover:bg-rose-300">
+                    class="app-btn relative group flex flex-col justify-between p-6 rounded-3xl shadow-lg border-b-8 w-full text-2xl font-bold bg-rose-400 border-rose-600 text-white hover:bg-rose-300">
+                    <span class="block-icon text-5xl self-end group-hover:scale-110 transition-transform" aria-hidden="true">&#129522;</span>
                     <span class="drop-shadow-md">Smart Blocks Maths</span>
-                    <span class="text-5xl group-hover:scale-110 transition-transform">🧮</span>
                 </a>
 
                 <a href="./Thinking_Math/Math/index.html" data-module="math"
-                    class="app-btn group flex items-center justify-between p-6 rounded-3xl shadow-lg border-b-8 h-28 w-full text-2xl font-bold bg-amber-400 border-amber-600 text-amber-900 hover:bg-amber-300">
-                    <span class="drop-shadow-md">进位加减法</span>
-                    <span class="text-5xl group-hover:scale-110 transition-transform">🐝</span>
+                    class="app-btn relative group flex flex-col justify-between p-6 rounded-3xl shadow-lg border-b-8 w-full text-2xl font-bold bg-amber-400 border-amber-600 text-amber-900 hover:bg-amber-300">
+                    <span class="block-icon text-5xl self-end group-hover:scale-110 transition-transform" aria-hidden="true">&#128029;</span>
+                    <span class="drop-shadow-md">&#36827;&#20301;&#21152;&#20943;&#27861;</span>
                 </a>
 
                 <a href="./Just_Fun/24_point/make_24.html" data-module="make24"
-                    class="app-btn group flex items-center justify-between p-6 rounded-3xl shadow-lg border-b-8 h-28 w-full text-2xl font-bold bg-indigo-400 border-indigo-600 text-white hover:bg-indigo-300">
+                    class="app-btn relative group flex flex-col justify-between p-6 rounded-3xl shadow-lg border-b-8 w-full text-2xl font-bold bg-indigo-400 border-indigo-600 text-white hover:bg-indigo-300">
+                    <span class="block-icon text-5xl self-end group-hover:scale-110 transition-transform" aria-hidden="true">&#10024;</span>
                     <span class="drop-shadow-md">Maths Magic (24)</span>
-                    <span class="text-5xl group-hover:scale-110 transition-transform">✨</span>
+                </a>
+
+                <a href="./Thinking_Math/Time_Learning/index.html" data-module="timeLearning"
+                    class="app-btn relative group flex flex-col justify-between p-6 rounded-3xl shadow-lg border-b-8 w-full text-2xl font-bold bg-pink-400 border-pink-600 text-white hover:bg-pink-300">
+                    <span class="block-icon text-5xl self-end group-hover:scale-110 transition-transform" aria-hidden="true">&#9200;</span>
+                    <span class="drop-shadow-md">Time Monster's Train</span>
                 </a>
             </div>
-        </details>
+        </section>
 
-        <!-- Section: Language -->
-        <details class="group bg-white rounded-3xl shadow-sm border-2 border-pink-100 overflow-hidden">
-            <summary
-                class="flex items-center justify-between p-4 cursor-pointer list-none bg-pink-50 hover:bg-pink-100 transition-colors">
-                <h2 class="text-xl font-bold text-pink-500">Words & Stories 📚</h2>
-                <span class="text-2xl transform group-open:rotate-180 transition-transform">🔽</span>
-            </summary>
-            <div class="p-4 space-y-4 bg-white/50">
+        <section class="section-card rounded-[2rem] p-4 sm:p-5">
+            <div class="flex items-center justify-between gap-4 mb-4 px-1">
+                <div>
+                    <p class="text-sm font-bold uppercase tracking-[0.18em] text-emerald-300">Read and create</p>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-emerald-500">Words & Stories</h2>
+                </div>
+                <span class="text-4xl" aria-hidden="true">&#128214;</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <a href="./Words_Stories/Learning_dict/index.html" data-module="dictionary"
-                    class="app-btn group flex items-center justify-between p-6 rounded-3xl shadow-lg border-b-8 h-28 w-full text-2xl font-bold bg-emerald-400 border-emerald-600 text-white hover:bg-emerald-300">
+                    class="app-btn relative group flex flex-col justify-between p-6 rounded-3xl shadow-lg border-b-8 w-full text-2xl font-bold bg-emerald-400 border-emerald-600 text-white hover:bg-emerald-300">
+                    <span class="block-icon text-5xl self-end group-hover:scale-110 transition-transform" aria-hidden="true">&#128218;</span>
                     <span class="drop-shadow-md">Magic Dictionary</span>
-                    <span class="text-5xl group-hover:scale-110 transition-transform">📖</span>
                 </a>
 
                 <a href="./Words_Stories/English_station/sentence_lab.html" data-module="sentenceLab"
-                    class="app-btn group flex items-center justify-between p-6 rounded-3xl shadow-lg border-b-8 h-28 w-full text-2xl font-bold bg-purple-500 border-purple-700 text-white hover:bg-purple-400">
+                    class="app-btn relative group flex flex-col justify-between p-6 rounded-3xl shadow-lg border-b-8 w-full text-2xl font-bold bg-fuchsia-500 border-fuchsia-700 text-white hover:bg-fuchsia-400">
+                    <span class="block-icon text-5xl self-end group-hover:scale-110 transition-transform" aria-hidden="true">&#129514;</span>
                     <span class="drop-shadow-md">May's Sentence Lab</span>
-                    <span class="text-5xl group-hover:scale-110 transition-transform">🧩</span>
                 </a>
             </div>
-        </details>
+        </section>
 
-        <!-- Section: Just for Fun -->
-        <details class="group bg-white rounded-3xl shadow-sm border-2 border-pink-100 overflow-hidden">
-            <summary
-                class="flex items-center justify-between p-4 cursor-pointer list-none bg-pink-50 hover:bg-pink-100 transition-colors">
-                <h2 class="text-xl font-bold text-pink-500">Just for Fun 🎨</h2>
-                <span class="text-2xl transform group-open:rotate-180 transition-transform">🔽</span>
-            </summary>
-            <div class="p-4 space-y-4 bg-white/50">
+        <section class="section-card rounded-[2rem] p-4 sm:p-5">
+            <div class="flex items-center justify-between gap-4 mb-4 px-1">
+                <div>
+                    <p class="text-sm font-bold uppercase tracking-[0.18em] text-blue-300">Play and explore</p>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-blue-500">Just for Fun</h2>
+                </div>
+                <span class="text-4xl" aria-hidden="true">&#127912;</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
                 <a href="./Just_Fun/Shape_Detective/index.html" data-module="shapeDetective"
-                    class="app-btn group flex items-center justify-between p-6 rounded-3xl shadow-lg border-b-8 h-28 w-full text-2xl font-bold bg-teal-400 border-teal-600 text-white hover:bg-teal-300">
+                    class="app-btn relative group flex flex-col justify-between p-6 rounded-3xl shadow-lg border-b-8 w-full text-2xl font-bold bg-teal-400 border-teal-600 text-white hover:bg-teal-300">
+                    <span class="block-icon text-5xl self-end group-hover:scale-110 transition-transform" aria-hidden="true">&#128269;</span>
                     <span class="drop-shadow-md">Shape Detective</span>
-                    <span class="text-5xl group-hover:scale-110 transition-transform">🕵️‍♀️</span>
                 </a>
 
                 <a href="./Just_Fun/Firework_launcher/index.html" data-module="fireworks"
-                    class="app-btn group flex items-center justify-between p-6 rounded-3xl shadow-lg border-b-8 h-28 w-full text-2xl font-bold bg-violet-400 border-violet-600 text-white hover:bg-violet-300">
+                    class="app-btn relative group flex flex-col justify-between p-6 rounded-3xl shadow-lg border-b-8 w-full text-2xl font-bold bg-violet-400 border-violet-600 text-white hover:bg-violet-300">
+                    <span class="block-icon text-5xl self-end group-hover:scale-110 transition-transform" aria-hidden="true">&#127878;</span>
                     <span class="drop-shadow-md">Fireworks!</span>
-                    <span class="text-5xl group-hover:scale-110 transition-transform">🎆</span>
                 </a>
 
                 <a href="./Just_Fun/hive/index.html" data-module="hive"
-                    class="app-btn group flex items-center justify-between p-6 rounded-3xl shadow-lg border-b-8 h-28 w-full text-2xl font-bold bg-yellow-400 border-yellow-600 text-yellow-900 hover:bg-yellow-300">
+                    class="app-btn relative group flex flex-col justify-between p-6 rounded-3xl shadow-lg border-b-8 w-full text-2xl font-bold bg-yellow-400 border-yellow-600 text-yellow-900 hover:bg-yellow-300">
+                    <span class="block-icon text-5xl self-end group-hover:scale-110 transition-transform" aria-hidden="true">&#128029;</span>
                     <span class="drop-shadow-md">Hive (Insect Chess)</span>
-                    <span class="text-5xl group-hover:scale-110 transition-transform">🪲</span>
                 </a>
 
                 <a href="./Just_Fun/Solar_System/index.html" data-module="solarSystem"
-                    class="app-btn group flex items-center justify-between p-6 rounded-3xl shadow-lg border-b-8 h-28 w-full text-2xl font-bold bg-blue-500 border-blue-700 text-white hover:bg-blue-400">
+                    class="app-btn relative group flex flex-col justify-between p-6 rounded-3xl shadow-lg border-b-8 w-full text-2xl font-bold bg-blue-500 border-blue-700 text-white hover:bg-blue-400">
+                    <span class="block-icon text-5xl self-end group-hover:scale-110 transition-transform" aria-hidden="true">&#129680;</span>
                     <span class="drop-shadow-md">Space Adventure</span>
-                    <span class="text-5xl group-hover:scale-110 transition-transform">🪐</span>
                 </a>
             </div>
-        </details>
+        </section>
 
-        <!-- Section: Change Log -->
-        <details class="group bg-white rounded-3xl shadow-sm border-2 border-slate-200 overflow-hidden">
-            <summary
-                class="flex items-center justify-between p-4 cursor-pointer list-none bg-slate-50 hover:bg-slate-100 transition-colors">
-                <h2 class="text-xl font-bold text-slate-500">Change Log 🛠️</h2>
-                <span class="text-2xl transform group-open:rotate-180 transition-transform">🔽</span>
-            </summary>
-            <div class="p-4 space-y-3 bg-white/50 text-slate-600 text-sm">
-                <div class="border-b border-slate-100 pb-2">
-                    <span class="font-bold text-emerald-600">Latest Updates (May 16):</span>
-                    <ul class="list-disc list-inside mt-1 space-y-1">
-                        <li><strong>New Game:</strong> Space Adventure added to teach the Solar System!</li>
-                        <li><strong>Space Adventure:</strong> Upgraded to a 3D tilted view with spherical planets.</li>
-                        <li><strong>Space Adventure:</strong> Added a "Space Passport" to track visited planets.</li>
-                        <li><strong>Space Adventure:</strong> Added 2D/3D view toggle and improved voice quality.</li>
-                    </ul>
+        <section class="section-card rounded-[2rem] p-5">
+            <div class="flex flex-col gap-4">
+                <div>
+                    <p class="text-sm font-bold uppercase tracking-[0.18em] text-pink-300">Update history</p>
+                    <h2 class="text-2xl font-bold text-pink-500">Changelog</h2>
                 </div>
-                <div class="border-b border-slate-100 pb-2">
-                    <span class="font-bold text-emerald-600">Latest Updates (May 02):</span>
-                    <ul class="list-disc list-inside mt-1 space-y-1">
-                        <li><strong>New Game:</strong> Smart Blocks Maths 🧮</li>
-                        <li><strong>Smart Blocks:</strong> Full-screen redesign for iPhone & iPad.</li>
-                        <li><strong>Smart Blocks:</strong> Floating action button with slide-up tool panel.</li>
-                        <li><strong>Smart Blocks:</strong> 6 question types — add, subtract, missing, half, ÷, ×.</li>
-                        <li><strong>Smart Blocks:</strong> Hold a block to cross it out (subtraction mode).</li>
-                        <li><strong>System:</strong> Added "Update App" button to force refresh the toolbox.</li>
-                    </ul>
-                </div>
-                <div class="border-b border-slate-100 pb-2">
-                    <span class="font-bold text-emerald-600">Latest Updates (May 2):</span>
-                    <ul class="list-disc list-inside mt-1 space-y-1">
-                        <li><strong>Documentation:</strong> Added <code>project_summary.md</code> for a complete project overview.</li>
-                    </ul>
-                </div>
-                <div class="border-b border-slate-100 pb-2">
-                    <span class="font-bold text-emerald-600">Latest Updates (Jan 10):</span>
-                    <ul class="list-disc list-inside mt-1 space-y-1">
-                        <li><strong>New Game:</strong> Shape Detective! 🕵️‍♀️ Finder game with Tally Chart.</li>
-                        <li><strong>Shape Detective:</strong> 200+ varied items to find (Drag & Drop).</li>
-                        <li><strong>Shape Detective:</strong> Dynamic 5-bar gate tallying system.</li>
-                        <li><strong>Shape Detective:</strong> Sound effects and victory confetti.</li>
-                    </ul>
-                </div>
-                <div class="border-b border-slate-100 pb-2">
-                    <span class="font-bold text-emerald-600">Latest Updates (Dec 31):</span>
-                    <ul class="list-disc list-inside mt-1 space-y-1">
-                        <li><strong>New Game:</strong> Hive (Insect Chess) added!</li>
-                        <li><strong>Hive AI:</strong> 3 difficulty levels (Easy/Medium/Hard) with strategic evaluation.
-                        </li>
-                        <li><strong>Hive Fix:</strong> Fixed renderer not loading (missing methods).</li>
-                        <li><strong>Hive:</strong> Added mouse drag-to-pan for board navigation.</li>
-                        <li><strong>Hive UI:</strong> Redesigned layout with floating piece panels.</li>
-                        <li><strong>Mobile:</strong> Optimized for iPhone landscape mode.</li>
-                    </ul>
-                </div>
-                <div class="border-b border-slate-100 pb-2">
-                    <span class="font-bold text-emerald-600">Latest Updates (Dec 18):</span>
-                    <ul class="list-disc list-inside mt-1 space-y-1">
-                        <li><strong>Mobile Optimization:</strong> Adapted all games for iPhone/Mobile screens.</li>
-                        <li><strong>Bee Farm:</strong> Vertical stacking layout for phones.</li>
-                        <li><strong>Make 24:</strong> Scaled down UI and optimized header placement.</li>
-                        <li><strong>Sentence Lab:</strong> Responsive grid and header adjustments.</li>
-                    </ul>
-                </div>
-                <div class="border-b border-slate-100 pb-2">
-                    <span class="font-bold text-emerald-600">Latest Updates (Dec 17):</span>
-                    <ul class="list-disc list-inside mt-1 space-y-1">
-                        <li><strong>Sentence Lab:</strong> Added 7 New Themes (Peppa Pig, Bluey, etc.)</li>
-                        <li>Refined Level 1 sentences for better structure</li>
-                        <li>Standardized to British English</li>
-                        <li><strong>Math Farm:</strong> Optimized iPad layout (Button positioning & scrolling)</li>
-                        <li><strong>Make 24:</strong> Added "Make 20" mode (4 cards, no mult)</li>
-                        <li><strong>Make 24:</strong> Added "Smart Hint" feature (3 per session)</li>
-                        <li><strong>Magic Dictionary:</strong> AI Upgrade (Definitions, Voice, Stickers)</li>
-                        <li><strong>Magic Dictionary:</strong> Visual Overhaul (Magic Castle Theme, Animations)</li>
-                        <li><strong>Navigation:</strong> Added Home buttons to games</li>
-                    </ul>
-                </div>
-                <div class="border-b border-slate-100 pb-2">
-                    <span class="font-bold text-emerald-600">Latest Updates (Dec 16):</span>
-                    <ul class="list-disc list-inside mt-1 space-y-1">
-                        <li><strong>Sentence Lab:</strong> Fixed loading issues (CORS)</li>
-                        <li>Added 1,600+ new sentences!</li>
-                        <li>System cleanup & optimization</li>
-                    </ul>
-                </div>
-                <div class="border-b border-slate-100 pb-2">
-                    <span class="font-bold text-purple-600">Sentence Lab v3.0:</span>
-                    <ul class="list-disc list-inside mt-1 space-y-1">
-                        <li>New <strong>Mission Board</strong> grid layout</li>
-                        <li><strong>Silly Mode</strong> (👾) with funny words!</li>
-                        <li>Expanded Library: 300+ words included</li>
-                        <li>3 Star difficulty levels</li>
-                    </ul>
-                </div>
-                <div class="border-b border-slate-100 pb-2">
-                    <span class="font-bold text-amber-600">Bee Farm Math:</span>
-                    <ul class="list-disc list-inside mt-1 space-y-1">
-                        <li>Added <strong>Subtraction Operator</strong> (-)</li>
-                        <li>Visual "Borrowing" animation for subtraction</li>
-                        <li>Improved step-by-step visuals</li>
-                    </ul>
+                <div class="text-slate-500 space-y-2 text-sm">
+                    <div class="border-l-4 border-pink-400 pl-3">
+                        <strong class="text-slate-700">2026-06-13</strong>
+                        <p class="mt-1">Add Google Search Console verification meta tag to all HTML pages in the project.</p>
+                    </div>
                 </div>
             </div>
-        </details>
+        </section>
 
-        <!-- Force Refresh Button -->
-        <button onclick="window.location.reload(true)" 
-            class="mt-4 p-4 bg-white/50 text-slate-400 rounded-3xl font-bold border-2 border-slate-100 hover:bg-slate-50 active:scale-95 transition-all flex items-center justify-center gap-2">
-            <span>Update App</span>
-            <span class="text-xl">🔄</span>
-        </button>
-
+        <section class="section-card rounded-[2rem] p-5">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <p class="text-sm font-bold uppercase tracking-[0.18em] text-slate-300">App tools</p>
+                    <h2 class="text-2xl font-bold text-slate-600">Keep the toolbox fresh</h2>
+                    <p class="text-slate-500 mt-1">If a new game does not appear, refresh the saved app shell.</p>
+                </div>
+                <button onclick="window.location.reload(true)"
+                    class="app-btn px-6 py-4 bg-white/80 text-slate-500 rounded-3xl font-bold border-b-8 border-slate-200 hover:bg-white active:scale-95 transition-all flex items-center justify-center gap-2">
+                    <span>Update App</span>
+                    <span class="text-xl" aria-hidden="true">&#128260;</span>
+                </button>
+            </div>
+        </section>
     </main>
 
-    <!-- Load Configuration -->
     <script src="game_config.js"></script>
-
     <script>
-        // Apply Config to Links & Visibility
         document.addEventListener('DOMContentLoaded', () => {
-            // Check if config loaded
             if (typeof APP_CONFIG === 'undefined') {
-                console.error("Config not found!");
+                console.error('Config not found!');
                 return;
             }
 
-            // 1. Module Visibility (Top Level)
             if (APP_CONFIG.modules) {
                 for (const [moduleId, isEnabled] of Object.entries(APP_CONFIG.modules)) {
                     if (isEnabled === false) {
@@ -266,9 +255,6 @@
                     }
                 }
             }
-
-            // 2. English Station Sub-games URL Params
-            // (Functionality removed from config)
         });
     </script>
 </body>

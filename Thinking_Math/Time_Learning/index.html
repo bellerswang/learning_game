@@ -141,62 +141,7 @@
             pointer-events: none;
         }
 
-        /* Monster & Train */
-        .monster-scene {
-            height: 80px;
-            position: relative;
-            margin-bottom: 5px;
-            pointer-events: none; /* Prevents scene elements from intercepting clicks */
-        }
 
-        @media (min-width: 768px) {
-            .monster-scene { height: 110px; margin-bottom: 10px; }
-        }
-
-        .monster {
-            font-size: 4.5rem;
-            position: absolute;
-            bottom: 5px;
-            left: 20%;
-            transition: all 0.6s ease;
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
-            pointer-events: none;
-        }
-
-        .train {
-            font-size: 5rem;
-            position: absolute;
-            bottom: 5px;
-            right: 5%;
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
-            pointer-events: none;
-        }
-
-        @media (min-width: 768px) {
-            .monster { font-size: 5.5rem; }
-            .train { font-size: 6rem; }
-        }
-
-        .monster.happy {
-            animation: jump 0.4s ease infinite alternate;
-        }
-        
-        .monster.boarded {
-            left: calc(95% - 4rem);
-            transform: scale(0.4);
-            opacity: 0;
-        }
-
-        @media (min-width: 768px) {
-            .monster.boarded {
-                left: calc(95% - 6rem);
-            }
-        }
-
-        @keyframes jump {
-            from { transform: translateY(0); }
-            to { transform: translateY(-25px) scale(1.05); }
-        }
 
         /* Confetti */
         .confetti {
@@ -314,11 +259,7 @@
             <button class="lvl-tab py-2 px-1 text-xs md:text-sm btn-press" onclick="selectLevel(3)">Both Hands 分针和时针</button>
         </div>
 
-        <!-- Scene -->
-        <div class="monster-scene w-full border-b-4 md:border-b-8 border-slate-700/10">
-            <div class="train">🚂</div>
-            <div class="monster" id="monster">👾</div>
-        </div>
+
 
         <!-- Question Title -->
         <div class="text-center mt-2 mb-3 md:mt-4 md:mb-5">
@@ -546,8 +487,6 @@
             11: "eleven", 12: "twelve", 20: "twenty", 25: "twenty-five"
         };
         
-        const monsters = ['👾', '👻', '👽', '🦖', '🐙', '🦉'];
-
         // Differentiated levels config
         const levelNames = {
             1: "Level 1: Minute Hand Challenge 问分针 🥚",
@@ -568,7 +507,6 @@
         const hourHand = document.getElementById('hourHand');
         const minuteHand = document.getElementById('minuteHand');
         const questionText = document.getElementById('questionText');
-        const monster = document.getElementById('monster');
         const choicesGrid = document.getElementById('choicesGrid');
         const starCounter = document.getElementById('starCounter');
         const levelNameEl = document.getElementById('levelName');
@@ -602,10 +540,8 @@
             generateQuestion();
         }
 
-        // Generate target time and options based on clearly stratified levels
         function generateQuestion() {
             isAnimating = false;
-            monster.textContent = monsters[Math.floor(Math.random() * monsters.length)];
 
             // Update star counter visual
             const starCount = levelStars[currentLevel];
@@ -834,8 +770,8 @@
                 // Correct!
                 playSound('success');
                 button.classList.add('correct');
-                monster.classList.add('happy');
                 createConfetti();
+                showCelebrationAlert();
                 
                 // Reward star
                 levelStars[currentLevel]++;
@@ -846,13 +782,8 @@
                 allButtons.forEach(btn => btn.disabled = true);
 
                 setTimeout(() => {
-                    monster.classList.add('boarded');
-                }, 1000);
-
-                setTimeout(() => {
-                    monster.classList.remove('happy', 'boarded');
                     generateQuestion();
-                }, 2200);
+                }, 1500);
             } else {
                 // Incorrect
                 playSound('fail');
@@ -862,8 +793,45 @@
             }
         }
 
+        function showCelebrationAlert() {
+            const oldAlert = document.getElementById('celebration-alert');
+            if (oldAlert) oldAlert.remove();
+
+            const alertDiv = document.createElement('div');
+            alertDiv.id = 'celebration-alert';
+            alertDiv.className = 'fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white/95 border-8 border-pink-400 text-pink-500 font-bold px-10 py-6 rounded-[2.5rem] shadow-2xl z-50 text-center scale-75 opacity-0';
+            alertDiv.style.transition = 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+            
+            const phrases = [
+                "🎉 Correct! 🎉", 
+                "🌟 Great Job! 🌟", 
+                "🌈 Awesome! 🌈", 
+                "✨ You Did It! ✨", 
+                "🥳 Super! 🥳"
+            ];
+            const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
+            
+            alertDiv.innerHTML = `
+                <div class="text-6xl mb-2">🎈</div>
+                <div class="text-4xl font-extrabold tracking-wide">${randomPhrase}</div>
+                <div class="text-pink-300 font-semibold mt-2 text-lg">Keep going!</div>
+            `;
+            document.body.appendChild(alertDiv);
+            
+            alertDiv.offsetHeight; // trigger reflow
+            
+            alertDiv.classList.remove('scale-75', 'opacity-0');
+            alertDiv.classList.add('scale-100', 'opacity-100');
+            
+            setTimeout(() => {
+                alertDiv.style.opacity = '0';
+                alertDiv.style.transform = 'translate(-50%, -50%) scale(0.8)';
+                setTimeout(() => alertDiv.remove(), 400);
+            }, 1200);
+        }
+
         function createConfetti() {
-            for(let i=0; i<40; i++) {
+            for(let i=0; i<60; i++) {
                 let conf = document.createElement('div');
                 conf.className = 'confetti';
                 conf.style.left = Math.random() * 100 + 'vw';

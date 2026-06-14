@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Magic Learning Toolbox - Game Room</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --bar-bg: rgba(30, 41, 59, 0.75);
+            --bar-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-pink: #ec4899;
+            --accent-blue: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.35);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Outfit', 'Fredoka', sans-serif;
+            background: var(--bg-color);
+            color: var(--text-primary);
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* --- Ambient Animated Background --- */
+        .ambient-container {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            animation: float-anim 25s infinite alternate ease-in-out;
+        }
+
+        .blob1 {
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, var(--accent-pink), transparent 70%);
+            top: -10%;
+            left: -10%;
+        }
+
+        .blob2 {
+            width: 550px;
+            height: 550px;
+            background: radial-gradient(circle, var(--accent-blue), transparent 70%);
+            bottom: -10%;
+            right: -10%;
+            animation-delay: -5s;
+        }
+
+        .blob3 {
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, #eab308, transparent 70%);
+            top: 50%;
+            left: 50%;
+            animation-delay: -10s;
+        }
+
+        @keyframes float-anim {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(60px, 90px) scale(1.15); }
+            100% { transform: translate(-40px, -50px) scale(0.9); }
+        }
+
+        /* --- Premium Control Bar --- */
+        header.control-bar {
+            background: var(--bar-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--bar-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 24px;
+            z-index: 10;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            flex-shrink: 0;
+        }
+
+        .nav-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .action-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 9999px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .action-btn:active {
+            transform: scale(0.96) translateY(0);
+        }
+
+        /* --- Active Title Pill --- */
+        .title-pill {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 9999px;
+            padding: 6px 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            max-width: 35%;
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05);
+        }
+
+        .title-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-pink);
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 0.5; transform: scale(0.9); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+        .title-text {
+            font-size: 1rem;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #f1f5f9;
+        }
+
+        /* --- Mode Switcher Group --- */
+        .switcher-group {
+            display: flex;
+            align-items: center;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 9999px;
+            padding: 3px;
+            gap: 2px;
+        }
+
+        .switch-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 8px 16px;
+            border-radius: 9999px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .switch-btn:hover {
+            color: var(--text-primary);
+        }
+
+        .switch-btn.active {
+            background: var(--text-primary);
+            color: #0f172a;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .divider {
+            width: 1px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            margin: 0 4px;
+        }
+
+        .rotate-btn {
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            color: var(--accent-blue);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            margin-left: 6px;
+        }
+
+        .rotate-btn:hover {
+            background: rgba(56, 189, 248, 0.2);
+            transform: rotate(90deg);
+        }
+
+        .rotate-btn:active {
+            transform: scale(0.9) rotate(90deg);
+        }
+
+        .rotate-btn.disabled {
+            opacity: 0.3;
+            pointer-events: none;
+            filter: grayscale(1);
+        }
+
+        /* --- Game Viewport / Simulator Area --- */
+        .viewport-area {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            padding: 20px;
+            z-index: 1;
+        }
+
+        /* --- Simulated Device Bezels --- */
+        .device-wrapper {
+            position: relative;
+            transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1), height 0.35s cubic-bezier(0.4, 0, 0.2, 1), border-radius 0.35s, border-width 0.35s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+        }
+
+        /* Full Screen Mode */
+        .device-wrapper.fullscreen {
+            width: 100% !important;
+            height: 100% !important;
+            border: none !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            transform: none !important;
+        }
+
+        /* iPhone Mode */
+        .device-wrapper.iphone {
+            border: 12px solid #1e293b;
+            border-radius: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.15);
+        }
+
+        /* iPad Mode */
+        .device-wrapper.ipad {
+            border: 18px solid #1e293b;
+            border-radius: 24px;
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.15);
+        }
+
+        /* Physical Bezels Elements inside iframe wrapper */
+        .device-notch {
+            position: absolute;
+            background: #1e293b;
+            z-index: 100;
+            display: none;
+        }
+
+        /* Notch when Portrait */
+        .device-wrapper.iphone.portrait .device-notch {
+            display: block;
+            width: 120px;
+            height: 24px;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            border-bottom-left-radius: 14px;
+            border-bottom-right-radius: 14px;
+        }
+
+        /* Notch when Landscape */
+        .device-wrapper.iphone.landscape .device-notch {
+            display: block;
+            width: 24px;
+            height: 120px;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            border-top-right-radius: 14px;
+            border-bottom-right-radius: 14px;
+        }
+
+        .device-home-indicator {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.35);
+            z-index: 100;
+            display: none;
+            border-radius: 999px;
+        }
+
+        .device-wrapper.iphone.portrait .device-home-indicator {
+            display: block;
+            width: 110px;
+            height: 4px;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .device-wrapper.iphone.landscape .device-home-indicator {
+            display: block;
+            width: 4px;
+            height: 110px;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        /* --- Iframe container --- */
+        iframe#game-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #ffffff;
+            transition: border-radius 0.35s;
+        }
+
+        .device-wrapper.iphone.portrait iframe#game-frame {
+            border-radius: 28px;
+        }
+        .device-wrapper.iphone.landscape iframe#game-frame {
+            border-radius: 28px;
+        }
+        .device-wrapper.ipad iframe#game-frame {
+            border-radius: 8px;
+        }
+        .device-wrapper.fullscreen iframe#game-frame {
+            border-radius: 0;
+        }
+
+        /* Responsive UI Tweaks for Control Bar on Mobile Screens */
+        @media (max-width: 640px) {
+            header.control-bar {
+                padding: 8px 12px;
+            }
+            .title-pill {
+                display: none; /* Hide game title on small phone screens to save space */
+            }
+            .action-btn {
+                padding: 6px 12px;
+                font-size: 0.85rem;
+            }
+            .switch-btn {
+                padding: 6px 10px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Ambient background glows -->
+    <div class="ambient-container">
+        <div class="blob blob1"></div>
+        <div class="blob blob2"></div>
+        <div class="blob blob3"></div>
+    </div>
+
+    <!-- Top control bar -->
+    <header class="control-bar">
+        <div class="nav-group">
+            <a href="index.html" class="action-btn" title="Back to Game Shelf">
+                <span>🏠</span>
+                <span>Shelf</span>
+            </a>
+            <button class="action-btn" onclick="reloadGame()" title="Reload Game">
+                <span>🔄</span>
+            </button>
+        </div>
+
+        <div class="title-pill">
+            <div class="title-dot"></div>
+            <div class="title-text" id="game-title">Loading Game...</div>
+        </div>
+
+        <div class="nav-group">
+            <div class="switcher-group">
+                <button class="switch-btn" id="btn-fullscreen" onclick="setMode('fullscreen')">
+                    <span>📱</span> <span>Full</span>
+                </button>
+                <button class="switch-btn" id="btn-iphone" onclick="setMode('iphone')">
+                    <span>📲</span> <span>iPhone</span>
+                </button>
+                <button class="switch-btn" id="btn-ipad" onclick="setMode('ipad')">
+                    <span>📟</span> <span>iPad</span>
+                </button>
+            </div>
+            <button class="rotate-btn" id="btn-rotate" onclick="toggleOrientation()" title="Rotate Screen">
+                🔄
+            </button>
+        </div>
+    </header>
+
+    <!-- Interactive Simulator Sandbox -->
+    <main class="viewport-area" id="viewport-area">
+        <div class="device-wrapper" id="device-wrapper">
+            <!-- Notch & home line indicators for iPhone bezel simulation -->
+            <div class="device-notch"></div>
+            <div class="device-home-indicator"></div>
+            
+            <iframe id="game-frame" src="about:blank"></iframe>
+        </div>
+    </main>
+
+    <script>
+        // Load configurations
+        let currentMode = localStorage.getItem('toolbox-sim-mode') || 'fullscreen';
+        let currentOrientation = localStorage.getItem('toolbox-sim-orientation') || 'portrait'; // portrait or landscape
+
+        const iframe = document.getElementById('game-frame');
+        const wrapper = document.getElementById('device-wrapper');
+        const viewportArea = document.getElementById('viewport-area');
+        const rotateBtn = document.getElementById('btn-rotate');
+        const gameTitleEl = document.getElementById('game-title');
+
+        // Extract game path from URL query parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        let gamePath = urlParams.get('game');
+
+        if (!gamePath) {
+            // Redirect back to shelf if no game is specified
+            window.location.replace('index.html');
+        } else {
+            // Append embed=true parameter to make sure it loads correctly in the frame
+            const separator = gamePath.includes('?') ? '&' : '?';
+            iframe.src = gamePath + separator + 'embed=true';
+        }
+
+        // Handle iframe loading events
+        iframe.onload = () => {
+            try {
+                // Update title dynamically from within same-origin iframe
+                const innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+                if (innerDoc && innerDoc.title) {
+                    gameTitleEl.textContent = innerDoc.title;
+                    document.title = innerDoc.title + " - Game Room";
+                }
+            } catch (e) {
+                // Fallback for security blocks (though same-origin is guaranteed here)
+                gameTitleEl.textContent = "Playing Game";
+            }
+
+            // Bind check to see if the iframe navigates back to index.html
+            try {
+                const checkHomeRedirect = () => {
+                    try {
+                        const path = iframe.contentWindow.location.pathname;
+                        if (path.endsWith('index.html')) {
+                            // Escape simulator wrapper and navigate top level back to Hub
+                            window.top.location.href = iframe.contentWindow.location.href;
+                        }
+                    } catch (err) {}
+                };
+
+                // Track navigation changes inside the frame
+                iframe.contentWindow.addEventListener('unload', () => {
+                    // Check shortly after unloading to catch the new URL
+                    setTimeout(checkHomeRedirect, 150);
+                });
+                checkHomeRedirect();
+            } catch (e) {}
+        };
+
+        function reloadGame() {
+            try {
+                iframe.contentWindow.location.reload();
+            } catch (e) {
+                iframe.src = iframe.src; // Fallback reload
+            }
+        }
+
+        function setMode(mode) {
+            currentMode = mode;
+            localStorage.setItem('toolbox-sim-mode', mode);
+            updateUI();
+        }
+
+        function toggleOrientation() {
+            if (currentMode === 'fullscreen') return;
+            currentOrientation = currentOrientation === 'portrait' ? 'landscape' : 'portrait';
+            localStorage.setItem('toolbox-sim-orientation', currentOrientation);
+            updateUI();
+        }
+
+        function updateUI() {
+            // 1. Update active button styles
+            document.querySelectorAll('.switch-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`btn-${currentMode}`).classList.add('active');
+
+            // 2. Manage rotation button accessibility
+            if (currentMode === 'fullscreen') {
+                rotateBtn.classList.add('disabled');
+            } else {
+                rotateBtn.classList.remove('disabled');
+            }
+
+            // 3. Reset classes
+            wrapper.className = 'device-wrapper';
+            wrapper.classList.add(currentMode);
+            if (currentMode !== 'fullscreen') {
+                wrapper.classList.add(currentOrientation);
+            }
+
+            // 4. Recalculate dimensions & scaling
+            updateScale();
+        }
+
+        function updateScale() {
+            if (currentMode === 'fullscreen') {
+                wrapper.style.width = '100%';
+                wrapper.style.height = '100%';
+                wrapper.style.transform = 'none';
+                return;
+            }
+
+            let deviceW, deviceH;
+            if (currentMode === 'iphone') {
+                deviceW = currentOrientation === 'portrait' ? 375 : 812;
+                deviceH = currentOrientation === 'portrait' ? 812 : 375;
+            } else if (currentMode === 'ipad') {
+                deviceW = currentOrientation === 'portrait' ? 768 : 1024;
+                deviceH = currentOrientation === 'portrait' ? 1024 : 768;
+            }
+
+            // Calculate active viewport dimensions (with 32px safe border padding)
+            const padding = 32;
+            const availW = viewportArea.clientWidth - padding;
+            const availH = viewportArea.clientHeight - padding;
+
+            // Compute CSS scale scaling factor (prevent scale-up larger than 1.0)
+            const scale = Math.min(availW / deviceW, availH / deviceH, 1.0);
+
+            wrapper.style.width = deviceW + 'px';
+            wrapper.style.height = deviceH + 'px';
+            wrapper.style.transform = `scale(${scale})`;
+            wrapper.style.transformOrigin = 'center center';
+        }
+
+        // Event listeners
+        window.addEventListener('resize', updateScale);
+
+        // Initial paint
+        updateUI();
+    </script>
+</body>
+</html>

@@ -483,7 +483,12 @@
                 const checkHomeRedirect = () => {
                     try {
                         const path = iframe.contentWindow.location.pathname;
-                        if (path.endsWith('index.html')) {
+                        const pathLower = path.toLowerCase();
+                        // Check if it's a game page under subdirectories
+                        const isGamePage = pathLower.includes('/just_fun/') || pathLower.includes('/thinking_math/') || pathLower.includes('/words_stories/');
+                        
+                        // We only redirect if it's the root hub index.html, not a game page
+                        if ((path.endsWith('index.html') || path === '/' || path.endsWith('/learning_game/')) && !isGamePage) {
                             // Escape simulator wrapper and navigate top level back to Hub
                             window.top.location.href = iframe.contentWindow.location.href;
                         }

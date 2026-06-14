@@ -58,6 +58,7 @@
             border-radius: 50%;
             transform: translate(-50%, -50%);
             z-index: 10;
+            cursor: pointer;
         }
 
         .hand {
@@ -85,9 +86,21 @@
             z-index: 6;
         }
 
+        .second-hand {
+            width: 3px;
+            height: 44%;
+            background: #e11d48; /* rose-600 */
+            margin-left: -1.5px;
+            z-index: 7;
+            transform-origin: bottom center;
+            display: none;
+            transition: transform 0.1s linear;
+        }
+
         @media (min-width: 768px) {
             .hour-hand { width: 12px; margin-left: -6px; }
             .minute-hand { width: 8px; margin-left: -4px; }
+            .second-hand { width: 4px; margin-left: -2px; }
             .clock-center { width: 24px; height: 24px; }
         }
 
@@ -295,11 +308,10 @@
         </div>
 
         <!-- Level Selector Tabs (Raised z-index to stay above scene elements) -->
-        <div class="grid grid-cols-4 gap-1.5 md:gap-3 w-full mb-4 relative z-10">
-            <button class="lvl-tab py-2 px-1 text-xs md:text-sm active btn-press" onclick="selectLevel(1)">Level 1</button>
-            <button class="lvl-tab py-2 px-1 text-xs md:text-sm btn-press" onclick="selectLevel(2)">Level 2</button>
-            <button class="lvl-tab py-2 px-1 text-xs md:text-sm btn-press" onclick="selectLevel(3)">Level 3</button>
-            <button class="lvl-tab py-2 px-1 text-xs md:text-sm btn-press" onclick="selectLevel(4)">Level 4</button>
+        <div class="grid grid-cols-3 gap-1.5 md:gap-3 w-full mb-4 relative z-10">
+            <button class="lvl-tab py-2 px-1 text-xs md:text-sm active btn-press" onclick="selectLevel(1)">Minute Hand 分针</button>
+            <button class="lvl-tab py-2 px-1 text-xs md:text-sm btn-press" onclick="selectLevel(2)">Hour Hand 时针</button>
+            <button class="lvl-tab py-2 px-1 text-xs md:text-sm btn-press" onclick="selectLevel(3)">Both Hands 分针和时针</button>
         </div>
 
         <!-- Scene -->
@@ -324,7 +336,8 @@
             <!-- Numbers injected by JS -->
             <div class="hour-hand hand" id="hourHand"></div>
             <div class="minute-hand hand" id="minuteHand"></div>
-            <div class="clock-center"></div>
+            <div class="second-hand hand" id="secondHand"></div>
+            <div class="clock-center" id="clockCenter" onclick="toggleSecondHand()"></div>
         </div>
 
         <!-- Multiple Choice Options -->
@@ -535,12 +548,11 @@
         
         const monsters = ['👾', '👻', '👽', '🦖', '🐙', '🦉'];
 
-        // Differentiated levels config (Matching Silver/Gold challenges)
+        // Differentiated levels config
         const levelNames = {
-            1: "Level 1: O'clock & Half Past 🥚",
-            2: "Level 2: PAST (Silver Challenge) 🐣",
-            3: "Level 3: TO (Gold Challenge) 🐥",
-            4: "Level 4: Mixed Challenge! 🦖"
+            1: "Level 1: Minute Hand Challenge 问分针 🥚",
+            2: "Level 2: Hour Hand Challenge 问时针 🐣",
+            3: "Level 3: Both Hands Challenge 分针和时针 🐥"
         };
 
         // Game State
@@ -551,7 +563,7 @@
         let isAnimating = false;
         
         // Stars tracked individually per level
-        let levelStars = { 1: 0, 2: 0, 3: 0, 4: 0 };
+        let levelStars = { 1: 0, 2: 0, 3: 0 };
 
         const hourHand = document.getElementById('hourHand');
         const minuteHand = document.getElementById('minuteHand');
@@ -607,23 +619,18 @@
                 currentHour = Math.floor(Math.random() * 12) + 1;
                 
                 if (currentLevel === 1) {
-                    // Level 1: O'clock (0 min) & Half Past (30 min)
-                    currentMinute = Math.random() < 0.5 ? 0 : 30;
+                    // Level 1: Minute Hand Challenge (any 5-minute interval)
+                    currentMinute = Math.floor(Math.random() * 12) * 5;
                 } else if (currentLevel === 2) {
-                    // Level 2: PAST Only (5, 10, 15, 20, 25 minutes past)
-                    const pastMins = [5, 10, 15, 20, 25];
-                    currentMinute = pastMins[Math.floor(Math.random() * pastMins.length)];
-                } else if (currentLevel === 3) {
-                    // Level 3: TO Only (35, 40, 45, 50, 55 minutes to)
-                    const toMins = [35, 40, 45, 50, 55];
-                    currentMinute = toMins[Math.floor(Math.random() * toMins.length)];
+                    // Level 2: Hour Hand Challenge (keep minutes at 0 for exact pointer)
+                    currentMinute = 0;
                 } else {
-                    // Level 4: Mixed Challenge (All 5-minute intervals, 0 to 55)
+                    // Level 3: Both Hands Challenge (any 5-minute interval)
                     currentMinute = Math.floor(Math.random() * 12) * 5;
                 }
             } while (currentHour === oldHour && currentMinute === oldMinute);
 
-            // 2. Parse time structure
+            // Parse time structure
             const relation = currentMinute <= 30 ? "past" : "to";
             const minsToSay = currentMinute <= 30 ? currentMinute : 60 - currentMinute;
             const targetHour = currentMinute <= 30 ? currentHour : (currentHour === 12 ? 1 : currentHour + 1);
@@ -639,74 +646,104 @@
             }
 
             const hourText = numWords[targetHour];
-            const blankType = Math.floor(Math.random() * 2);
-
+            
             let questionHTML = "";
             let options = [];
 
-            if (currentMinute === 0) {
-                // Special case: o'clock (Level 1 or 4)
-                if (blankType === 0) {
+            if (currentLevel === 1) {
+                // LEVEL 1: Minute Hand (问分针)
+                if (currentMinute === 0) {
                     correctAnswerText = "o'clock";
-                    questionHTML = `It's ${hourText} <span class="underline decoration-pink-500 decoration-4 text-pink-500 font-extrabold px-2">______</span>`;
-                    options = [correctAnswerText, "half past", "quarter past", "quarter to"];
-                } else {
-                    correctAnswerText = hourText;
-                    questionHTML = `It's <span class="underline decoration-pink-500 decoration-4 text-pink-500 font-extrabold px-2">______</span> o'clock`;
-                    const allHourTexts = Object.values(numWords).slice(0, 12).filter(t => t !== correctAnswerText);
-                    shuffleArray(allHourTexts);
-                    options = [correctAnswerText, allHourTexts[0], allHourTexts[1], allHourTexts[2]];
-                }
-            } else if (currentMinute === 30) {
-                // Special case: half past (Level 1 or 4)
-                if (blankType === 0) {
+                } else if (currentMinute === 30) {
                     correctAnswerText = "half past";
-                    questionHTML = `It's <span class="underline decoration-pink-500 decoration-4 text-pink-500 font-extrabold px-2">______</span> ${hourText}`;
-                    options = [correctAnswerText, "quarter past", "quarter to", "o'clock"];
-                } else {
-                    correctAnswerText = hourText;
-                    questionHTML = `It's half past <span class="underline decoration-pink-500 decoration-4 text-pink-500 font-extrabold px-2">______</span>`;
-                    const allHourTexts = Object.values(numWords).slice(0, 12).filter(t => t !== correctAnswerText);
-                    shuffleArray(allHourTexts);
-                    options = [correctAnswerText, allHourTexts[0], allHourTexts[1], allHourTexts[2]];
-                }
-            } else if (minsToSay === 15) {
-                // Special case: quarters (Level 2, 3 or 4)
-                if (blankType === 0) {
+                } else if (minsToSay === 15) {
                     correctAnswerText = `quarter ${relation}`;
-                    questionHTML = `It's <span class="underline decoration-pink-500 decoration-4 text-pink-500 font-extrabold px-2">______</span> ${hourText}`;
-                    options = [
-                        correctAnswerText, 
-                        `quarter ${relation === 'past' ? 'to' : 'past'}`, 
-                        "half past", 
-                        "o'clock"
-                    ];
                 } else {
-                    correctAnswerText = hourText;
-                    questionHTML = `It's quarter ${relation} <span class="underline decoration-pink-500 decoration-4 text-pink-500 font-extrabold px-2">______</span>`;
-                    const allHourTexts = Object.values(numWords).slice(0, 12).filter(t => t !== correctAnswerText);
-                    shuffleArray(allHourTexts);
-                    options = [correctAnswerText, allHourTexts[0], allHourTexts[1], allHourTexts[2]];
+                    correctAnswerText = `${minText} ${relation}`;
                 }
+
+                questionHTML = `The red minute hand is showing: <span class="underline decoration-pink-500 decoration-4 text-pink-500 font-extrabold px-2">______</span>`;
+                
+                const minPool = [
+                    "o'clock", "five minutes past", "ten minutes past", "quarter past", 
+                    "twenty minutes past", "twenty-five minutes past", "half past", 
+                    "twenty-five minutes to", "twenty minutes to", "quarter to", 
+                    "ten minutes to", "five minutes to"
+                ];
+                const poolWithoutCorrect = minPool.filter(t => t !== correctAnswerText);
+                shuffleArray(poolWithoutCorrect);
+                options = [correctAnswerText, poolWithoutCorrect[0], poolWithoutCorrect[1], poolWithoutCorrect[2]];
+                
+            } else if (currentLevel === 2) {
+                // LEVEL 2: Hour Hand (问时针)
+                correctAnswerText = numWords[currentHour];
+                questionHTML = `The blue hour hand is pointing at: <span class="underline decoration-pink-500 decoration-4 text-pink-500 font-extrabold px-2">______</span>`;
+                
+                const allHourTexts = Object.values(numWords).slice(0, 12).filter(t => t !== correctAnswerText);
+                shuffleArray(allHourTexts);
+                options = [correctAnswerText, allHourTexts[0], allHourTexts[1], allHourTexts[2]];
+                
             } else {
-                // Standard 5 minutes
-                if (blankType === 0) {
-                    correctAnswerText = minText;
-                    questionHTML = `It's <span class="underline decoration-pink-500 decoration-4 text-pink-500 font-extrabold px-2">______</span> ${relation} ${hourText}`;
-                    
-                    const allMinuteTexts = [
-                        "five minutes", "ten minutes", "twenty minutes", "twenty-five minutes"
-                    ].filter(t => t !== correctAnswerText);
-                    
-                    shuffleArray(allMinuteTexts);
-                    options = [correctAnswerText, allMinuteTexts[0], allMinuteTexts[1], allMinuteTexts[2]];
+                // LEVEL 3: Both Hands (问分针和时针)
+                const blankType = Math.floor(Math.random() * 2);
+
+                if (currentMinute === 0) {
+                    if (blankType === 0) {
+                        correctAnswerText = "o'clock";
+                        questionHTML = `It's ${hourText} <span class="underline decoration-pink-500 decoration-4 text-pink-500 font-extrabold px-2">______</span>`;
+                        options = [correctAnswerText, "half past", "quarter past", "quarter to"];
+                    } else {
+                        correctAnswerText = hourText;
+                        questionHTML = `It's <span class="underline decoration-pink-500 decoration-4 text-pink-500 font-extrabold px-2">______</span> o'clock`;
+                        const allHourTexts = Object.values(numWords).slice(0, 12).filter(t => t !== correctAnswerText);
+                        shuffleArray(allHourTexts);
+                        options = [correctAnswerText, allHourTexts[0], allHourTexts[1], allHourTexts[2]];
+                    }
+                } else if (currentMinute === 30) {
+                    if (blankType === 0) {
+                        correctAnswerText = "half past";
+                        questionHTML = `It's <span class="underline decoration-pink-500 decoration-4 text-pink-500 font-extrabold px-2">______</span> ${hourText}`;
+                        options = [correctAnswerText, "quarter past", "quarter to", "o'clock"];
+                    } else {
+                        correctAnswerText = hourText;
+                        questionHTML = `It's half past <span class="underline decoration-pink-500 decoration-4 text-pink-500 font-extrabold px-2">______</span>`;
+                        const allHourTexts = Object.values(numWords).slice(0, 12).filter(t => t !== correctAnswerText);
+                        shuffleArray(allHourTexts);
+                        options = [correctAnswerText, allHourTexts[0], allHourTexts[1], allHourTexts[2]];
+                    }
+                } else if (minsToSay === 15) {
+                    if (blankType === 0) {
+                        correctAnswerText = `quarter ${relation}`;
+                        questionHTML = `It's <span class="underline decoration-pink-500 decoration-4 text-pink-500 font-extrabold px-2">______</span> ${hourText}`;
+                        options = [
+                            correctAnswerText, 
+                            `quarter ${relation === 'past' ? 'to' : 'past'}`, 
+                            "half past", 
+                            "o'clock"
+                        ];
+                    } else {
+                        correctAnswerText = hourText;
+                        questionHTML = `It's quarter ${relation} <span class="underline decoration-pink-500 decoration-4 text-pink-500 font-extrabold px-2">______</span>`;
+                        const allHourTexts = Object.values(numWords).slice(0, 12).filter(t => t !== correctAnswerText);
+                        shuffleArray(allHourTexts);
+                        options = [correctAnswerText, allHourTexts[0], allHourTexts[1], allHourTexts[2]];
+                    }
                 } else {
-                    correctAnswerText = hourText;
-                    questionHTML = `It's ${minText} ${relation} <span class="underline decoration-pink-500 decoration-4 text-pink-500 font-extrabold px-2">______</span>`;
-                    
-                    const allHourTexts = Object.values(numWords).slice(0, 12).filter(t => t !== correctAnswerText);
-                    shuffleArray(allHourTexts);
-                    options = [correctAnswerText, allHourTexts[0], allHourTexts[1], allHourTexts[2]];
+                    if (blankType === 0) {
+                        correctAnswerText = minText;
+                        questionHTML = `It's <span class="underline decoration-pink-500 decoration-4 text-pink-500 font-extrabold px-2">______</span> ${relation} ${hourText}`;
+                        const allMinuteTexts = [
+                            "five minutes", "ten minutes", "twenty minutes", "twenty-five minutes"
+                        ].filter(t => t !== correctAnswerText);
+                        shuffleArray(allMinuteTexts);
+                        options = [correctAnswerText, allMinuteTexts[0], allMinuteTexts[1], allMinuteTexts[2]];
+                    } else {
+                        correctAnswerText = hourText;
+                        questionHTML = `It's ${minText} ${relation} <span class="underline decoration-pink-500 decoration-4 text-pink-500 font-extrabold px-2">______</span>`;
+                        const allHourTexts = Object.values(numWords).slice(0, 12).filter(t => t !== correctAnswerText);
+                        shuffleArray(allHourTexts);
+                        options = [correctAnswerText, allHourTexts[0], allHourTexts[1], allHourTexts[2]];
+                    }
                 }
             }
 
@@ -722,6 +759,58 @@
 
             hourHand.style.transform = `rotate(${hAngle}deg)`;
             minuteHand.style.transform = `rotate(${mAngle}deg)`;
+        }
+
+        // Hidden Second Hand Logic
+        let secondInterval = null;
+        let currentSecond = 0;
+
+        function toggleSecondHand() {
+            const secondHand = document.getElementById('secondHand');
+            if (!secondHand) return;
+
+            if (secondHand.style.display === 'none' || secondHand.style.display === '') {
+                secondHand.style.display = 'block';
+                currentSecond = 0;
+                secondHand.style.transform = `rotate(0deg)`;
+                
+                showSecretAlert("Secret Second Hand Activated! ⏱️");
+                playSound('success');
+
+                if (secondInterval) clearInterval(secondInterval);
+                secondInterval = setInterval(() => {
+                    currentSecond = (currentSecond + 1) % 60;
+                    secondHand.style.transform = `rotate(${currentSecond * 6}deg)`;
+                    playSound('tick');
+                }, 1000);
+            } else {
+                secondHand.style.display = 'none';
+                if (secondInterval) {
+                    clearInterval(secondInterval);
+                    secondInterval = null;
+                }
+                showSecretAlert("Second Hand Hidden! 🙈");
+            }
+        }
+
+        function showSecretAlert(msg) {
+            const oldAlert = document.getElementById('secret-alert');
+            if (oldAlert) oldAlert.remove();
+
+            const alertDiv = document.createElement('div');
+            alertDiv.id = 'secret-alert';
+            alertDiv.className = 'fixed top-6 left-1/2 -translate-x-1/2 bg-amber-400 border-4 border-slate-800 text-slate-800 font-bold px-6 py-3 rounded-2xl shadow-lg z-50 text-center text-sm sm:text-base';
+            alertDiv.innerHTML = `🌟 ${msg} 🌟`;
+            document.body.appendChild(alertDiv);
+            
+            alertDiv.style.transition = 'all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+            alertDiv.style.transform = 'translate(-50%, 0) scale(1)';
+            
+            setTimeout(() => {
+                alertDiv.style.opacity = '0';
+                alertDiv.style.transform = 'translate(-50%, -20px) scale(0.8)';
+                setTimeout(() => alertDiv.remove(), 500);
+            }, 2000);
         }
 
         function renderChoices(options) {

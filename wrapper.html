@@ -262,7 +262,7 @@
             background: #000;
         }
 
-        /* Full Screen Mode */
+        /* Full Screen Mode: this is the large-screen/iPad-optimized layout. */
         .device-wrapper.fullscreen {
             width: 100% !important;
             height: 100% !important;
@@ -277,13 +277,6 @@
             border: 12px solid #1e293b;
             border-radius: 40px;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.15);
-        }
-
-        /* iPad Mode */
-        .device-wrapper.ipad {
-            border: 18px solid #1e293b;
-            border-radius: 24px;
-            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.15);
         }
 
         /* Physical Bezels Elements inside iframe wrapper */
@@ -359,9 +352,6 @@
         .device-wrapper.iphone.landscape iframe#game-frame {
             border-radius: 28px;
         }
-        .device-wrapper.ipad iframe#game-frame {
-            border-radius: 8px;
-        }
         .device-wrapper.fullscreen iframe#game-frame {
             border-radius: 0;
         }
@@ -414,13 +404,10 @@
         <div class="nav-group">
             <div class="switcher-group">
                 <button class="switch-btn" id="btn-fullscreen" onclick="setMode('fullscreen')">
-                    <span>📱</span> <span>Full</span>
+                    <span>Full Screen</span>
                 </button>
                 <button class="switch-btn" id="btn-iphone" onclick="setMode('iphone')">
-                    <span>📲</span> <span>iPhone</span>
-                </button>
-                <button class="switch-btn" id="btn-ipad" onclick="setMode('ipad')">
-                    <span>📟</span> <span>iPad</span>
+                    <span>iPhone</span>
                 </button>
             </div>
             <button class="rotate-btn" id="btn-rotate" onclick="toggleOrientation()" title="Rotate Screen">
@@ -444,6 +431,10 @@
         // Load configurations
         let currentMode = localStorage.getItem('toolbox-sim-mode') || 'fullscreen';
         let currentOrientation = localStorage.getItem('toolbox-sim-orientation') || 'portrait'; // portrait or landscape
+        if (currentMode === 'ipad') {
+            currentMode = 'fullscreen';
+            localStorage.setItem('toolbox-sim-mode', currentMode);
+        }
 
         const iframe = document.getElementById('game-frame');
         const wrapper = document.getElementById('device-wrapper');
@@ -556,14 +547,8 @@
                 return;
             }
 
-            let deviceW, deviceH;
-            if (currentMode === 'iphone') {
-                deviceW = currentOrientation === 'portrait' ? 375 : 812;
-                deviceH = currentOrientation === 'portrait' ? 812 : 375;
-            } else if (currentMode === 'ipad') {
-                deviceW = currentOrientation === 'portrait' ? 768 : 1024;
-                deviceH = currentOrientation === 'portrait' ? 1024 : 768;
-            }
+            const deviceW = currentOrientation === 'portrait' ? 375 : 812;
+            const deviceH = currentOrientation === 'portrait' ? 812 : 375;
 
             // Calculate active viewport dimensions (with 32px safe border padding)
             const padding = 32;
@@ -587,3 +572,4 @@
     </script>
 </body>
 </html>
+

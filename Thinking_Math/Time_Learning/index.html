@@ -231,15 +231,12 @@
 
         .tick {
             position: absolute;
-            left: 50%;
-            top: 50%;
             width: 4px;
             height: 12px;
             margin-left: -2px;
             margin-top: -6px;
             border-radius: 999px;
             background: #cbd5e1;
-            transform-origin: 50% calc(50% + min(39vw, 222px));
             z-index: 2;
         }
 
@@ -619,9 +616,13 @@
 
         function buildClockFace() {
             for (let i = 0; i < 60; i++) {
+                const angle = (i * 6 - 90) * Math.PI / 180;
+                const radius = i % 5 === 0 ? 45 : 46;
                 const tick = document.createElement("div");
                 tick.className = i % 5 === 0 ? "tick major" : "tick";
-                tick.style.transform = `rotate(${i * 6}deg) translateY(calc(-1 * min(39vw, 222px)))`;
+                tick.style.left = `${50 + radius * Math.cos(angle)}%`;
+                tick.style.top = `${50 + radius * Math.sin(angle)}%`;
+                tick.style.transform = `rotate(${i * 6}deg)`;
                 clock.appendChild(tick);
             }
 

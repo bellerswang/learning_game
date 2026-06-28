@@ -25,15 +25,19 @@ const ui = {
     resultCoins: document.getElementById('result-coins'),
     resultXp: document.getElementById('result-xp'),
     resultBest: document.getElementById('result-best'),
+    resultTraps: document.getElementById('result-traps'),
+    resultAvoided: document.getElementById('result-avoided'),
     resultXpFill: document.getElementById('result-xp-fill'),
     unlockMessage: document.getElementById('unlock-message'),
     shapeCollection: document.getElementById('shape-collection'),
-    backgroundCollection: document.getElementById('background-collection')
+    backgroundCollection: document.getElementById('background-collection'),
+    trapTip: document.getElementById('trap-tip')
 };
 
 const STORAGE_KEY = 'magicToolbox.fallingFriends.progress';
 const ROUND_SECONDS = 60;
 const MAX_HEARTS = 5;
+const TRAP_TYPES = ['thorn', 'storm'];
 const SHAPE_UNLOCK_LEVELS = {
     bubble: 1,
     lion: 1,
@@ -81,7 +85,10 @@ const game = {
     spawnTimer: 0,
     elapsed: 0,
     hits: 0,
-    misses: 0
+    misses: 0,
+    trapsHit: 0,
+    trapsAvoided: 0,
+    trapTipShown: false
 };
 
 const defaultProgress = {
@@ -159,6 +166,9 @@ function startRound() {
     game.elapsed = 0;
     game.hits = 0;
     game.misses = 0;
+    game.trapsHit = 0;
+    game.trapsAvoided = 0;
+    game.trapTipShown = false;
     game.lastTime = performance.now();
     showScreen(null);
     updateHud();
@@ -265,10 +275,17 @@ function updateGame(dt) {
         const target = game.targets[index];
         if (target.y - target.radius > game.height + 20) {
             game.targets.splice(index, 1);
-            game.hearts -= 1;
-            game.combo = 0;
-            game.misses += 1;
-            showToast('Try the next one!');
+            if (target.isTrap) {
+                game.trapsAvoided += 1;
+                if (game.trapsAvoided <= 3 || game.trapsAvoided % 5 === 0) {
+                    showToast('Good avoid!');
+                }
+            } else {
+                game.hearts -= 1;
+                game.combo = 0;
+                game.misses += 1;
+                showToast('Try the next one!');
+            }
         }
     }
 
@@ -283,11 +300,17 @@ function updateGame(dt) {
 
 function spawnTarget() {
     const shapes = progress.unlockedShapes.length ? progress.unlockedShapes : ['bubble', 'lion'];
-    const type = shapes[Math.floor(Math.random() * shapes.length)];
+    const isTrap = Math.random() < getTrapChance();
+    const type = isTrap ? TRAP_TYPES[Math.floor(Math.random() * TRAP_TYPES.length)] : shapes[Math.floor(Math.random() * shapes.length)];
     const radius = Math.max(30, Math.min(52, game.width * 0.105)) + Math.random() * 10;
     const speed = 82 + progress.level * 7 + game.elapsed * 0.9 + Math.random() * 36;
+    if (isTrap && !game.trapTipShown) {
+        game.trapTipShown = true;
+        showTrapTip();
+    }
     game.targets.push({
         type,
+        isTrap,
         x: radius + Math.random() * Math.max(1, game.width - radius * 2),
         y: -radius - Math.random() * 120,
         radius,
@@ -297,6 +320,12 @@ function spawnTarget() {
         wobble: Math.random() * 10,
         wobbleSpeed: 2 + Math.random() * 2
     });
+}
+
+function getTrapChance() {
+    if (game.elapsed < 12) return 0;
+    const baseChance = progress.level >= 2 ? 0.12 : 0.08;
+    return Math.min(0.22, baseChance + game.elapsed / 360 + progress.level * 0.006);
 }
 
 function handlePointer(event) {
@@ -312,10 +341,24 @@ function handlePointer(event) {
         const dy = y - target.y;
         const hitRadius = target.radius * 1.18;
         if (dx * dx + dy * dy <= hitRadius * hitRadius) {
-            popTarget(target, index);
+            if (target.isTrap) {
+                hitTrap(target, index);
+            } else {
+                popTarget(target, index);
+            }
             return;
         }
     }
+}
+
+function hitTrap(target, index) {
+    game.targets.splice(index, 1);
+    game.trapsHit += 1;
+    game.combo = 0;
+    game.score = Math.max(0, game.score - 35);
+    burst(target.x, target.y, target.type);
+    showToast('Oops, that was a trap!');
+    showTrapTip();
 }
 
 function popTarget(target, index) {
@@ -394,11 +437,67 @@ function drawTarget(target) {
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(target.spin);
-    if (target.type === 'lion') drawLion(target.radius);
-    if (target.type === 'jellyfish') drawJellyfish(target.radius);
-    if (target.type === 'bubble') drawBubble(target.radius);
-    if (target.type === 'shell') drawShell(target.radius);
-    if (target.type === 'star') drawStar(target.radius);
+    if (target.isTrap) drawTrap(target.radius, target.type);
+    else if (target.type === 'lion') drawLion(target.radius);
+    else if (target.type === 'jellyfish') drawJellyfish(target.radius);
+    else if (target.type === 'bubble') drawBubble(target.radius);
+    else if (target.type === 'shell') drawShell(target.radius);
+    else if (target.type === 'star') drawStar(target.radius);
+    ctx.restore();
+}
+
+function drawTrap(radius, type) {
+    ctx.save();
+    ctx.rotate(-0.18);
+    ctx.fillStyle = type === 'storm' ? '#475569' : '#ef4444';
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 5;
+    if (type === 'storm') {
+        ctx.beginPath();
+        ctx.arc(-radius * 0.24, -radius * 0.08, radius * 0.5, 0, Math.PI * 2);
+        ctx.arc(radius * 0.18, -radius * 0.18, radius * 0.62, 0, Math.PI * 2);
+        ctx.arc(radius * 0.45, radius * 0.12, radius * 0.42, 0, Math.PI * 2);
+        ctx.arc(-radius * 0.1, radius * 0.2, radius * 0.54, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = '#facc15';
+        ctx.beginPath();
+        ctx.moveTo(-radius * 0.12, radius * 0.1);
+        ctx.lineTo(radius * 0.18, radius * 0.1);
+        ctx.lineTo(-radius * 0.04, radius * 0.72);
+        ctx.lineTo(radius * 0.36, radius * 0.72);
+        ctx.lineTo(-radius * 0.18, radius * 1.28);
+        ctx.lineTo(0, radius * 0.6);
+        ctx.closePath();
+        ctx.fill();
+    } else {
+        ctx.beginPath();
+        for (let index = 0; index < 14; index += 1) {
+            const angle = (Math.PI * 2 * index) / 14;
+            const pointRadius = index % 2 === 0 ? radius : radius * 0.64;
+            const x = Math.cos(angle) * pointRadius;
+            const y = Math.sin(angle) * pointRadius;
+            if (index === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+    }
+    ctx.fillStyle = '#ffffff';
+    ctx.font = `700 ${Math.round(radius * 0.58)}px Fredoka, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('NO', 0, type === 'storm' ? -radius * 0.02 : 0);
+    ctx.restore();
+
+    ctx.save();
+    ctx.strokeStyle = 'rgba(239, 68, 68, 0.78)';
+    ctx.lineWidth = 4;
+    ctx.setLineDash([10, 8]);
+    ctx.beginPath();
+    ctx.arc(0, 0, radius * 1.22, 0, Math.PI * 2);
+    ctx.stroke();
     ctx.restore();
 }
 
@@ -518,7 +617,9 @@ function getShapeColors(type) {
         jellyfish: ['#fb7abe', '#c084fc', '#f0abfc'],
         bubble: ['#38bdf8', '#99f6e4', '#ffffff'],
         shell: ['#f9a8d4', '#f472b6', '#fde68a'],
-        star: ['#facc15', '#fde047', '#fb923c']
+        star: ['#facc15', '#fde047', '#fb923c'],
+        thorn: ['#ef4444', '#fee2e2', '#7f1d1d'],
+        storm: ['#475569', '#facc15', '#e2e8f0']
     };
     return colors[type] || colors.bubble;
 }
@@ -527,7 +628,7 @@ function updateHud() {
     ui.score.textContent = game.score;
     ui.level.textContent = progress.level;
     ui.timer.textContent = Math.ceil(game.timeLeft);
-    ui.hearts.textContent = '♥'.repeat(game.hearts) || '0';
+    ui.hearts.textContent = '\u2665'.repeat(game.hearts) || '0';
     ui.combo.textContent = game.combo >= 3 ? `Combo x${game.combo}` : '';
 }
 
@@ -540,11 +641,13 @@ function updateHome() {
 
 function renderResults(stars, earnedCoins, earnedXp, unlocks) {
     ui.resultTitle.textContent = stars === 3 ? 'Amazing tapping!' : stars === 2 ? 'Great round!' : 'Nice try!';
-    ui.resultStars.textContent = '★'.repeat(stars);
+    ui.resultStars.textContent = '\u2605'.repeat(stars);
     ui.resultScore.textContent = game.score;
     ui.resultCoins.textContent = `+${earnedCoins}`;
     ui.resultXp.textContent = `+${earnedXp}`;
     ui.resultBest.textContent = progress.bestScore;
+    ui.resultTraps.textContent = game.trapsHit;
+    ui.resultAvoided.textContent = game.trapsAvoided;
     ui.resultXpFill.style.width = `${Math.min(100, (progress.xp / xpNeeded()) * 100)}%`;
     ui.unlockMessage.textContent = unlocks.length ? unlocks.join(' ') : 'Keep playing to unlock more friends.';
 }
@@ -587,6 +690,14 @@ function showToast(message) {
     showToast.timer = window.setTimeout(() => {
         ui.toast.classList.remove('show');
     }, 800);
+}
+
+function showTrapTip() {
+    ui.trapTip.classList.add('show');
+    window.clearTimeout(showTrapTip.timer);
+    showTrapTip.timer = window.setTimeout(() => {
+        ui.trapTip.classList.remove('show');
+    }, 2500);
 }
 
 function resetProgress() {

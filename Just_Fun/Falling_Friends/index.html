@@ -43,7 +43,7 @@
             <div class="panel">
                 <p class="eyebrow">Just for Fun</p>
                 <h1>Falling Friends</h1>
-                <p class="lead">Tap the friendly falling shapes before they reach the bottom.</p>
+                <p class="lead">Tap the friendly falling shapes. Do not tap red warning shapes.</p>
                 <div class="progress-card">
                     <div>
                         <span>Player Level</span>
@@ -88,6 +88,8 @@
                     <div><span>Coins</span><strong id="result-coins">0</strong></div>
                     <div><span>XP</span><strong id="result-xp">0</strong></div>
                     <div><span>Best</span><strong id="result-best">0</strong></div>
+                    <div><span>Traps</span><strong id="result-traps">0</strong></div>
+                    <div><span>Avoided</span><strong id="result-avoided">0</strong></div>
                 </div>
                 <p id="unlock-message" class="unlock-message"></p>
                 <div class="xp-track" aria-label="Updated level progress">
@@ -118,6 +120,7 @@
         </section>
 
         <div id="toast" class="toast" aria-live="polite"></div>
+        <div id="trap-tip" class="trap-tip">Red NO shapes are traps. Let them fall.</div>
     </div>
 
     <script src="script.js"></script>

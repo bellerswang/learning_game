@@ -361,6 +361,31 @@ h3 {
     opacity: 1;
 }
 
+.trap-tip {
+    position: absolute;
+    left: 50%;
+    top: calc(max(12px, env(safe-area-inset-top)) + 98px);
+    z-index: 6;
+    max-width: min(92vw, 420px);
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.88);
+    border: 2px solid rgba(239, 68, 68, 0.22);
+    color: #b91c1c;
+    font-weight: 700;
+    text-align: center;
+    box-shadow: 0 10px 24px rgba(39, 64, 96, 0.14);
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, -8px);
+    transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+.trap-tip.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
 @media (max-width: 420px) {
     .hud {
         grid-template-columns: repeat(3, minmax(0, 1fr)) 44px;
@@ -381,5 +406,10 @@ h3 {
     .button-row,
     .progress-card {
         grid-template-columns: 1fr;
+    }
+
+    .trap-tip {
+        top: calc(max(12px, env(safe-area-inset-top)) + 92px);
+        font-size: 0.9rem;
     }
 }

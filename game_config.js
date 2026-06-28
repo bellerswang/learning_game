@@ -9,6 +9,7 @@ const APP_CONFIG = {
         dictionary: true,     // Magic Dictionary
         sentenceLab: true,    // Magic Sentence Lab
         fireworks: true,      // Fireworks Launcher
+        fallingFriends: true, // Falling Friends Tap Game
         make24: true,         // Make 24 Game
         solarSystem: true,    // Space Adventure Game
         timeLearning: true    // Time Monster's Train

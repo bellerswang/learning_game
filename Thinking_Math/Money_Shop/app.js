@@ -1,13 +1,13 @@
 const coins = [
-  { value: 1, label: "1p", type: "copper" },
-  { value: 2, label: "2p", type: "copper" },
-  { value: 5, label: "5p", type: "silver" },
-  { value: 10, label: "10p", type: "silver" },
-  { value: 20, label: "20p", type: "silver" },
-  { value: 50, label: "50p", type: "silver" },
-  { value: 100, label: "£1", type: "gold" },
-  { value: 200, label: "£2", type: "gold" },
-  { value: 500, label: "£5", type: "note" }
+  { value: 1, label: "1p", type: "copper", shape: "round", diameter: 20.3, motif: "dormouse" },
+  { value: 2, label: "2p", type: "copper", shape: "round", diameter: 25.9, motif: "squirrel" },
+  { value: 5, label: "5p", type: "silver", shape: "round", diameter: 18, motif: "oak" },
+  { value: 10, label: "10p", type: "silver", shape: "round", diameter: 24.5, motif: "capercaillie" },
+  { value: 20, label: "20p", type: "silver", shape: "heptagon", diameter: 21.4, motif: "puffin" },
+  { value: 50, label: "50p", type: "silver", shape: "heptagon", diameter: 27.3, motif: "salmon" },
+  { value: 100, label: "\u00a31", type: "bimetal-pound", shape: "dodecagon", diameter: 23.43, motif: "bees" },
+  { value: 200, label: "\u00a32", type: "bimetal-two", shape: "round", diameter: 28.4, motif: "flowers" },
+  { value: 500, label: "\u00a35", type: "note", shape: "note", diameter: 31, motif: "note" }
 ];
 
 const levels = [
@@ -27,14 +27,14 @@ const levels = [
   },
   {
     title: "Pounds and pence",
-    note: "Practise prices over £1 with £1 and £2 coins.",
+    note: "Practise prices over \u00a31 with \u00a31 and \u00a32 coins.",
     maxPrice: 230,
     coinValues: [1, 2, 5, 10, 20, 50, 100, 200],
     products: ["Story Book", "Toy Car", "Puzzle", "Paint Set", "Lunch Box"]
   },
   {
     title: "Pay with notes",
-    note: "Use £5 and practise change from whole pounds.",
+    note: "Use a \u00a35 note and practise change from whole pounds.",
     maxPrice: 420,
     coinValues: [1, 2, 5, 10, 20, 50, 100, 200, 500],
     products: ["Game Pack", "Art Box", "Maths Kit", "Gift Bag", "Craft Set"]
@@ -86,7 +86,7 @@ function formatMoney(pence) {
   if (pence < 100) return `${pence}p`;
   const pounds = Math.floor(pence / 100);
   const pennies = pence % 100;
-  return pennies === 0 ? `£${pounds}` : `£${pounds}.${String(pennies).padStart(2, "0")}`;
+  return pennies === 0 ? `\u00a3${pounds}` : `\u00a3${pounds}.${String(pennies).padStart(2, "0")}`;
 }
 
 function randomFrom(items) {
@@ -129,14 +129,38 @@ function bestHint(amount) {
   return `Try a ${formatMoney(allowed[0])} coin next.`;
 }
 
+function coinMarkup(coin) {
+  const motifLabels = {
+    dormouse: "Hazel dormouse",
+    squirrel: "Red squirrel",
+    oak: "Oak leaf",
+    capercaillie: "Capercaillie",
+    puffin: "Puffin",
+    salmon: "Atlantic salmon",
+    bees: "Two bees",
+    flowers: "UK flowers",
+    note: "Banknote"
+  };
+
+  return `
+    <span class="coin-face" aria-hidden="true">
+      <span class="coin-ring"></span>
+      <span class="coin-motif motif-${coin.motif}"></span>
+      <span class="coin-value">${coin.label}</span>
+      <span class="coin-caption">${motifLabels[coin.motif]}</span>
+    </span>
+  `;
+}
+
 function renderCoins() {
   const available = coins.filter((coin) => levels[state.level].coinValues.includes(coin.value));
   els.coinTray.innerHTML = "";
   available.forEach((coin) => {
     const btn = document.createElement("button");
-    btn.className = `coin ${coin.type}`;
+    btn.className = `coin ${coin.type} shape-${coin.shape}`;
     btn.type = "button";
-    btn.textContent = coin.label;
+    btn.style.setProperty("--coin-mm", coin.diameter);
+    btn.innerHTML = coinMarkup(coin);
     btn.setAttribute("aria-label", `Add ${coin.label}`);
     btn.addEventListener("click", () => addCoin(coin));
     els.coinTray.appendChild(btn);
@@ -147,9 +171,10 @@ function renderSelected() {
   els.selectedCoins.innerHTML = "";
   state.selected.forEach((coin, index) => {
     const btn = document.createElement("button");
-    btn.className = `selected-coin ${coin.type}`;
+    btn.className = `selected-coin ${coin.type} shape-${coin.shape}`;
     btn.type = "button";
-    btn.textContent = coin.label;
+    btn.style.setProperty("--coin-mm", coin.diameter);
+    btn.innerHTML = coinMarkup(coin);
     btn.title = "Tap to remove";
     btn.addEventListener("click", () => {
       state.selected.splice(index, 1);

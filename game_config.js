@@ -12,6 +12,7 @@ const APP_CONFIG = {
         fallingFriends: true, // Falling Friends Tap Game
         make24: true,         // Make 24 Game
         solarSystem: true,    // Space Adventure Game
+        moneyShop: true,      // UK Money Shop Game
         timeLearning: true    // Time Monster's Train
     },
 

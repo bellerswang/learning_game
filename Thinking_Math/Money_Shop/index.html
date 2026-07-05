@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <script src="../../device_switcher_redirect.js"></script>
+
+  <meta charset="UTF-8">
+  <meta name="google-site-verification" content="bpec6YRoSQnASJe_JJ99l46gR6VpI1HyRpT2P7X1nfU" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Money Shop</title>
+  <link rel="icon" type="image/png" href="../../favicon.png">
+  <link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div id="app">
+    <header class="topbar">
+      <a href="../../index.html" id="home-btn" aria-label="Back to home">Home</a>
+      <div class="title-block">
+        <span class="eyebrow">Year 2 UK Money</span>
+        <h1>Money Shop</h1>
+      </div>
+      <div class="score-chip" aria-live="polite">
+        <span id="round-label">Round 1</span>
+        <strong id="star-label">0 stars</strong>
+      </div>
+    </header>
+
+    <main class="shop-shell">
+      <section class="task-zone" aria-labelledby="task-title">
+        <div class="mode-tabs" role="tablist" aria-label="Practice mode">
+          <button class="mode-btn active" data-mode="pay" type="button">Pay</button>
+          <button class="mode-btn" data-mode="least" type="button">Fewest Coins</button>
+          <button class="mode-btn" data-mode="change" type="button">Change</button>
+        </div>
+
+        <div class="shop-scene">
+          <div class="shelf" aria-hidden="true">
+            <div class="shelf-board"></div>
+            <div id="product-art" class="product-art">Book</div>
+          </div>
+          <div class="task-card">
+            <p id="mode-label" class="eyebrow">Pay for the item</p>
+            <h2 id="task-title">Buy the notebook</h2>
+            <div class="price-row">
+              <span>Price</span>
+              <strong id="price-label">36p</strong>
+            </div>
+            <p id="task-instruction">Tap coins to make the exact amount.</p>
+          </div>
+        </div>
+
+        <div class="money-meter">
+          <div>
+            <span>Your money</span>
+            <strong id="selected-total">0p</strong>
+          </div>
+          <div>
+            <span id="target-caption">Target</span>
+            <strong id="target-total">36p</strong>
+          </div>
+        </div>
+
+        <div id="selected-coins" class="selected-coins" aria-label="Selected coins"></div>
+
+        <div id="feedback" class="feedback neutral" aria-live="polite">
+          Choose coins from the tray.
+        </div>
+
+        <div class="actions">
+          <button id="check-btn" class="primary-action" type="button">Check</button>
+          <button id="clear-btn" class="secondary-action" type="button">Clear</button>
+          <button id="hint-btn" class="ghost-action" type="button">Hint</button>
+          <button id="next-btn" class="primary-action hidden" type="button">Next</button>
+        </div>
+      </section>
+
+      <aside class="coin-zone" aria-labelledby="coin-title">
+        <div class="coin-header">
+          <div>
+            <p class="eyebrow">Coin tray</p>
+            <h2 id="coin-title">Tap to add money</h2>
+          </div>
+          <button id="level-btn" type="button">Level 1</button>
+        </div>
+
+        <div id="coin-tray" class="coin-tray"></div>
+
+        <div class="level-panel">
+          <div>
+            <span>Practice focus</span>
+            <strong id="level-title">1p to 10p</strong>
+          </div>
+          <p id="level-note">Start with small coins and make amounts under 30p.</p>
+        </div>
+
+        <div class="mini-summary">
+          <div>
+            <span>Correct</span>
+            <strong id="correct-label">0</strong>
+          </div>
+          <div>
+            <span>Streak</span>
+            <strong id="streak-label">0</strong>
+          </div>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+
+</html>

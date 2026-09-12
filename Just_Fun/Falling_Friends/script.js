@@ -10,6 +10,7 @@ const screens = {
 
 const ui = {
     score: document.getElementById('score'),
+    bestScore: document.getElementById('best-score'),
     level: document.getElementById('level'),
     timer: document.getElementById('timer'),
     hearts: document.getElementById('hearts'),
@@ -34,16 +35,17 @@ const ui = {
     trapTip: document.getElementById('trap-tip')
 };
 
-const STORAGE_KEY = 'magicToolbox.fallingFriends.progress';
+const STORAGE_KEY = 'magicToolbox.fallingFastBalls.progress';
+const LEGACY_STORAGE_KEY = 'magicToolbox.fallingFriends.progress';
 const ROUND_SECONDS = 60;
-const MAX_HEARTS = 5;
+const MAX_HEARTS = 3;
 const TRAP_TYPES = ['thorn', 'storm'];
 const SHAPE_UNLOCK_LEVELS = {
-    bubble: 1,
-    lion: 1,
-    jellyfish: 2,
-    shell: 3,
-    star: 4
+    blue: 1,
+    pink: 1,
+    gold: 2,
+    mint: 3,
+    purple: 4
 };
 const BACKGROUND_UNLOCK_LEVELS = {
     rainbow: 1,
@@ -51,18 +53,18 @@ const BACKGROUND_UNLOCK_LEVELS = {
     jungle: 5
 };
 const SHAPE_LABELS = {
-    bubble: 'Bubble',
-    lion: 'Lion',
-    jellyfish: 'Jellyfish',
-    shell: 'Shell',
-    star: 'Star'
+    blue: 'Blue Ball',
+    pink: 'Pink Ball',
+    gold: 'Gold Ball',
+    mint: 'Mint Ball',
+    purple: 'Purple Ball'
 };
 const SHAPE_ICONS = {
-    bubble: 'Bubble',
-    lion: 'Lion',
-    jellyfish: 'Jelly',
-    shell: 'Shell',
-    star: 'Star'
+    blue: '🔵',
+    pink: '🩷',
+    gold: '🟡',
+    mint: '🟢',
+    purple: '🟣'
 };
 const BACKGROUND_LABELS = {
     rainbow: 'Rainbow Sky',
@@ -96,7 +98,7 @@ const defaultProgress = {
     xp: 0,
     coins: 0,
     bestScore: 0,
-    unlockedShapes: ['bubble', 'lion'],
+    unlockedShapes: ['blue', 'pink'],
     unlockedBackgrounds: ['rainbow'],
     selectedBackground: 'rainbow'
 };
@@ -113,7 +115,7 @@ function createDefaultProgress() {
 
 function loadProgress() {
     try {
-        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || localStorage.getItem(LEGACY_STORAGE_KEY));
         return normalizeProgress(saved);
     } catch (error) {
         return createDefaultProgress();
@@ -122,7 +124,11 @@ function loadProgress() {
 
 function normalizeProgress(saved) {
     const base = { ...defaultProgress, ...(saved || {}) };
-    base.unlockedShapes = Array.from(new Set([...(base.unlockedShapes || []), 'bubble', 'lion']));
+    const validBalls = Object.keys(SHAPE_UNLOCK_LEVELS);
+    const migratedBalls = (base.unlockedShapes || [])
+        .map((shape) => ({ bubble: 'blue', lion: 'pink', jellyfish: 'gold', shell: 'mint', star: 'purple' }[shape] || shape))
+        .filter((shape) => validBalls.includes(shape));
+    base.unlockedShapes = Array.from(new Set([...migratedBalls, 'blue', 'pink']));
     base.unlockedBackgrounds = Array.from(new Set([...(base.unlockedBackgrounds || []), 'rainbow']));
     if (!base.unlockedBackgrounds.includes(base.selectedBackground)) {
         base.selectedBackground = 'rainbow';
@@ -261,8 +267,8 @@ function updateGame(dt) {
     game.spawnTimer -= dt;
     if (game.spawnTimer <= 0) {
         spawnTarget();
-        const levelBoost = Math.min(progress.level * 0.018, 0.16);
-        game.spawnTimer = Math.max(0.34, 0.92 - levelBoost - game.elapsed / 180);
+        const levelBoost = Math.min(progress.level * 0.026, 0.22);
+        game.spawnTimer = Math.max(0.26, 0.72 - levelBoost - game.elapsed / 150);
     }
 
     game.targets.forEach((target) => {
@@ -299,11 +305,11 @@ function updateGame(dt) {
 }
 
 function spawnTarget() {
-    const shapes = progress.unlockedShapes.length ? progress.unlockedShapes : ['bubble', 'lion'];
+    const shapes = progress.unlockedShapes.length ? progress.unlockedShapes : ['blue', 'pink'];
     const isTrap = Math.random() < getTrapChance();
     const type = isTrap ? TRAP_TYPES[Math.floor(Math.random() * TRAP_TYPES.length)] : shapes[Math.floor(Math.random() * shapes.length)];
     const radius = Math.max(30, Math.min(52, game.width * 0.105)) + Math.random() * 10;
-    const speed = 82 + progress.level * 7 + game.elapsed * 0.9 + Math.random() * 36;
+    const speed = 175 + progress.level * 12 + game.elapsed * 1.5 + Math.random() * 60;
     if (isTrap && !game.trapTipShown) {
         game.trapTipShown = true;
         showTrapTip();
@@ -357,7 +363,7 @@ function hitTrap(target, index) {
     game.combo = 0;
     game.score = Math.max(0, game.score - 35);
     burst(target.x, target.y, target.type);
-    showToast('Oops, that was a trap!');
+    showToast('Oops! -35 points');
     showTrapTip();
 }
 
@@ -368,7 +374,13 @@ function popTarget(target, index) {
     const comboBonus = Math.min(40, Math.floor(game.combo / 3) * 5);
     game.score += 20 + comboBonus;
     burst(target.x, target.y, target.type);
-    showToast(game.combo >= 5 ? `Combo x${game.combo}!` : 'Great tap!');
+    if (game.combo >= 3) {
+        showToast(`Combo x${game.combo}! +${comboBonus} bonus`);
+        ui.combo.classList.remove('active');
+        window.requestAnimationFrame(() => ui.combo.classList.add('active'));
+    } else {
+        showToast('Great tap!');
+    }
 }
 
 function burst(x, y, type) {
@@ -438,57 +450,34 @@ function drawTarget(target) {
     ctx.translate(x, y);
     ctx.rotate(target.spin);
     if (target.isTrap) drawTrap(target.radius, target.type);
-    else if (target.type === 'lion') drawLion(target.radius);
-    else if (target.type === 'jellyfish') drawJellyfish(target.radius);
-    else if (target.type === 'bubble') drawBubble(target.radius);
-    else if (target.type === 'shell') drawShell(target.radius);
-    else if (target.type === 'star') drawStar(target.radius);
+    else drawBall(target.radius, target.type);
     ctx.restore();
 }
 
 function drawTrap(radius, type) {
     ctx.save();
     ctx.rotate(-0.18);
-    ctx.fillStyle = type === 'storm' ? '#475569' : '#ef4444';
+    const trapGradient = ctx.createRadialGradient(-radius * 0.28, -radius * 0.35, radius * 0.08, 0, 0, radius);
+    trapGradient.addColorStop(0, type === 'storm' ? '#94a3b8' : '#fca5a5');
+    trapGradient.addColorStop(0.4, type === 'storm' ? '#64748b' : '#ef4444');
+    trapGradient.addColorStop(1, type === 'storm' ? '#1e293b' : '#991b1b');
+    ctx.fillStyle = trapGradient;
     ctx.strokeStyle = '#ffffff';
     ctx.lineWidth = 5;
-    if (type === 'storm') {
-        ctx.beginPath();
-        ctx.arc(-radius * 0.24, -radius * 0.08, radius * 0.5, 0, Math.PI * 2);
-        ctx.arc(radius * 0.18, -radius * 0.18, radius * 0.62, 0, Math.PI * 2);
-        ctx.arc(radius * 0.45, radius * 0.12, radius * 0.42, 0, Math.PI * 2);
-        ctx.arc(-radius * 0.1, radius * 0.2, radius * 0.54, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
-        ctx.fillStyle = '#facc15';
-        ctx.beginPath();
-        ctx.moveTo(-radius * 0.12, radius * 0.1);
-        ctx.lineTo(radius * 0.18, radius * 0.1);
-        ctx.lineTo(-radius * 0.04, radius * 0.72);
-        ctx.lineTo(radius * 0.36, radius * 0.72);
-        ctx.lineTo(-radius * 0.18, radius * 1.28);
-        ctx.lineTo(0, radius * 0.6);
-        ctx.closePath();
-        ctx.fill();
-    } else {
-        ctx.beginPath();
-        for (let index = 0; index < 14; index += 1) {
-            const angle = (Math.PI * 2 * index) / 14;
-            const pointRadius = index % 2 === 0 ? radius : radius * 0.64;
-            const x = Math.cos(angle) * pointRadius;
-            const y = Math.sin(angle) * pointRadius;
-            if (index === 0) ctx.moveTo(x, y);
-            else ctx.lineTo(x, y);
-        }
-        ctx.closePath();
-        ctx.fill();
-        ctx.stroke();
-    }
+    ctx.beginPath();
+    ctx.arc(0, 0, radius * 0.86, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.strokeStyle = 'rgba(255,255,255,0.72)';
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.arc(0, 0, radius * 1.06, 0, Math.PI * 2);
+    ctx.stroke();
     ctx.fillStyle = '#ffffff';
     ctx.font = `700 ${Math.round(radius * 0.58)}px Fredoka, sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('NO', 0, type === 'storm' ? -radius * 0.02 : 0);
+    ctx.fillText('NO', 0, 0);
     ctx.restore();
 
     ctx.save();
@@ -499,6 +488,36 @@ function drawTrap(radius, type) {
     ctx.arc(0, 0, radius * 1.22, 0, Math.PI * 2);
     ctx.stroke();
     ctx.restore();
+}
+
+function drawBall(radius, type) {
+    const palette = {
+        blue: ['#dbeafe', '#38bdf8', '#2563eb'],
+        pink: ['#fce7f3', '#f472b6', '#db2777'],
+        gold: ['#fef9c3', '#facc15', '#f59e0b'],
+        mint: ['#dcfce7', '#34d399', '#059669'],
+        purple: ['#f3e8ff', '#c084fc', '#7e22ce']
+    }[type] || ['#dbeafe', '#38bdf8', '#2563eb'];
+    const gradient = ctx.createRadialGradient(-radius * 0.34, -radius * 0.4, radius * 0.08, 0, 0, radius);
+    gradient.addColorStop(0, palette[0]);
+    gradient.addColorStop(0.35, palette[1]);
+    gradient.addColorStop(1, palette[2]);
+    ctx.fillStyle = gradient;
+    ctx.beginPath();
+    ctx.arc(0, 0, radius * 0.86, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.9)';
+    ctx.lineWidth = 5;
+    ctx.stroke();
+
+    ctx.fillStyle = 'rgba(255,255,255,0.72)';
+    ctx.beginPath();
+    ctx.ellipse(-radius * 0.3, -radius * 0.38, radius * 0.18, radius * 0.09, -0.6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,0.3)';
+    ctx.beginPath();
+    ctx.arc(radius * 0.22, radius * 0.24, radius * 0.1, 0, Math.PI * 2);
+    ctx.fill();
 }
 
 function drawLion(radius) {
@@ -613,23 +632,25 @@ function drawParticles() {
 
 function getShapeColors(type) {
     const colors = {
-        lion: ['#f97316', '#facc15', '#fff7ad'],
-        jellyfish: ['#fb7abe', '#c084fc', '#f0abfc'],
-        bubble: ['#38bdf8', '#99f6e4', '#ffffff'],
-        shell: ['#f9a8d4', '#f472b6', '#fde68a'],
-        star: ['#facc15', '#fde047', '#fb923c'],
+        blue: ['#38bdf8', '#93c5fd', '#ffffff'],
+        pink: ['#f472b6', '#f9a8d4', '#fce7f3'],
+        gold: ['#facc15', '#fde047', '#fff7ad'],
+        mint: ['#34d399', '#99f6e4', '#dcfce7'],
+        purple: ['#c084fc', '#e9d5ff', '#f5d0fe'],
         thorn: ['#ef4444', '#fee2e2', '#7f1d1d'],
         storm: ['#475569', '#facc15', '#e2e8f0']
     };
-    return colors[type] || colors.bubble;
+    return colors[type] || colors.blue;
 }
 
 function updateHud() {
     ui.score.textContent = game.score;
+    ui.bestScore.textContent = progress.bestScore;
     ui.level.textContent = progress.level;
     ui.timer.textContent = Math.ceil(game.timeLeft);
     ui.hearts.textContent = '\u2665'.repeat(game.hearts) || '0';
     ui.combo.textContent = game.combo >= 3 ? `Combo x${game.combo}` : '';
+    ui.combo.classList.toggle('active', game.combo >= 3);
 }
 
 function updateHome() {
@@ -649,7 +670,7 @@ function renderResults(stars, earnedCoins, earnedXp, unlocks) {
     ui.resultTraps.textContent = game.trapsHit;
     ui.resultAvoided.textContent = game.trapsAvoided;
     ui.resultXpFill.style.width = `${Math.min(100, (progress.xp / xpNeeded()) * 100)}%`;
-    ui.unlockMessage.textContent = unlocks.length ? unlocks.join(' ') : 'Keep playing to unlock more friends.';
+    ui.unlockMessage.textContent = unlocks.length ? unlocks.join(' ') : 'Keep playing to unlock more balls.';
 }
 
 function renderCollection() {
@@ -701,7 +722,7 @@ function showTrapTip() {
 }
 
 function resetProgress() {
-    const confirmed = window.confirm('Reset Falling Friends progress?');
+    const confirmed = window.confirm('Reset Falling Fast Balls progress?');
     if (!confirmed) return;
     progress = createDefaultProgress();
     saveProgress();

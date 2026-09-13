@@ -13,7 +13,8 @@ const APP_CONFIG = {
         make24: true,         // Make 24 Game
         solarSystem: true,    // Space Adventure Game
         moneyShop: true,      // UK Money Shop Game
-        timeLearning: true    // Time Monster's Train
+        timeLearning: true,   // Time Monster's Train
+        factFamily: true      // Fact Family Quest
     },
 
 };

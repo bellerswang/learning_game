@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#fff7ed">
+    <title>Fact Family Quest</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <main class="app-shell">
+        <header class="topbar">
+            <a class="home-link" href="../../index.html" aria-label="Back to game shelf">← Game shelf</a>
+            <div class="brand-mark"><span>✦</span> Fact Family Quest</div>
+            <div class="topbar-actions">
+                <button class="book-link" id="cheatsheet-button" type="button">📖 Times-table book</button>
+                <button class="reset-link" id="reset-progress" type="button">Reset progress</button>
+            </div>
+        </header>
+
+        <section class="hero-card" id="hero-card">
+            <div>
+                <p class="eyebrow">One little step at a time</p>
+                <h1>Fact Family Quest</h1>
+                <p class="hero-copy">Learn the family, try a few warm-ups, then unlock the next times table.</p>
+            </div>
+            <div class="hero-orbit" aria-hidden="true"><span>×</span><strong>?</strong><em>÷</em></div>
+        </section>
+
+        <section class="family-panel panel-card">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">Your learning trail</p>
+                    <h2>Times-table trail</h2>
+                </div>
+                <span class="unlock-note" id="unlock-note">Finish this table to unlock the next one</span>
+            </div>
+            <div class="family-track" id="family-track"></div>
+            <div class="next-unlock-card trail-next-card">
+                <div>
+                    <p class="eyebrow">Your next unlock</p>
+                    <h3 id="next-unlock-title">Make ×2 strong</h3>
+                    <p class="muted-copy" id="next-unlock-copy">Complete the learning layers to open ×5.</p>
+                </div>
+                <div class="next-unlock-layers" id="next-unlock-layers" aria-label="Learning layers"></div>
+            </div>
+        </section>
+
+        <section class="lesson-layout">
+            <div class="practice-card panel-card" id="practice-card">
+                <div class="practice-topline">
+                    <div>
+                        <p class="eyebrow" id="lesson-eyebrow">Current times table</p>
+                        <h2 id="lesson-title">×2 Family</h2>
+                    </div>
+                    <div class="session-count" id="session-count">0 little wins</div>
+                </div>
+
+                <div class="certification-progress">
+                    <div class="progress-label">
+                            <span>Mastery progress</span>
+                            <strong id="certification-label">Ready when you are</strong>
+                    </div>
+                    <div class="progress-track"><span id="certification-bar"></span></div>
+                </div>
+
+                <div class="question-area" id="question-area">
+                    <div class="family-triangle" id="family-triangle" aria-label="Fact family triangle">
+                        <div class="triangle-product" id="triangle-product">?</div>
+                        <div class="triangle-line triangle-line-left"></div>
+                        <div class="triangle-line triangle-line-right"></div>
+                        <div class="triangle-factor triangle-factor-left" id="triangle-left">?</div>
+                        <div class="triangle-factor triangle-factor-right" id="triangle-right">?</div>
+                    </div>
+                    <p class="question-kind" id="question-kind">Ready to begin</p>
+                    <h3 class="question-text" id="question-text">Are you ready?</h3>
+                    <p class="hint-message" id="hint-message">Each kind of fact becomes strong after three independent wins.</p>
+                    <div class="answers" id="answers"></div>
+                    <div class="feedback" id="feedback" role="status" aria-live="polite"></div>
+                </div>
+
+                <div class="practice-actions">
+                    <button class="primary-button" id="start-button" type="button">Start learning</button>
+                    <button class="secondary-button hidden" id="hint-button" type="button" aria-hidden="true" tabindex="-1">Give me a clue</button>
+                    <button class="secondary-button hidden" id="help-button" type="button">I need a hand</button>
+                    <button class="quiet-button hidden" id="skip-button" type="button">Park it for later</button>
+                    <button class="secondary-button hidden" id="next-button" type="button">Next one</button>
+                </div>
+            </div>
+
+            <aside class="info-column">
+                <section class="panel-card fact-card">
+                    <div class="section-heading compact">
+                        <div>
+                            <p class="eyebrow">The family you are using</p>
+                            <h2>Fact family</h2>
+                        </div>
+                        <span class="fact-emoji">🔺</span>
+                    </div>
+                    <div class="fact-preview" id="fact-preview">
+                        <span>2</span><b>—</b><span>?</span><b>—</b><span>?</span>
+                    </div>
+                    <p class="muted-copy">These three numbers belong together. Times tables and division help each other.</p>
+                </section>
+
+                <section class="panel-card checklist-card">
+                    <div class="section-heading compact">
+                        <div>
+                            <p class="eyebrow">Skills we are growing</p>
+                            <h2 id="checklist-title">×2 Family</h2>
+                        </div>
+                        <span class="checklist-score" id="checklist-score">0%</span>
+                    </div>
+                    <div class="checklist" id="checklist"></div>
+                </section>
+            </aside>
+        </section>
+
+        <section class="panel-card progress-card">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">Progress at a glance</p>
+                    <h2>My times-table map</h2>
+                </div>
+                <p class="muted-copy">Green = strong · Yellow = learning · Grey = locked</p>
+            </div>
+            <div class="progress-grid" id="progress-grid"></div>
+        </section>
+    </main>
+
+    <div class="study-modal hidden" id="study-modal" role="dialog" aria-modal="true" aria-labelledby="study-title">
+        <div class="study-dialog">
+            <div class="study-header">
+                <div>
+                    <p class="eyebrow">Look, link, then try</p>
+                    <h2 id="study-title">Times-table book</h2>
+                </div>
+                <button class="close-study" id="close-study" type="button" aria-label="Close times-table book">×</button>
+            </div>
+            <p class="study-intro">Choose a table, then tap one fact at a time. See the groups first; the linked division facts are shown beside them.</p>
+            <div class="study-table-picker" id="study-table-picker"></div>
+            <div class="study-content">
+                <div class="study-content-heading">
+                    <div>
+                        <p class="eyebrow">Quick-look table</p>
+                        <h3 id="study-family-title">×2 Family</h3>
+                    </div>
+                    <span class="study-seen" id="study-seen">0 / 11 explored</span>
+                </div>
+                <div class="study-layout">
+                    <div class="study-equations" id="study-equations" aria-label="Facts in this table"></div>
+                    <div class="study-family-preview" id="study-family-preview" aria-live="polite">
+                        <p class="study-placeholder">Tap a fact to explore its groups and linked division facts.</p>
+                    </div>
+                </div>
+                <div class="study-footer">
+                    <p class="muted-copy" id="study-helper">Tap each fact once to explore it. Explored means seen, not mastered.</p>
+                    <button class="primary-button" id="study-ready-button" type="button" disabled>I’ve explored it — warm me up</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="session-modal hidden" id="session-modal" role="dialog" aria-modal="true" aria-labelledby="session-title">
+        <div class="session-dialog">
+            <div class="celebration-mark" aria-hidden="true">✦</div>
+            <p class="eyebrow">A good stopping point</p>
+            <h2 id="session-title">Lovely work today!</h2>
+            <p class="session-copy" id="session-copy">You have made some useful little wins. Your brain can have a rest, or you can choose one more short round.</p>
+            <div class="session-actions">
+                <button class="secondary-button" id="finish-session" type="button">Finish for now</button>
+                <button class="primary-button" id="continue-session" type="button">Keep going</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="app.js"></script>
+</body>
+
+</html>

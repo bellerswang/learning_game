@@ -1,7 +1,7 @@
 (() => {
     'use strict';
 
-    const PAIR_COUNT = 8;
+    const PAIR_COUNT = 11;
     const MISMATCH_DELAY_MS = 850;
     const MATCH_DELAY_MS = 520;
 
@@ -18,7 +18,11 @@
         { id: 'teddy', matchId: 'teddy', label: 'Teddy', image: '🧸' },
         { id: 'rainbow', matchId: 'rainbow', label: 'Rainbow', image: '🌈' },
         { id: 'car', matchId: 'car', label: 'Car', image: '🚗' },
-        { id: 'sun', matchId: 'sun', label: 'Sun', image: '☀️' }
+        { id: 'sun', matchId: 'sun', label: 'Sun', image: '☀️' },
+        { id: 'penguin', matchId: 'penguin', label: 'Penguin', image: '🐧' },
+        { id: 'butterfly', matchId: 'butterfly', label: 'Butterfly', image: '🦋' },
+        { id: 'banana', matchId: 'banana', label: 'Banana', image: '🍌' },
+        { id: 'dinosaur', matchId: 'dinosaur', label: 'Dinosaur', image: '🦕' }
     ];
 
     const grid = document.getElementById('card-grid');

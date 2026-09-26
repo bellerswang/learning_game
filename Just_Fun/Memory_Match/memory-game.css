@@ -83,6 +83,7 @@ button:focus-visible { outline: 4px solid #38bdf8; outline-offset: 3px; }
     width: min(100%, 590px);
     margin-inline: auto;
 }
+.card-grid[data-card-count="22"] .memory-card:nth-child(21) { grid-column-start: 2; }
 
 .memory-card {
     position: relative;

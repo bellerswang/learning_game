@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#fff7ed">
+    <title>Memory Match</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="memory-game.css">
+</head>
+<body>
+    <main class="game-shell">
+        <header class="game-header">
+            <div class="title-group">
+                <span class="title-icon" aria-hidden="true">🧠</span>
+                <div>
+                    <p class="eyebrow">Look closely and find the pairs</p>
+                    <h1>Memory Match</h1>
+                </div>
+            </div>
+            <button class="restart-button" id="restart-button" type="button"><span aria-hidden="true">↻</span> Restart</button>
+        </header>
+
+        <section class="game-panel" aria-label="Memory matching game">
+            <div class="game-toolbar">
+                <p class="moves-counter" id="moves-counter">Moves <strong>0</strong></p>
+                <p class="game-message" id="game-message" role="status" aria-live="polite">Find the matching pictures!</p>
+                <p class="pairs-counter" id="pairs-counter">Pairs <strong>0 / 8</strong></p>
+            </div>
+
+            <div class="card-grid" id="card-grid" role="group" aria-label="Sixteen memory cards"></div>
+
+            <section class="completion-panel" id="completion-panel" aria-live="polite" hidden>
+                <div class="celebration" aria-hidden="true">⭐ 🎉 ⭐</div>
+                <h2>Great job!</h2>
+                <p>You found all the pairs in <strong id="final-moves">0</strong> moves!</p>
+                <button class="play-again-button" id="play-again-button" type="button">Play again</button>
+            </section>
+        </section>
+        <p class="game-hint">Tap two cards to see if they match.</p>
+    </main>
+    <script src="memory-game.js"></script>
+</body>
+</html>

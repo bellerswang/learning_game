@@ -14,7 +14,8 @@ const APP_CONFIG = {
         solarSystem: true,    // Space Adventure Game
         moneyShop: true,      // UK Money Shop Game
         timeLearning: true,   // Time Monster's Train
-        factFamily: true      // Fact Family Quest
+        factFamily: true,    // Fact Family Quest
+        memoryMatch: true    // Memory Match
     },
 
 };

@@ -274,7 +274,9 @@
     summary.replaceChildren();
     const heading = document.createElement("h2"), detail = document.createElement("p"), next = document.createElement("p"), actions = document.createElement("div");
     heading.textContent = "🚉 Stop reached!";
-    detail.textContent = `You tried all 5 clocks. You read ${run.score} on your own, first try. Clues and second tries helped with the others.`;
+    detail.textContent = run.score === 5
+      ? "You read all 5 clocks on your own, first try!"
+      : `You tried all 5 clocks. You read ${run.score} on your own, first try. Clues and second tries helped with the others.`;
     next.textContent = level < 4 ? `The next stop, ${stops[level + 1].name}, is open. You can also practise here again.` : "You have visited every stop! A new short trip is waiting whenever you return.";
     const transfer = document.createElement("p");
     transfer.textContent = `Try it in real life: ${stops[level].realLife}`;

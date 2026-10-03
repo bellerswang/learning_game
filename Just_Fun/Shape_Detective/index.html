@@ -2,11 +2,13 @@
 <html lang="en">
 
 <head>
-    <script src="../../device_switcher_redirect.js"></script>
 
     <meta charset="UTF-8">
     <meta name="google-site-verification" content="bpec6YRoSQnASJe_JJ99l46gR6VpI1HyRpT2P7X1nfU" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="../../site.webmanifest">
     <title>Magic Shape Detective</title>
     <link rel="icon" type="image/png" href="../../favicon.png">
     <link rel="apple-touch-icon" href="../../apple-touch-icon.png">
@@ -34,6 +36,8 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             height: 100vh;
+            height: 100dvh;
+            height: 100dvh;
             display: flex;
             flex-direction: column;
         }
@@ -75,6 +79,8 @@
             grid-template-columns: 1fr;
             grid-template-rows: 60% 40%;
             height: calc(100vh - 70px);
+            height: calc(100dvh - 70px);
+            height: calc(100dvh - 70px);
             /* Minus header approx */
             position: relative;
         }
@@ -267,6 +273,7 @@
 <body>
 
     <header>
+            <a href="../../index.html" aria-label="Back to games" style="color:#334155;font-weight:bold;text-decoration:none;white-space:nowrap">🏠 Games</a>
         <h1>Magic Shape Detective</h1>
         <button id="reset-btn">Reset</button>
     </header>

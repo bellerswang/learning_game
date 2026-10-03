@@ -94,19 +94,19 @@
     const SETS = {basic:['circle','square','triangle','rectangle'],more:['circle','square','triangle','rectangle','oval','pentagon','hexagon','octagon'],solid:['sphere','cube','cuboid','cone','cylinder','pyramid']};
     const OBJECTS = {
       circle:{name:'plate',feature:'The plate looks round like a circle.'},
-      square:{name:'square tile',feature:'The tile looks like a square.'},
-      triangle:{name:'triangle road sign',feature:'The sign has a triangular outline.'},
+      square:{name:'floor tile',feature:'The tile looks like a square.'},
+      triangle:{name:'warning sign',feature:'The sign has a triangular outline.'},
       rectangle:{name:'door',feature:'The door looks like a rectangle.'},
-      oval:{name:'oval mirror',feature:'The mirror has an oval outline.'},
-      pentagon:{name:'pentagon badge',feature:'The badge has 5 sides, like a pentagon.'},
-      hexagon:{name:'hexagonal tile',feature:'The tile has 6 sides, like a hexagon.'},
+      oval:{name:'mirror',feature:'The mirror has an oval outline.'},
+      pentagon:{name:'badge',feature:'The badge has 5 sides, like a pentagon.'},
+      hexagon:{name:'honeycomb cell',feature:'The cell has 6 sides, like a hexagon.'},
       octagon:{name:'STOP sign',feature:'The STOP sign has 8 sides, like an octagon.'},
       sphere:{name:'ball',feature:'The ball is a 3D sphere, not a flat circle.'},
-      cube:{name:'dice',feature:'The dice is cube-shaped, with square faces.'},
+      cube:{name:'die',feature:'The die is cube-shaped, with square faces.'},
       cuboid:{name:'cereal box',feature:'The cereal box is shaped like a cuboid.'},
       cone:{name:'party hat',feature:'The party hat is cone-shaped.'},
       cylinder:{name:'tin can',feature:'The tin can is shaped like a cylinder.'},
-      pyramid:{name:'square-based pyramid',feature:'This pyramid has a square base and triangular sides.'}
+      pyramid:{name:'desert monument',feature:'This pyramid has a square base and triangular sides.'}
     };
     const $ = id => document.getElementById(id);
     const byId = Object.fromEntries(SHAPES.map(shape => [shape.id,shape]));

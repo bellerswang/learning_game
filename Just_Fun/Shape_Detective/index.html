@@ -1,639 +1,143 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
 <head>
-
-    <meta charset="UTF-8">
-    <meta name="google-site-verification" content="bpec6YRoSQnASJe_JJ99l46gR6VpI1HyRpT2P7X1nfU" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="manifest" href="../../site.webmanifest">
-    <title>Magic Shape Detective</title>
-    <link rel="icon" type="image/png" href="../../favicon.png">
-    <link rel="apple-touch-icon" href="../../apple-touch-icon.png">
-    <!-- Confetti for victory -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-color: #FFF5E6;
-            --text-color: #2D3436;
-            --accent-purple: #6C5CE7;
-            --accent-mint: #00B894;
-            --border-color: #333;
-            --font-main: 'Comic Sans MS', 'Lexend', sans-serif;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: var(--font-main);
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            height: 100vh;
-            height: 100dvh;
-            height: 100dvh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        header {
-            padding: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 3px solid var(--border-color);
-            background: white;
-            z-index: 10;
-        }
-
-        h1 {
-            margin: 0;
-            font-size: 1.5rem;
-        }
-
-        #reset-btn {
-            background-color: var(--accent-purple);
-            color: white;
-            border: 3px solid var(--border-color);
-            padding: 0.5rem 1rem;
-            font-family: inherit;
-            font-weight: bold;
-            font-size: 1rem;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: transform 0.1s;
-        }
-
-        #reset-btn:active {
-            transform: scale(0.95);
-        }
-
-        .main-container {
-            display: grid;
-            grid-template-columns: 1fr;
-            grid-template-rows: 60% 40%;
-            height: calc(100vh - 70px);
-            height: calc(100dvh - 70px);
-            height: calc(100dvh - 70px);
-            /* Minus header approx */
-            position: relative;
-        }
-
-        @media (min-width: 768px) {
-            .main-container {
-                grid-template-columns: 70% 30%;
-                grid-template-rows: 1fr;
-            }
-        }
-
-        /* ZONE A: The Room */
-        #zone-scene {
-            position: relative;
-            background-color: #e0f7fa;
-            /* Pastel placeholder */
-            background-image: radial-gradient(#ffe0b2 20%, transparent 20%),
-                radial-gradient(#ffe0b2 20%, transparent 20%);
-            background-size: 50px 50px;
-            background-position: 0 0, 25px 25px;
-            overflow: hidden;
-            border-bottom: 3px solid var(--border-color);
-        }
-
-        @media (min-width: 768px) {
-            #zone-scene {
-                border-bottom: none;
-                border-right: 3px solid var(--border-color);
-            }
-        }
-
-        .shape-item {
-            position: absolute;
-            font-size: 4rem;
-            cursor: pointer;
-            user-select: none;
-            transition: transform 0.2s, opacity 0.3s;
-            /* Hit target sizing if necessary, font size covers most */
-        }
-
-        .shape-item:hover {
-            transform: scale(1.1);
-        }
-
-        .shape-item.found {
-            pointer-events: none;
-        }
-
-        /* ZONE B: The Clipboard */
-        #zone-tally {
-            background-color: white;
-            padding: 1rem;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-        }
-
-        .clipboard-title {
-            text-align: center;
-            text-decoration: underline;
-            margin-bottom: 1rem;
-        }
-
-        #target-display {
-            background: #ffecb3;
-            padding: 0.5rem;
-            border: 2px dashed var(--border-color);
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
-            text-align: center;
-        }
-
-        table.tally-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 1.2rem;
-        }
-
-        th,
-        td {
-            border: 3px solid var(--border-color);
-            padding: 0.5rem;
-            text-align: center;
-        }
-
-        th {
-            background-color: var(--accent-mint);
-        }
-
-        /* Tally Marks Visualization */
-        .tally-marks {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
-            min-height: 40px;
-        }
-
-        .tally-group {
-            display: inline-block;
-            position: relative;
-            width: 30px;
-            height: 30px;
-        }
-
-        .tally-line {
-            position: absolute;
-            background-color: black;
-            width: 4px;
-            /* Thick lines requested */
-            height: 100%;
-            border-radius: 2px;
-        }
-
-        .line-1 {
-            left: 2px;
-        }
-
-        .line-2 {
-            left: 8px;
-        }
-
-        .line-3 {
-            left: 14px;
-        }
-
-        .line-4 {
-            left: 20px;
-        }
-
-        .line-5 {
-            left: 0;
-            top: 45%;
-            height: 4px;
-            width: 120%;
-            transform: rotate(-45deg);
-            transform-origin: center;
-        }
-
-        /* Modal */
-        #win-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s;
-        }
-
-        #win-modal.visible {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .modal-content {
-            background: white;
-            padding: 2rem;
-            border: 3px solid var(--border-color);
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 10px 0 rgba(0, 0, 0, 0.2);
-            max-width: 90%;
-        }
-
-        .modal-content h2 {
-            color: var(--accent-purple);
-            font-size: 2rem;
-        }
-
-        .play-again-btn {
-            font-size: 1.5rem;
-            padding: 0.5rem 1.5rem;
-            background: var(--accent-mint);
-            border: 3px solid var(--border-color);
-            color: black;
-            cursor: pointer;
-            border-radius: 10px;
-            margin-top: 1rem;
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="../../site.webmanifest">
+  <link rel="icon" href="../../favicon.png">
+  <link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+  <title>Shape Detective</title>
+  <style>
+    :root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#243449;background:#f5f8fc}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;min-height:100dvh;background:radial-gradient(circle at 10% 0%,#dff6f0,transparent 32rem),radial-gradient(circle at 95% 10%,#e5e9ff,transparent 30rem),#f5f8fc}
+    button,a{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible{outline:3px solid #254fb3;outline-offset:3px}
+    .shell{max-width:960px;margin:auto;padding:max(14px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+    .home{color:#344a64;text-decoration:none;font-weight:750;background:#fff;border:1px solid #dbe4ee;border-radius:16px;padding:11px 15px;white-space:nowrap}
+    .brand{font-weight:850;font-size:clamp(1.2rem,4vw,1.6rem);letter-spacing:-.03em;text-align:right}
+    h1,h2,p{margin:0}h1{font-size:clamp(2rem,6vw,3.4rem);letter-spacing:-.045em;line-height:1.08}h2{font-size:1.45rem;letter-spacing:-.025em}
+    .eyebrow{font-size:.82rem;font-weight:850;letter-spacing:.12em;text-transform:uppercase;color:#416b80;margin-bottom:9px}
+    .sub{color:#5a6d80;line-height:1.5;margin-top:12px;max-width:42rem}
+    .panel{background:#fff;border:1px solid #e0e8f1;border-radius:28px;box-shadow:0 14px 38px #2b486014;padding:clamp(18px,4vw,32px)}
+    [hidden]{display:none!important}.menu-head{margin:14px 0 25px}.mode-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+    .mode{border:2px solid #e1e8f0;border-radius:22px;background:#fff;text-align:left;padding:22px;min-height:220px;display:flex;flex-direction:column;gap:12px;transition:transform .15s,border-color .15s,box-shadow .15s}
+    .mode:hover{transform:translateY(-3px);border-color:#88c9b9;box-shadow:0 10px 22px #2b486014}.mode:active{transform:scale(.985)}.mode strong{font-size:1.22rem}.mode span:last-child{color:#5b6e81;line-height:1.4}
+    .mode-icon{font-size:2.5rem;background:#eaf8f2;border-radius:18px;width:66px;height:66px;display:grid;place-items:center}
+    .note{margin-top:18px;color:#657789;font-size:.94rem}
+    .game-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}.quiet{background:#fff;border:1px solid #dbe4ee;border-radius:13px;padding:10px 14px;color:#344a64;font-weight:700}
+    .progress{height:9px;border-radius:99px;background:#e6edf4;overflow:hidden;margin:0 0 22px}.progress>div{height:100%;background:#49b69b;border-radius:99px;transition:width .25s}
+    .question-area{text-align:center}.question-area h1{font-size:clamp(1.65rem,5.8vw,3rem)}.question-row{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+    .speak{border:0;background:#e8f1ff;color:#2453a6;border-radius:50%;width:50px;height:50px;font-size:1.45rem;flex:none}.speak:hover{background:#d7e8ff}
+    .example{min-height:176px;display:grid;place-items:center;margin:18px auto 4px}.example svg{height:148px;width:148px;max-width:100%}
+    .answers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:24px}.answers.two{grid-template-columns:repeat(2,minmax(0,1fr));max-width:570px;margin-left:auto;margin-right:auto}
+    .answer{border:2px solid #dfe8f1;background:#fff;border-radius:22px;min-height:154px;padding:15px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#273c53;font-size:clamp(1.05rem,3.6vw,1.35rem);font-weight:800;box-shadow:0 5px 0 #dfe8f1;transition:transform .15s,border-color .15s,background .15s}
+    .answer svg{width:95px;height:95px}.answer:hover:not(:disabled){border-color:#52af9a;transform:translateY(-3px)}.answer:active:not(:disabled){transform:translateY(2px);box-shadow:0 2px 0 #dfe8f1}.answer:disabled{cursor:default}
+    .answer.correct{border-color:#23a67e;background:#e8f9f1;box-shadow:0 5px 0 #a5ddcb}.answer.wrong{border-color:#e78283;background:#fff0ef;box-shadow:0 5px 0 #f3c4c1}.answer.hint{border-color:#49a983;box-shadow:0 0 0 4px #bfe8d3}
+    .feedback{min-height:55px;text-align:center;margin-top:20px;font-size:1.08rem;line-height:1.45;font-weight:650}.feedback.success{color:#137751}.feedback.try{color:#a74442}
+    .next{display:block;margin:8px auto 0;background:#244d86;color:#fff;border:0;border-radius:16px;padding:14px 28px;min-width:170px;font-weight:800;font-size:1.06rem}
+    .summary{text-align:center}.summary h1{margin:10px 0}.summary .sub{margin:0 auto 18px}.summary-list{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;max-width:490px;margin:18px auto 24px;text-align:left}.summary-item{padding:13px;border-radius:14px;background:#f1f6fa;font-weight:750}.summary-item small{display:block;color:#5c7182;font-weight:500;margin-top:3px}
+    .actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}.actions button{background:#244d86;color:#fff;border:0;border-radius:14px;padding:13px 18px;font-weight:750}.actions button.secondary{background:#e9f0f6;color:#29435c}
+    @media(max-width:650px){.mode-grid{grid-template-columns:1fr}.mode{min-height:0;display:grid;grid-template-columns:62px 1fr;gap:2px 15px;align-items:center;padding:16px}.mode-icon{grid-row:span 2;width:58px;height:58px;font-size:2rem}.mode span:last-child{font-size:.92rem}.answers{gap:9px}.answer{min-height:130px;padding:9px;border-radius:17px}.answer svg{width:70px;height:70px}.panel{border-radius:22px}.example{min-height:140px}.example svg{height:125px;width:125px}}
+    @media(max-width:390px){.answers{gap:6px}.answer{font-size:1rem;min-height:115px}.answer svg{height:61px;width:61px}.brand{font-size:1.05rem}}
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
+  </style>
 </head>
-
 <body>
-
-    <header>
-            <a href="../../index.html" aria-label="Back to games" style="color:#334155;font-weight:bold;text-decoration:none;white-space:nowrap">🏠 Games</a>
-        <h1>Magic Shape Detective</h1>
-        <button id="reset-btn">Reset</button>
-    </header>
-
-    <div class="main-container">
-        <!-- Zone A -->
-        <div id="zone-scene">
-            <!-- Shapes will be injected here -->
+  <div class="shell">
+    <header><a class="home" href="../../index.html">🏠 Games</a><div class="brand">🔎 Shape Detective</div></header>
+    <main>
+      <section id="menu" class="panel">
+        <div class="menu-head"><p class="eyebrow">Look · Listen · Match</p><h1>Shapes have names!</h1><p class="sub">Choose how to play. Start with simple shapes, then match their English names and spot them in the world.</p></div>
+        <div class="mode-grid">
+          <button class="mode" data-mode="find"><span class="mode-icon">🔍</span><strong>Find the shape</strong><span>Hear a shape word. Tap the matching shape. 2 choices.</span></button>
+          <button class="mode" data-mode="name"><span class="mode-icon">🔤</span><strong>Match the word</strong><span>Look at a shape. Choose its English name. 3 choices.</span></button>
+          <button class="mode" data-mode="world"><span class="mode-icon">🌎</span><strong>Shapes around us</strong><span>Look at a familiar object. Choose its shape. 3 choices.</span></button>
+        </div><p class="note">Four 2D shapes: circle, square, triangle and rectangle. No timer.</p>
+      </section>
+      <section id="game" hidden>
+        <div class="game-head"><span id="step-label" class="eyebrow" style="margin:0"></span><button id="change-mode" class="quiet">Change game</button></div>
+        <div class="progress" role="progressbar" aria-label="Round progress" aria-valuemin="0" aria-valuemax="8"><div id="progress-fill"></div></div>
+        <div class="panel"><div class="question-area"><p id="mode-label" class="eyebrow"></p><div class="question-row"><h1 id="question"></h1><button id="speak" class="speak" type="button" aria-label="Hear the question" title="Hear the question">🔊</button></div><div id="example" class="example" hidden></div></div>
+          <div id="answers" class="answers"></div><div id="feedback" class="feedback" role="status" aria-live="polite"></div><button id="next" class="next" hidden>Next →</button>
         </div>
-
-        <!-- Zone B -->
-        <div id="zone-tally">
-            <h2 class="clipboard-title">Tally Chart</h2>
-            <div id="target-display">Mission: Loading...</div>
-            <table class="tally-table">
-                <thead>
-                    <tr>
-                        <th style="width: 20%">Shape</th>
-                        <th style="width: 60%">Tally</th>
-                        <th style="width: 20%">Total</th>
-                    </tr>
-                </thead>
-                <tbody id="tally-body">
-                    <!-- Rows injected via JS -->
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- Win Modal -->
-    <div id="win-modal">
-        <div class="modal-content">
-            <h2>Well Done, Friend! 🎉</h2>
-            <p>You found all the shapes!</p>
-            <button class="play-again-btn" onclick="resetGame()">Play Again</button>
-        </div>
-    </div>
-
-    <script>
-        // --- Data & Config ---
-        // The display icon for the category (Tally Chart)
-        const SHAPE_TYPES = [
-            { id: 'square', emoji: '🟧', name: 'Square' },
-            { id: 'rectangle', emoji: '🍫', name: 'Rectangle' },
-            { id: 'circle', emoji: '🍪', name: 'Circle' },
-            { id: 'triangle', emoji: '🍕', name: 'Triangle' },
-            { id: 'sphere', emoji: '⚽', name: 'Sphere' },
-            { id: 'cone', emoji: '🍦', name: 'Cone' },
-            { id: 'cube', emoji: '🧊', name: 'Cube' },
-            { id: 'cylinder', emoji: '🥫', name: 'Cylinder' }
-        ];
-
-        // 200+ Variants Pool
-        const SHAPE_VARIANTS = {
-            square: [
-                '🟧', '🟦', '🟪', '🟫', '⬛', '⬜', '🟥', '🟨', '🔳', '🔲', '🖼️', '💾', '📘', '📕', '📓', '📔', '📒', '🧇', '🧼', '🗳️', '🗃️', '💟', '⏹️', 'ℹ️', '🆔', '🈯', '💹', '❇️', '🆙', '🆚', '🆕', '🅿️', '🆎', '🆑', '🆒', '🆓', '🆔', '🈁', '🈂️', '🈷️', '🈶', '🈯', '🉐', '🈹', '🈚', '🈲', '🉑', '🈸', '🈴', '🈳', '🈺', '🈵'
-            ],
-            rectangle: [
-                '🍫', '📱', '📲', '🧱', '📖', '📗', '📙', '💵', '💴', '💶', '💷', '🎫', '🏷️', '🚪', '🪟', '📺', '💻', '⌨️', '💳', '📏', '✉️', '📩', '📨', '📧', '🛖', '🔋', '🔌', '📼', '📹', '📼', '📠', '📟', '📻', '📼', '📼', '🧾', '📃', '📄', '📑', '📛', '🐺', '🚆', '🚃', '🚄', '🚅', '🐪', '🚌', '🚐', '🚑', '🚒', '🚓', '🚔', '🚕', '🚖', '🚗', '🚘', '🚙', '🚚', '🚛', '🚜'
-            ],
-            circle: [
-                '🍪', '🍩', '💿', '📀', '🕰️', '🧭', '🛞', '🥘', '🍳', '🪞', '⛔', '🔞', '🟢', '🔵', '🟣', '🟤', '⚫', '⚪', '🔴', '🟠', '🟡', '🥯', '🥞', '🍥', '🧁', '🥧', '🧆', '🧉', '🥯', '🕳️', '💿', '📀', '🔘', '🔇', '🔈', '🔉', '🔊', '🔔', '🔕', '🚮', '🚰', '♿', '🚹', '🚺', '🚻', '🚼', '🚾', '🛂', '🛃', '🛄', '🛅', '⚠️', '🚭', '🚯', '🚱', '🚳', '🚫', '🔞', '📵'
-            ],
-            triangle: [
-                '🍕', '🍙', '⚠️', '🚩', '📐', '🥪', '⛺', '🎄', '🔺', '🔻', '🏔️', '🌋', '🐫', '🐪', '🧀', '🦄', '🤕', '👺', '🎋', '🎍', '🪁', '👙', '👙', '🍸', '🍹', '🏖️', '🏗️', '🗼', '⛵', '🛥️', '🚤', '🛳️', '⛴️', '🚢', '🎢', '🏰', '🏯', '🏟️', '🗽', '🏠', '🏡', '🏚️'
-            ],
-            sphere: [
-                '⚽', '🏀', '⚾', '🥎', '🎾', '🏐', '🎱', '🔮', '🧶', '🍊', '🍎', '🍑', '🍒', '🍅', '🌍', '🌎', '🌏', '🌑', '🌕', '🎈', '💣', '🫐', '🍇', '🍈', '🍉', '🥝', '🥥', '🥭', '🥔', '🍆', '🧄', '🧅', '🥚', '🍔', '🥚', '🧉', '🍹', '🪐', '🌚', '🌛', '🌜', '🌝', '🌞', '🌝', '🎑', '🎏'
-            ],
-            cone: [
-                '🍦', '🎉', '🥕', '📣', '🔦', '🗼', '🌋', '🌽', '🍧', '🍸', '🍹', '🦗', '🚀', '🚜', '🦿', '👃', '👂', '🦻', '🦶', '🦵', '🦾', '🤏', '✍️', '👏', '🙏', '🏺', '⚱️', '💈', '🧬', '🔭', '🔬', '🕯️', '🧨', '🌂', '☂️', '🎱', '🎳', '⛳', '🏌️', '🏄', '🏊', '🤽', '🚣', '🧗', '🚵', '🚴'
-            ],
-            cube: [
-                '🧊', '📦', '🎲', '🎁', '🕋', '🍱', '🧈', '🧊', '🧱', '🏫', '🏨', '🏦', '🏥', '🏤', '🏣', '🏢', '🏬', '🏭', '🏯', '🏰', '💒', '🗼', '🗽', '⛪', '🕌', '🛕', '🕍', '⛩️', '🕋', '⛲', '⛺', '🌁', '🌃', '🏙️', '🌄', '🌅', '🌆', '🌇', '🌉'
-            ],
-            cylinder: [
-                '🥫', '🛢️', '🔋', '🕯️', '🥤', '🍺', '🍻', '🥡', '💄', '💈', '🪵', '🗞️', '🌯', '💊', '🗑️', '🧯', '🎻', '🥁', '🥢', '🍼', '🥛', '☕', '🍵', '🍶', '🍾', '🍷', '🍸', '🍹', '🍺', '🍻', '🥂', '🥃', '🥤', '🧃', '🧉', '🧂', '🥫', '🗑️', '🛢️', '💈', '🔭', '🔬', '🧨', '💣'
-            ]
-        };
-
-        let hiddenObjects = [];
-        let foundCounts = {};
-        let targetCounts = {};
-        let activeDrag = null; // { el, obj, startX, startY, initialLeft, initialTop }
-
-        // Audio
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-        function playSound(type) {
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            const osc = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
-            osc.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-
-            const now = audioCtx.currentTime;
-            if (type === 'pop') {
-                osc.frequency.setValueAtTime(400, now);
-                osc.frequency.exponentialRampToValueAtTime(800, now + 0.1);
-                gainNode.gain.setValueAtTime(0.5, now);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
-                osc.start();
-                osc.stop(now + 0.1);
-            } else if (type === 'tada') {
-                [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
-                    const o = audioCtx.createOscillator();
-                    const g = audioCtx.createGain();
-                    o.connect(g);
-                    g.connect(audioCtx.destination);
-                    o.frequency.value = freq;
-                    g.gain.setValueAtTime(0.3, now + i * 0.1);
-                    g.gain.linearRampToValueAtTime(0, now + i * 0.1 + 0.4);
-                    o.start(now + i * 0.1);
-                    o.stop(now + i * 0.1 + 0.4);
-                });
-            } else if (type === 'oops') {
-                osc.frequency.setValueAtTime(200, now);
-                osc.frequency.linearRampToValueAtTime(100, now + 0.2);
-                gainNode.gain.setValueAtTime(0.5, now);
-                gainNode.gain.linearRampToValueAtTime(0, now + 0.2);
-                osc.type = 'sawtooth';
-                osc.start();
-                osc.stop(now + 0.2);
-            }
-        }
-
-        // --- Init ---
-        function initGame() {
-            targetCounts = {};
-            foundCounts = {};
-            hiddenObjects = [];
-            let missionText = [];
-
-            SHAPE_TYPES.forEach(type => {
-                const count = Math.floor(Math.random() * 4) + 2;
-                targetCounts[type.id] = count;
-                foundCounts[type.id] = 0;
-                missionText.push(`${count} ${type.emoji}`);
-
-                for (let i = 0; i < count; i++) {
-                    // Pick a random variant from the pool
-                    const variants = SHAPE_VARIANTS[type.id];
-                    const randomEmoji = variants[Math.floor(Math.random() * variants.length)];
-
-                    hiddenObjects.push({
-                        uniqueId: `${type.id}-${i}`,
-                        type: type.id,
-                        emoji: randomEmoji, // USE THE VARIANT, NOT THE BASE EMOJI
-                        top: Math.random() * 85 + 5,
-                        left: Math.random() * 85 + 5,
-                        found: false
-                    });
-                }
-            });
-
-            document.getElementById('target-display').textContent = 'Mission: Find ' + missionText.join(', ');
-            renderScene();
-            renderTallyTable();
-            document.getElementById('win-modal').classList.remove('visible');
-        }
-
-        // --- Rendering ---
-        function renderScene() {
-            const container = document.getElementById('zone-scene');
-            container.innerHTML = '';
-
-            hiddenObjects.forEach(obj => {
-                if (obj.found) return;
-
-                const el = document.createElement('div');
-                el.className = 'shape-item';
-                el.textContent = obj.emoji;
-                el.style.top = obj.top + '%';
-                el.style.left = obj.left + '%';
-                el.style.touchAction = 'none'; // Critical for dragging
-
-                // DATA attribute for easier matching
-                el.dataset.type = obj.type;
-
-                // Pointer Events for Dragging
-                el.onpointerdown = (e) => startDrag(e, obj, el);
-
-                container.appendChild(el);
-            });
-        }
-
-        function renderTallyTable() {
-            const tbody = document.getElementById('tally-body');
-            tbody.innerHTML = '';
-
-            SHAPE_TYPES.forEach(type => {
-                const tr = document.createElement('tr');
-                tr.dataset.targetType = type.id; // Drop Target Identity
-
-                const tdShape = document.createElement('td');
-                tdShape.textContent = `${type.emoji} ${type.name}`;
-                tr.appendChild(tdShape);
-
-                const tdTally = document.createElement('td');
-                tdTally.appendChild(drawTally(foundCounts[type.id]));
-                tr.appendChild(tdTally);
-
-                const tdTotal = document.createElement('td');
-                tdTotal.textContent = foundCounts[type.id];
-                tr.appendChild(tdTotal);
-
-                tbody.appendChild(tr);
-            });
-        }
-
-        function drawTally(count) {
-            const container = document.createElement('div');
-            container.className = 'tally-marks';
-            const groups = Math.floor(count / 5);
-            const remainder = count % 5;
-            for (let i = 0; i < groups; i++) {
-                container.appendChild(createTallyGroup(5));
-            }
-            if (remainder > 0) {
-                container.appendChild(createTallyGroup(remainder));
-            }
-            return container;
-        }
-
-        function createTallyGroup(num) {
-            const group = document.createElement('div');
-            group.className = 'tally-group';
-            for (let i = 1; i <= num; i++) {
-                const line = document.createElement('div');
-                line.className = `tally-line line-${i}`;
-                group.appendChild(line);
-            }
-            return group;
-        }
-
-        // --- Drag & Drop Logic ---
-        function startDrag(e, obj, el) {
-            if (obj.found) return;
-            e.preventDefault();
-            el.setPointerCapture(e.pointerId);
-
-            activeDrag = {
-                el: el,
-                obj: obj,
-                startX: e.clientX,
-                startY: e.clientY,
-                // Store initial position for snap-back
-                initialLeft: el.style.left,
-                initialTop: el.style.top,
-                // Create a transform offset
-                currentX: 0,
-                currentY: 0
-            };
-
-            el.style.zIndex = 1000;
-            el.style.transition = 'none';
-            el.style.cursor = 'grabbing';
-            el.style.transform = `scale(1.2)`;
-
-            el.onpointermove = (ev) => onDrag(ev);
-            el.onpointerup = (ev) => stopDrag(ev);
-        }
-
-        function onDrag(e) {
-            if (!activeDrag) return;
-            e.preventDefault();
-
-            const dx = e.clientX - activeDrag.startX;
-            const dy = e.clientY - activeDrag.startY;
-
-            activeDrag.currentX = dx;
-            activeDrag.currentY = dy;
-
-            // Move using transform
-            activeDrag.el.style.transform = `translate(${dx}px, ${dy}px) scale(1.2)`;
-        }
-
-        function stopDrag(e) {
-            if (!activeDrag) return;
-            const { el, obj } = activeDrag;
-
-            el.releasePointerCapture(e.pointerId);
-            el.onpointermove = null;
-            el.onpointerup = null;
-            el.style.cursor = 'pointer';
-
-            // HIT TESTING
-            // We need to check if the cursor (or center of element) is over a valid tr[data-target-type]
-            // elementFromPoint uses clientX/Y
-            const hitElements = document.elementsFromPoint(e.clientX, e.clientY);
-            // Search for a Row with correct target type
-            const targetRow = hitElements.find(item => {
-                const row = item.closest('tr');
-                return row && row.dataset.targetType === obj.type;
-            });
-
-            if (targetRow) {
-                // SUCCESS
-                successDrop(obj, el);
-            } else {
-                // FAIL - Snap back
-                failDrop(el);
-            }
-
-            activeDrag = null;
-        }
-
-        function successDrop(obj, el) {
-            playSound('pop');
-
-            // Visual animate into "nothingness" (implies put in box)
-            el.style.transition = 'transform 0.3s, opacity 0.3s';
-            el.style.transform = `translate(${activeDrag.currentX}px, ${activeDrag.currentY}px) scale(0)`;
-            el.style.opacity = '0';
-
-            // Delay Update Logic slightly
-            setTimeout(() => {
-                obj.found = true;
-                foundCounts[obj.type]++;
-                renderTallyTable();
-                checkWinCondition();
-                el.remove(); // Remove from DOM entirely
-            }, 300);
-        }
-
-        function failDrop(el) {
-            playSound('oops');
-            // Snap back
-            el.style.transition = 'transform 0.3s';
-            el.style.transform = 'translate(0, 0) scale(1)';
-            el.style.zIndex = '';
-        }
-
-        // --- Win Logic ---
-        function checkWinCondition() {
-            let allFound = true;
-            for (const type of SHAPE_TYPES) {
-                if (foundCounts[type.id] < targetCounts[type.id]) {
-                    allFound = false;
-                    break;
-                }
-            }
-
-            if (allFound) {
-                setTimeout(() => {
-                    playSound('tada');
-                    confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-                    document.getElementById('win-modal').classList.add('visible');
-                }, 500);
-            }
-        }
-
-        function resetGame() {
-            initGame();
-        }
-
-        document.getElementById('reset-btn').addEventListener('click', resetGame);
-        initGame();
-
-    </script>
+      </section>
+      <section id="summary" class="panel summary" hidden><p class="eyebrow">Case closed!</p><h1>Great detective work! ✨</h1><p id="result" class="sub"></p><div id="summary-list" class="summary-list"></div><div class="actions"><button id="again">Play again</button><button id="choose" class="secondary">Choose another game</button></div></section>
+    </main>
+  </div>
+  <script>
+    'use strict';
+    const SHAPES = [
+      {id:'circle',name:'Circle',feature:'A circle is round. It has no corners.',color:'#f2a45e'},
+      {id:'square',name:'Square',feature:'A square has 4 equal sides.',color:'#69bda6'},
+      {id:'triangle',name:'Triangle',feature:'A triangle has 3 sides.',color:'#a792e9'},
+      {id:'rectangle',name:'Rectangle',feature:'A rectangle has 4 sides: 2 long and 2 short.',color:'#77a9e9'}
+    ];
+    const OBJECTS = {
+      circle:{name:'plate',feature:'The plate is round, like a circle.'},
+      square:{name:'square tile',feature:'The tile has 4 equal sides, like a square.'},
+      triangle:{name:'triangle road sign',feature:'The sign has 3 sides, like a triangle.'},
+      rectangle:{name:'door',feature:'The door has 2 long sides and 2 short sides, like a rectangle.'}
+    };
+    const $ = id => document.getElementById(id);
+    const byId = Object.fromEntries(SHAPES.map(shape => [shape.id,shape]));
+    let mode='find', deck=[], step=0, firstTry={}, attempts=0, locked=false, timer=null;
+    function shuffle(items){const a=[...items];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+    function shapeSVG(id){
+      const shape=byId[id], common=`fill="${shape.color}" stroke="#263e56" stroke-width="4" stroke-linejoin="round"`;
+      const path={circle:`<circle cx="60" cy="60" r="40" ${common}/>`,square:`<rect x="22" y="22" width="76" height="76" rx="3" ${common}/>`,triangle:`<path d="M60 17 L104 96 H16 Z" ${common}/>`,rectangle:`<rect x="15" y="31" width="90" height="58" rx="3" ${common}/>`}[id];
+      return `<svg viewBox="0 0 120 120" aria-hidden="true">${path}</svg>`;
+    }
+    function objectSVG(id){
+      const art={
+        circle:'<ellipse cx="60" cy="61" rx="47" ry="42" fill="#f2a45e" stroke="#263e56" stroke-width="4"/><ellipse cx="60" cy="61" rx="31" ry="27" fill="#fff8ed" stroke="#cb7956" stroke-width="3"/>',
+        square:'<rect x="15" y="15" width="90" height="90" rx="3" fill="#69bda6" stroke="#263e56" stroke-width="4"/><path d="M15 60H105M60 15V105" stroke="#e7fcf3" stroke-width="3"/>',
+        triangle:'<path d="M60 9 L112 104 H8 Z" fill="#fff5e7" stroke="#d74c4c" stroke-width="9" stroke-linejoin="round"/><path d="M60 48v25" stroke="#263e56" stroke-width="6" stroke-linecap="round"/><circle cx="60" cy="85" r="3" fill="#263e56"/>',
+        rectangle:'<rect x="26" y="8" width="68" height="104" rx="3" fill="#77a9e9" stroke="#263e56" stroke-width="4"/><rect x="36" y="19" width="48" height="39" rx="2" fill="#add2fc" stroke="#263e56" stroke-width="2"/><circle cx="78" cy="75" r="4" fill="#f8de83" stroke="#263e56" stroke-width="2"/>'
+      };
+      return `<svg viewBox="0 0 120 120" role="img" aria-label="${OBJECTS[id].name}">${art[id]}</svg>`;
+    }
+    function speak(text){if(!('speechSynthesis' in window))return;window.speechSynthesis.cancel();const utterance=new SpeechSynthesisUtterance(text);utterance.lang='en-GB';utterance.rate=.82;window.speechSynthesis.speak(utterance)}
+    function show(screen){for(const id of ['menu','game','summary'])$(id).hidden=id!==screen}
+    function clearTimer(){if(timer){clearTimeout(timer);timer=null}if('speechSynthesis' in window)window.speechSynthesis.cancel()}
+    function start(nextMode){clearTimer();mode=nextMode;deck=shuffle([...SHAPES,...SHAPES]);step=0;firstTry={};show('game');renderQuestion()}
+    function optionsFor(target){const others=shuffle(SHAPES.filter(s=>s.id!==target.id));return shuffle([target,...others.slice(0,mode==='find'?1:2)])}
+    function renderQuestion(){
+      locked=false;attempts=0;const target=deck[step];$('step-label').textContent=`Question ${step+1} of ${deck.length}`;$('progress-fill').style.width=`${step/deck.length*100}%`;$('game').querySelector('.progress').setAttribute('aria-valuenow',String(step));
+      $('mode-label').textContent={find:'Find the shape',name:'Match the word',world:'Shapes around us'}[mode];
+      $('question').textContent=mode==='find'?`Find the ${target.name.toLowerCase()}`:mode==='name'?'What is this shape?':`What shape is the ${OBJECTS[target.id].name}?`;
+      $('speak').setAttribute('aria-label',`Hear: ${$('question').textContent}`);
+      $('example').hidden=mode==='find';$('example').innerHTML=mode==='name'?shapeSVG(target.id):mode==='world'?objectSVG(target.id):'';
+      $('answers').classList.toggle('two',mode==='find');$('answers').innerHTML='';
+      for(const shape of optionsFor(target)){
+        const button=document.createElement('button');button.className='answer';button.type='button';button.dataset.id=shape.id;
+        if(mode==='find'){button.innerHTML=shapeSVG(shape.id);button.setAttribute('aria-label',shape.name)}
+        else button.textContent=shape.name;
+        button.addEventListener('click',()=>answer(shape.id,button));$('answers').append(button);
+      }
+      $('feedback').textContent='';$('feedback').className='feedback';$('next').hidden=true;
+    }
+    function answer(id,button){
+      if(locked)return;const target=deck[step];attempts++;
+      if(!(step in firstTry))firstTry[step]=id===target.id;
+      if(id!==target.id){
+        button.classList.add('wrong');button.disabled=true;$('feedback').className='feedback try';
+        $('feedback').textContent=attempts===1?'Have another look. You can do it!':`${target.name}: ${target.feature}`;
+        if(attempts>=2){const right=$('answers').querySelector(`[data-id="${target.id}"]`);right.classList.add('hint')}
+        return;
+      }
+      locked=true;button.classList.add('correct');for(const item of $('answers').children)item.disabled=true;
+      $('feedback').className='feedback success';$('feedback').textContent=(mode==='world'?OBJECTS[target.id].feature:target.feature);
+      $('next').textContent=step===deck.length-1?'See my shapes →':'Next →';$('next').hidden=false;speak(target.name);
+    }
+    function next(){clearTimer();if(!locked)return;step++;if(step===deck.length)finish();else renderQuestion()}
+    function finish(){show('summary');$('result').textContent=`You knew ${Object.values(firstTry).filter(Boolean).length} of ${deck.length} on the first try. Every shape you practised counts!`;
+      const list=$('summary-list');list.innerHTML='';for(const shape of SHAPES){const count=deck.reduce((n,item,i)=>n+(item.id===shape.id&&firstTry[i]?1:0),0);const el=document.createElement('div');el.className='summary-item';el.textContent=`${shape.name} ${count===2?'✓':'↗'}`;const small=document.createElement('small');small.textContent=count===2?'Great first tries':'Let’s practise again';el.append(small);list.append(el)}
+    }
+    document.querySelectorAll('[data-mode]').forEach(button=>button.addEventListener('click',()=>start(button.dataset.mode)));
+    $('speak').addEventListener('click',()=>speak($('question').textContent));$('next').addEventListener('click',next);
+    $('change-mode').addEventListener('click',()=>{clearTimer();show('menu')});$('again').addEventListener('click',()=>start(mode));$('choose').addEventListener('click',()=>{clearTimer();show('menu')});
+  </script>
 </body>
-
 </html>

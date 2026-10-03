@@ -5,44 +5,101 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#f7f3ea">
     <link rel="manifest" href="../../site.webmanifest">
-    <meta name="theme-color" content="#fff7ed">
-    <title>Memory Match</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="../../favicon.png">
+    <link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+    <title>Memory Quest · Magic Learning Toolbox</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="memory-game.css">
 </head>
 <body>
-    <main class="game-shell">
-        <header class="game-header">
-            <div class="title-group">
-                <a href="../../index.html" aria-label="Back to games" style="flex:0 0 auto;padding:9px 11px;border-radius:14px;background:#fff;color:#db2777;text-decoration:none;font-weight:700;box-shadow:0 3px 0 #fbcfe8">🏠</a>
-                <span class="title-icon" aria-hidden="true">🧠</span>
-                <div>
-                    <p class="eyebrow">Look closely and find the pairs</p>
-                    <h1>Memory Match</h1>
-                </div>
-            </div>
-            <button class="restart-button" id="restart-button" type="button"><span aria-hidden="true">↻</span> Restart</button>
+    <main class="app-shell">
+        <header class="site-header">
+            <a class="home-link" href="../../index.html" aria-label="Back to games">🏠 <span>Games</span></a>
+            <div class="brand"><span class="brand-mark" aria-hidden="true">✦</span><span>Memory Quest</span></div>
+            <span class="header-spacer" aria-hidden="true"></span>
         </header>
 
-        <section class="game-panel" aria-label="Memory matching game">
-            <div class="game-toolbar">
-                <p class="moves-counter" id="moves-counter">Moves <strong>0</strong></p>
-                <p class="game-message" id="game-message" role="status" aria-live="polite">Find the matching pictures!</p>
-                <p class="pairs-counter" id="pairs-counter">Pairs <strong>0 / 11</strong></p>
+        <section class="setup-screen" id="setup-screen" aria-labelledby="setup-title">
+            <div class="intro">
+                <p class="eyebrow">A little adventure for your memory</p>
+                <h1 id="setup-title">Find a pair.<br><span>Discover a surprise.</span></h1>
+                <p>Choose your cards, then collect a sticker after three rounds. You can change your choices any time.</p>
             </div>
 
-            <div class="card-grid" id="card-grid" role="group" aria-label="Sixteen memory cards"></div>
+            <div class="setup-panel">
+                <div class="section-heading">
+                    <div><span class="step-number">01</span><h2>Choose a level</h2></div>
+                    <span>All levels are open</span>
+                </div>
+                <div class="difficulty-list" id="difficulty-list" role="group" aria-label="Difficulty"></div>
 
-            <section class="completion-panel" id="completion-panel" aria-live="polite" hidden>
-                <div class="celebration" aria-hidden="true">⭐ 🎉 ⭐</div>
-                <h2>Great job!</h2>
-                <p>You found all the pairs in <strong id="final-moves">0</strong> moves!</p>
-                <button class="play-again-button" id="play-again-button" type="button">Play again</button>
+                <div class="section-heading theme-heading">
+                    <div><span class="step-number">02</span><h2>Pick a world</h2></div>
+                    <span>A new mix each round</span>
+                </div>
+                <div class="theme-list" id="theme-list" role="group" aria-label="Picture theme"></div>
+
+                <div class="start-row">
+                    <p id="selection-summary" aria-live="polite"></p>
+                    <button class="primary-button" id="start-button" type="button">Start adventure <span aria-hidden="true">→</span></button>
+                </div>
+            </div>
+
+            <section class="collection" aria-labelledby="collection-title">
+                <div class="collection-heading"><span aria-hidden="true">✦</span><h2 id="collection-title">Your sticker shelf</h2></div>
+                <div class="collection-list" id="collection-list"></div>
             </section>
         </section>
-        <p class="game-hint">Tap two cards to see if they match.</p>
+
+        <section class="play-screen" id="play-screen" aria-label="Memory matching game" hidden>
+            <div class="play-topline">
+                <button class="text-button" id="change-button" type="button">← Choices</button>
+                <span class="round-label" id="round-label">Round 1 of 3</span>
+                <button class="text-button" id="restart-button" type="button">↻ Restart</button>
+            </div>
+            <div class="mission-heading">
+                <div><span class="world-icon" id="world-icon" aria-hidden="true">🌿</span><h1 id="world-title">Animal Forest</h1></div>
+                <p id="mission-text">Find the matching pictures</p>
+            </div>
+            <div class="progress-row">
+                <span id="pairs-counter">0 / 6 pairs</span>
+                <div class="progress-track" role="progressbar" aria-label="Pairs found" aria-valuemin="0" aria-valuemax="6" aria-valuenow="0" id="progress-track"><div id="progress-fill"></div></div>
+                <span id="moves-counter">0 moves</span>
+            </div>
+            <div class="board-panel">
+                <div class="card-grid" id="card-grid" role="group" aria-label="Memory cards"></div>
+            </div>
+            <p class="game-message" id="game-message" role="status" aria-live="polite">Tap two cards to find a pair.</p>
+        </section>
     </main>
+
+    <div class="overlay" id="event-overlay" hidden>
+        <section class="dialog event-dialog" role="dialog" aria-modal="true" aria-labelledby="event-title" aria-describedby="event-description">
+            <div class="dialog-art" id="event-art" aria-hidden="true">🎁</div>
+            <p class="eyebrow">A little surprise!</p>
+            <h2 id="event-title">A visitor has arrived</h2>
+            <p id="event-description"></p>
+            <div class="dialog-actions" id="event-actions"></div>
+        </section>
+    </div>
+
+    <div class="overlay" id="result-overlay" hidden>
+        <section class="dialog result-dialog" role="dialog" aria-modal="true" aria-labelledby="result-title">
+            <div class="dialog-art" id="result-art" aria-hidden="true">🌟</div>
+            <p class="eyebrow" id="result-eyebrow">Round complete</p>
+            <h2 id="result-title">Brilliant remembering!</h2>
+            <div class="result-stars" id="result-stars" aria-label="Stars earned"></div>
+            <p id="result-details"></p>
+            <p class="reward-note" id="reward-note"></p>
+            <div class="dialog-actions result-actions">
+                <button class="primary-button" id="next-button" type="button">Next round →</button>
+                <button class="plain-button" id="choices-button" type="button">Change choices</button>
+            </div>
+        </section>
+    </div>
+
     <script src="memory-game.js"></script>
 </body>
 </html>

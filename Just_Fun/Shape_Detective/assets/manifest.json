@@ -15,6 +15,22 @@
     {
       "name": "coin",
       "src": "assets/circle-coin.webp"
+    },
+    {
+      "name": "biscuit",
+      "src": "assets/circle-biscuit.webp"
+    },
+    {
+      "name": "jam jar lid",
+      "src": "assets/circle-jam-jar-lid.webp"
+    },
+    {
+      "name": "lemon slice",
+      "src": "assets/circle-lemon-slice.webp"
+    },
+    {
+      "name": "saucer",
+      "src": "assets/circle-saucer.webp"
     }
   ],
   "square": [
@@ -29,6 +45,22 @@
     {
       "name": "sticky note",
       "src": "assets/square-sticky-note.webp"
+    },
+    {
+      "name": "blue cushion",
+      "src": "assets/square-blue-cushion.webp"
+    },
+    {
+      "name": "ceramic tile",
+      "src": "assets/square-ceramic-tile.webp"
+    },
+    {
+      "name": "gift box face",
+      "src": "assets/square-gift-box-face.webp"
+    },
+    {
+      "name": "stone tile",
+      "src": "assets/square-stone-tile.webp"
     }
   ],
   "triangle": [
@@ -43,6 +75,22 @@
     {
       "name": "pennant",
       "src": "assets/triangle-pennant.webp"
+    },
+    {
+      "name": "clothes hanger",
+      "src": "assets/triangle-clothes-hanger.webp"
+    },
+    {
+      "name": "napkin",
+      "src": "assets/triangle-napkin.webp"
+    },
+    {
+      "name": "sandwich",
+      "src": "assets/triangle-sandwich.webp"
+    },
+    {
+      "name": "set square ruler",
+      "src": "assets/triangle-set-square-ruler.webp"
     }
   ],
   "rectangle": [
@@ -61,6 +109,26 @@
     {
       "name": "postcard",
       "src": "assets/rectangle-postcard.webp"
+    },
+    {
+      "name": "book",
+      "src": "assets/rectangle-book.webp"
+    },
+    {
+      "name": "envelope",
+      "src": "assets/rectangle-envelope.webp"
+    },
+    {
+      "name": "picture frame",
+      "src": "assets/rectangle-picture-frame.webp"
+    },
+    {
+      "name": "soap",
+      "src": "assets/rectangle-soap.webp"
+    },
+    {
+      "name": "tea towel",
+      "src": "assets/rectangle-tea-towel.webp"
     }
   ],
   "oval": [
@@ -71,6 +139,26 @@
     {
       "name": "rug",
       "src": "assets/oval-rug.webp"
+    },
+    {
+      "name": "bath mat",
+      "src": "assets/oval-bath-mat.webp"
+    },
+    {
+      "name": "egg",
+      "src": "assets/oval-egg.webp"
+    },
+    {
+      "name": "oval mirror",
+      "src": "assets/oval-oval-mirror.webp"
+    },
+    {
+      "name": "pebble",
+      "src": "assets/oval-pebble.webp"
+    },
+    {
+      "name": "soap dish",
+      "src": "assets/oval-soap-dish.webp"
     }
   ],
   "pentagon": [
@@ -81,6 +169,22 @@
     {
       "name": "wooden tile",
       "src": "assets/pentagon-wooden-tile.webp"
+    },
+    {
+      "name": "fabric patch",
+      "src": "assets/pentagon-fabric-patch.webp"
+    },
+    {
+      "name": "pentagon biscuit",
+      "src": "assets/pentagon-pentagon-biscuit.webp"
+    },
+    {
+      "name": "wooden puzzle tile",
+      "src": "assets/pentagon-wooden-puzzle-tile.webp"
+    },
+    {
+      "name": "wooden toy tile",
+      "src": "assets/pentagon-wooden-toy-tile.webp"
     }
   ],
   "hexagon": [
@@ -91,6 +195,26 @@
     {
       "name": "metal nut",
       "src": "assets/hexagon-metal-nut.webp"
+    },
+    {
+      "name": "hexagonal pencil pot",
+      "src": "assets/hexagon-hexagonal-pencil-pot.webp"
+    },
+    {
+      "name": "marble tile",
+      "src": "assets/hexagon-marble-tile.webp"
+    },
+    {
+      "name": "paving stone",
+      "src": "assets/hexagon-paving-stone.webp"
+    },
+    {
+      "name": "pencil sharpener",
+      "src": "assets/hexagon-pencil-sharpener.webp"
+    },
+    {
+      "name": "wooden hexagon coaster",
+      "src": "assets/hexagon-wooden-hexagon-coaster.webp"
     }
   ],
   "octagon": [
@@ -101,6 +225,30 @@
     {
       "name": "tabletop",
       "src": "assets/octagon-tabletop.webp"
+    },
+    {
+      "name": "biscuit",
+      "src": "assets/octagon-biscuit.webp"
+    },
+    {
+      "name": "hand mirror",
+      "src": "assets/octagon-hand-mirror.webp"
+    },
+    {
+      "name": "octagonal clock",
+      "src": "assets/octagon-octagonal-clock.webp"
+    },
+    {
+      "name": "red coaster",
+      "src": "assets/octagon-red-coaster.webp"
+    },
+    {
+      "name": "toy block",
+      "src": "assets/octagon-toy-block.webp"
+    },
+    {
+      "name": "wooden coaster",
+      "src": "assets/octagon-wooden-coaster.webp"
     }
   ],
   "sphere": [
@@ -119,6 +267,22 @@
     {
       "name": "globe",
       "src": "assets/sphere-globe.webp"
+    },
+    {
+      "name": "beach ball",
+      "src": "assets/sphere-beach-ball.webp"
+    },
+    {
+      "name": "blue marble",
+      "src": "assets/sphere-blue-marble.webp"
+    },
+    {
+      "name": "plum",
+      "src": "assets/sphere-plum.webp"
+    },
+    {
+      "name": "tennis ball",
+      "src": "assets/sphere-tennis-ball.webp"
     }
   ],
   "cube": [
@@ -149,6 +313,10 @@
     {
       "name": "party hat",
       "src": "assets/cone-party-hat.webp"
+    },
+    {
+      "name": "party hat",
+      "src": "assets/cone-party-hat-new.webp"
     }
   ],
   "cylinder": [

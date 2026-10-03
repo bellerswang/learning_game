@@ -498,11 +498,22 @@
         .summary .learning-actions { margin-top:18px }
         .choice-btn:disabled { cursor:default }
         .choice-btn.incorrect { background:#fff1dc; color:#6d4f1e; border-color:#e6ad4b; opacity:1 }
+        .hand { transition:none }
+        .play-area { grid-template-columns:minmax(0,1fr) minmax(0,1fr); align-items:center; gap:16px }
+        .play-area .clock { width:min(100%,350px) }
+        .play-area .choices { width:100% }
+        .play-area.intro-clock { display:flex; justify-content:center }
+        .play-area.intro-clock .clock { width:min(86vw,350px) }
         .clock.simplify .clock-number:not(.landmark) { opacity:.32 }
         .clock.simplify::before, .clock.simplify::after { display:none }
         .clock .clock-number.landmark { color:#1d4ed8 }
         .clock::before, .clock::after { opacity:.6 }
         .hidden { display:none !important }
+        @media (max-width:650px) {
+            .play-area { grid-template-columns:1fr }
+            .play-area .clock { width:min(68vw,270px) }
+            .play-area .choices { width:min(100%,520px) }
+        }
         @media (prefers-reduced-motion:reduce) { .hand,.choice-btn { transition:none } .confetti { display:none } }
         @media (max-width: 420px) {
             body { padding: 8px; }

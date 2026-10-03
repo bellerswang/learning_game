@@ -158,6 +158,7 @@
     $("questionActions").classList.toggle("hidden", mode !== "question");
     $("summary").classList.toggle("hidden", mode !== "summary");
     $("feedback").classList.add("hidden");
+    $("playArea").classList.toggle("intro-clock", mode === "intro");
   }
   function renderTabs() {
     tabs.forEach(tab => {
@@ -212,6 +213,7 @@
     $("continueButton").textContent = run.index === 4 ? "See my trip →" : "Next question →";
     if (run.answered) feedback("Now you can explain it!", item.explain, false);
     else if (run.mistakes > 0 || run.clue) feedback("Look at the hands", item.hint, true);
+    $("questionWrap").scrollIntoView({ block: "start", behavior: "instant" });
   }
   function feedback(heading, detail, mistake) {
     const el = $("feedback");
@@ -255,6 +257,7 @@
       ticket();
     }
     save();
+    $("feedback").scrollIntoView({ block: "nearest", behavior: "smooth" });
   }
   function finishTrip() {
     const run = progress.runs[level];
@@ -304,6 +307,7 @@
     if (!run || run.answered) return;
     run.clue = true; save();
     feedback("Look at the hands", run.items[run.index].hint, true);
+    $("feedback").scrollIntoView({ block: "nearest", behavior: "smooth" });
   });
   $("guideButton").addEventListener("click", showGuide);
   $("closeGuide").addEventListener("click", closeGuide);

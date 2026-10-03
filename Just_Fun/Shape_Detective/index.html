@@ -34,14 +34,14 @@
     .example{min-height:176px;display:grid;place-items:center;margin:18px auto 4px}.example svg{height:148px;width:148px;max-width:100%}
     .answers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:24px}.answers.two{grid-template-columns:repeat(2,minmax(0,1fr));max-width:570px;margin-left:auto;margin-right:auto}
     .answer{border:2px solid #dfe8f1;background:#fff;border-radius:22px;min-height:154px;padding:15px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#273c53;font-size:clamp(1.05rem,3.6vw,1.35rem);font-weight:800;box-shadow:0 5px 0 #dfe8f1;transition:transform .15s,border-color .15s,background .15s}
-    .answer svg{width:95px;height:95px}.answer:hover:not(:disabled){border-color:#52af9a;transform:translateY(-3px)}.answer:active:not(:disabled){transform:translateY(2px);box-shadow:0 2px 0 #dfe8f1}.answer:disabled{cursor:default}
+    .answer svg{width:95px;height:95px}.answer img{width:110px;height:110px;max-width:100%;object-fit:cover;border-radius:14px}.answer.photo{padding:8px;min-height:140px}.answer:hover:not(:disabled){border-color:#52af9a;transform:translateY(-3px)}.answer:active:not(:disabled){transform:translateY(2px);box-shadow:0 2px 0 #dfe8f1}.answer:disabled{cursor:default}
     .answer.correct{border-color:#23a67e;background:#e8f9f1;box-shadow:0 5px 0 #a5ddcb}.answer.wrong{border-color:#e78283;background:#fff0ef;box-shadow:0 5px 0 #f3c4c1}.answer.hint{border-color:#49a983;box-shadow:0 0 0 4px #bfe8d3}
     .feedback{min-height:55px;text-align:center;margin-top:20px;font-size:1.08rem;line-height:1.45;font-weight:650}.feedback.success{color:#137751}.feedback.try{color:#a74442}
     .next{display:block;margin:8px auto 0;background:#244d86;color:#fff;border:0;border-radius:16px;padding:14px 28px;min-width:170px;font-weight:800;font-size:1.06rem}
     .summary{text-align:center}.summary h1{margin:10px 0}.summary .sub{margin:0 auto 18px}.summary-list{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;max-width:490px;margin:18px auto 24px;text-align:left}.summary-item{padding:13px;border-radius:14px;background:#f1f6fa;font-weight:750}.summary-item small{display:block;color:#5c7182;font-weight:500;margin-top:3px}
     .actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}.actions button{background:#244d86;color:#fff;border:0;border-radius:14px;padding:13px 18px;font-weight:750}.actions button.secondary{background:#e9f0f6;color:#29435c}
-    @media(max-width:650px){.mode-grid{grid-template-columns:1fr}.mode{min-height:0;display:grid;grid-template-columns:62px 1fr;gap:2px 15px;align-items:center;padding:16px}.mode-icon{grid-row:span 2;width:58px;height:58px;font-size:2rem}.mode span:last-child{font-size:.92rem}.answers{gap:9px}.answer{min-height:130px;padding:9px;border-radius:17px}.answer svg{width:70px;height:70px}.panel{border-radius:22px}.example{min-height:140px}.example svg{height:125px;width:125px}}
-    @media(max-width:390px){.answers{gap:6px}.answer{font-size:1rem;min-height:115px}.answer svg{height:61px;width:61px}.brand{font-size:1.05rem}}
+    @media(max-width:650px){.mode-grid{grid-template-columns:1fr}.mode{min-height:0;display:grid;grid-template-columns:62px 1fr;gap:2px 15px;align-items:center;padding:16px}.mode-icon{grid-row:span 2;width:58px;height:58px;font-size:2rem}.mode span:last-child{font-size:.92rem}.answers{gap:9px}.answer{min-height:130px;padding:9px;border-radius:17px}.answer svg{width:70px;height:70px}.answer img{width:85px;height:85px}.panel{border-radius:22px}.example{min-height:140px}.example svg{height:125px;width:125px}}
+    @media(max-width:390px){.answers{gap:6px}.answer{font-size:1rem;min-height:115px}.answer svg{height:61px;width:61px}.answer img{height:70px;width:70px}.brand{font-size:1.05rem}}
     @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
   </style>
 </head>
@@ -50,18 +50,12 @@
     <header><a class="home" href="../../index.html">🏠 Games</a><div class="brand">🔎 Shape Detective</div></header>
     <main>
       <section id="menu" class="panel">
-        <div class="menu-head"><p class="eyebrow">Look · Listen · Match</p><h1>Shapes have names!</h1><p class="sub">Choose a shape group and a game. Start with familiar shapes, then explore more 2D shapes and 3D solids.</p></div>
-        <p class="set-title">1. Choose shapes</p><div class="set-picker" role="group" aria-label="Shape group">
-          <button data-set="basic" aria-pressed="true">Starter 2D · 4</button>
-          <button data-set="more" aria-pressed="false">More 2D · 8</button>
-          <button data-set="solid" aria-pressed="false">3D solids · 6</button>
-        </div>
-        <p class="set-title">2. Choose a game</p>
+        <div class="menu-head"><p class="eyebrow">Look · Listen · Match</p><h1>Shapes are everywhere!</h1><p class="sub">Look at real-life objects and learn their shape names. Flat shapes and 3D solids appear together in every round.</p></div>
         <div class="mode-grid">
-          <button class="mode" data-mode="find"><span class="mode-icon">🔍</span><strong>Find the shape</strong><span>Hear a shape word. Tap the matching shape. 2 choices.</span></button>
-          <button class="mode" data-mode="name"><span class="mode-icon">🔤</span><strong>Match the word</strong><span>Look at a shape. Choose its English name. 3 choices.</span></button>
-          <button class="mode" data-mode="world"><span class="mode-icon">🌎</span><strong>Shapes around us</strong><span>Look at a familiar object. Choose its shape. 3 choices.</span></button>
-        </div><p class="note">Based on England's primary shape vocabulary. Oval and octagon are extra practice; choose Starter 2D for the gentlest round. No timer.</p>
+          <button class="mode" data-mode="world"><span class="mode-icon">🌎</span><strong>Spot it in real life</strong><span>See a shape word. Choose the matching everyday object from pictures.</span></button>
+          <button class="mode" data-mode="find"><span class="mode-icon">🔍</span><strong>Find the shape</strong><span>Hear a shape word. Tap the matching clear shape drawing.</span></button>
+          <button class="mode" data-mode="name"><span class="mode-icon">🔤</span><strong>Match the word</strong><span>Look at a shape. Choose its English name.</span></button>
+        </div><p class="note">14 shape names · 36 everyday-object pictures · 8 different shapes in each round · no timer.</p>
       </section>
       <section id="game" hidden>
         <div class="game-head"><span id="step-label" class="eyebrow" style="margin:0"></span><button id="change-mode" class="quiet">Change game</button></div>
@@ -91,27 +85,13 @@
       {id:'cylinder',name:'Cylinder',feature:'A cylinder has 2 circular flat faces and a curved surface.',color:'#9baddd'},
       {id:'pyramid',name:'Pyramid',feature:'This square-based pyramid has 1 square face and 4 triangular faces.',color:'#cea06e'}
     ];
-    const SETS = {basic:['circle','square','triangle','rectangle'],more:['circle','square','triangle','rectangle','oval','pentagon','hexagon','octagon'],solid:['sphere','cube','cuboid','cone','cylinder','pyramid']};
-    const OBJECTS = {
-      circle:{name:'plate',feature:'The plate looks round like a circle.'},
-      square:{name:'floor tile',feature:'The tile looks like a square.'},
-      triangle:{name:'warning sign',feature:'The sign has a triangular outline.'},
-      rectangle:{name:'door',feature:'The door looks like a rectangle.'},
-      oval:{name:'mirror',feature:'The mirror has an oval outline.'},
-      pentagon:{name:'badge',feature:'The badge has 5 sides, like a pentagon.'},
-      hexagon:{name:'honeycomb cell',feature:'The cell has 6 sides, like a hexagon.'},
-      octagon:{name:'STOP sign',feature:'The STOP sign has 8 sides, like an octagon.'},
-      sphere:{name:'ball',feature:'The ball is a 3D sphere, not a flat circle.'},
-      cube:{name:'die',feature:'The die is cube-shaped, with square faces.'},
-      cuboid:{name:'cereal box',feature:'The cereal box is shaped like a cuboid.'},
-      cone:{name:'party hat',feature:'The party hat is cone-shaped.'},
-      cylinder:{name:'tin can',feature:'The tin can is shaped like a cylinder.'},
-      pyramid:{name:'desert monument',feature:'This pyramid has a square base and triangular sides.'}
-    };
+    const ASSETS = {"circle":[{"name":"plate","src":"assets/circle-plate.webp"},{"name":"bicycle wheel","src":"assets/circle-bicycle-wheel.webp"},{"name":"wall clock","src":"assets/circle-wall-clock.webp"},{"name":"coin","src":"assets/circle-coin.webp"}],"square":[{"name":"floor tile","src":"assets/square-floor-tile.webp"},{"name":"window","src":"assets/square-window.webp"},{"name":"sticky note","src":"assets/square-sticky-note.webp"}],"triangle":[{"name":"warning sign","src":"assets/triangle-warning-sign.webp"},{"name":"set square","src":"assets/triangle-set-square.webp"},{"name":"pennant","src":"assets/triangle-pennant.webp"}],"rectangle":[{"name":"door","src":"assets/rectangle-door.webp"},{"name":"book cover","src":"assets/rectangle-book-cover.webp"},{"name":"phone","src":"assets/rectangle-phone.webp"},{"name":"postcard","src":"assets/rectangle-postcard.webp"}],"oval":[{"name":"hand mirror","src":"assets/oval-hand-mirror.webp"},{"name":"rug","src":"assets/oval-rug.webp"}],"pentagon":[{"name":"badge","src":"assets/pentagon-badge.webp"},{"name":"wooden tile","src":"assets/pentagon-wooden-tile.webp"}],"hexagon":[{"name":"honeycomb cell","src":"assets/hexagon-honeycomb-cell.webp"},{"name":"metal nut","src":"assets/hexagon-metal-nut.webp"}],"octagon":[{"name":"stop sign","src":"assets/octagon-stop-sign.webp"},{"name":"tabletop","src":"assets/octagon-tabletop.webp"}],"sphere":[{"name":"football","src":"assets/sphere-football.webp"},{"name":"orange","src":"assets/sphere-orange.webp"},{"name":"marble","src":"assets/sphere-marble.webp"},{"name":"globe","src":"assets/sphere-globe.webp"}],"cube":[{"name":"gift box","src":"assets/cube-gift-box.webp"},{"name":"wooden block","src":"assets/cube-wooden-block.webp"}],"cuboid":[{"name":"cereal box","src":"assets/cuboid-cereal-box.webp"},{"name":"shoe box","src":"assets/cuboid-shoe-box.webp"}],"cone":[{"name":"traffic cone","src":"assets/cone-traffic-cone.webp"},{"name":"party hat","src":"assets/cone-party-hat.webp"}],"cylinder":[{"name":"tin can","src":"assets/cylinder-tin-can.webp"},{"name":"battery","src":"assets/cylinder-battery.webp"}],"pyramid":[{"name":"stone pyramid","src":"assets/pyramid-stone-pyramid.webp"},{"name":"paperweight","src":"assets/pyramid-paperweight.webp"}]};
     const $ = id => document.getElementById(id);
     const byId = Object.fromEntries(SHAPES.map(shape => [shape.id,shape]));
-    let mode='find', selectedSet='basic', deck=[], step=0, firstTry={}, attempts=0, locked=false;
-    function pool(){return SETS[selectedSet].map(id=>byId[id])}
+    let mode='world', deck=[], step=0, firstTry={}, attempts=0, locked=false;
+    const lastAsset = {};
+    function pool(){return SHAPES}
+    function pickAsset(id){const images=ASSETS[id];const available=images.filter(item=>item.src!==lastAsset[id]);const asset=shuffle(available.length?available:images)[0];lastAsset[id]=asset.src;return asset}
     function shuffle(items){const a=[...items];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
     function shapeSVG(id){
       const shape=byId[id], common=`fill="${shape.color}" stroke="#263e56" stroke-width="4" stroke-linejoin="round"`;
@@ -130,41 +110,26 @@
       }[id];
       return `<svg viewBox="0 0 120 120" aria-hidden="true">${path}</svg>`;
     }
-    function objectSVG(id){
-      const art={
-        circle:'<ellipse cx="60" cy="61" rx="47" ry="42" fill="#f2a45e" stroke="#263e56" stroke-width="4"/><ellipse cx="60" cy="61" rx="31" ry="27" fill="#fff8ed" stroke="#cb7956" stroke-width="3"/>',
-        square:'<rect x="15" y="15" width="90" height="90" rx="3" fill="#69bda6" stroke="#263e56" stroke-width="4"/><path d="M15 60H105M60 15V105" stroke="#e7fcf3" stroke-width="3"/>',
-        triangle:'<path d="M60 9 L112 104 H8 Z" fill="#fff5e7" stroke="#d74c4c" stroke-width="9" stroke-linejoin="round"/><path d="M60 48v25" stroke="#263e56" stroke-width="6" stroke-linecap="round"/><circle cx="60" cy="85" r="3" fill="#263e56"/>',
-        rectangle:'<rect x="26" y="8" width="68" height="104" rx="3" fill="#77a9e9" stroke="#263e56" stroke-width="4"/><rect x="36" y="19" width="48" height="39" rx="2" fill="#add2fc" stroke="#263e56" stroke-width="2"/><circle cx="78" cy="75" r="4" fill="#f8de83" stroke="#263e56" stroke-width="2"/>',
-        oval:'<ellipse cx="60" cy="60" rx="47" ry="33" fill="#e8a0c1" stroke="#263e56" stroke-width="5"/><ellipse cx="60" cy="60" rx="39" ry="25" fill="#d4e9f8" stroke="#fff" stroke-width="2"/>',
-        pentagon:'<path d="M60 12 L107 47 L89 107 H31 L13 47 Z" fill="#f2b86d" stroke="#263e56" stroke-width="4"/><circle cx="60" cy="63" r="13" fill="#fff3d8"/>',
-        hexagon:'<path d="M37 16 H83 L108 60 L83 104 H37 L12 60 Z" fill="#82c6b4" stroke="#263e56" stroke-width="4"/><path d="M37 16 L60 60 L12 60 M83 16 L60 60 L108 60 M37 104 L60 60 L83 104" fill="none" stroke="#e7fff6" stroke-width="3"/>',
-        octagon:'<path d="M39 13 H81 L107 39 V81 L81 107 H39 L13 81 V39 Z" fill="#d94f57" stroke="#fff" stroke-width="5"/><path d="M39 13 H81 L107 39 V81 L81 107 H39 L13 81 V39 Z" fill="none" stroke="#263e56" stroke-width="2"/><text x="60" y="68" fill="white" text-anchor="middle" font-size="25" font-weight="bold">STOP</text>',
-        sphere:'<circle cx="60" cy="60" r="44" fill="#f7ad80" stroke="#263e56" stroke-width="4"/><path d="M32 25 Q70 58 39 94 M79 24 Q48 57 86 92" fill="none" stroke="#e8e7e1" stroke-width="5"/>',
-        cube:'<path d="M60 10 L105 34 V85 L60 110 L15 85 V34 Z" fill="#f9e4cc" stroke="#263e56" stroke-width="4"/><path d="M15 34 L60 60 L105 34 M60 60 V110" fill="none" stroke="#263e56" stroke-width="4"/><circle cx="38" cy="70" r="5" fill="#263e56"/><circle cx="80" cy="70" r="5" fill="#263e56"/>',
-        cuboid:'<path d="M16 37 L43 16 H102 V84 L75 105 H16 Z" fill="#e9b777" stroke="#263e56" stroke-width="4"/><path d="M16 37 H75 L102 16 M75 37 V105" fill="none" stroke="#263e56" stroke-width="4"/><text x="44" y="78" text-anchor="middle" font-size="13" font-weight="bold" fill="#39516a">CEREAL</text>',
-        cone:'<path d="M60 12 L106 93 Q60 114 14 93 Z" fill="#f8bf86" stroke="#263e56" stroke-width="4"/><circle cx="55" cy="64" r="5" fill="#c76c87"/><circle cx="75" cy="81" r="5" fill="#6caec4"/><path d="M14 93 Q60 74 106 93" fill="none" stroke="#263e56" stroke-width="4"/>',
-        cylinder:'<path d="M20 32 V88 Q60 109 100 88 V32" fill="#b8c9e7" stroke="#263e56" stroke-width="4"/><ellipse cx="60" cy="32" rx="40" ry="15" fill="#e9eff8" stroke="#263e56" stroke-width="4"/><path d="M20 88 Q60 109 100 88" fill="none" stroke="#263e56" stroke-width="4"/><rect x="34" y="51" width="52" height="27" fill="#fff6dc"/>',
-        pyramid:'<path d="M60 12 L108 90 L60 108 L12 90 Z" fill="#e6bc84" stroke="#263e56" stroke-width="4"/><path d="M60 12 V108 M12 90 L60 108 L108 90" fill="none" stroke="#263e56" stroke-width="4"/>'
-      };
-      return `<svg viewBox="0 0 120 120" role="img" aria-label="${OBJECTS[id].name}">${art[id]}</svg>`;
-    }
     function speak(text){if(!('speechSynthesis' in window))return;window.speechSynthesis.cancel();const utterance=new SpeechSynthesisUtterance(text);utterance.lang='en-GB';utterance.rate=.82;window.speechSynthesis.speak(utterance)}
     function show(screen){for(const id of ['menu','game','summary'])$(id).hidden=id!==screen}
     function clearTimer(){if('speechSynthesis' in window)window.speechSynthesis.cancel()}
-    function start(nextMode){clearTimer();mode=nextMode;const choices=pool();deck=shuffle(choices.length===4?[...choices,...choices]:[...choices,...shuffle(choices).slice(0,8-choices.length)]);step=0;firstTry={};show('game');renderQuestion()}
-    function optionsFor(target){const others=shuffle(pool().filter(s=>s.id!==target.id));return shuffle([target,...others.slice(0,mode==='find'?1:2)])}
+    function start(nextMode){clearTimer();mode=nextMode;deck=shuffle([...shuffle(SHAPES.slice(0,8)).slice(0,4),...shuffle(SHAPES.slice(8)).slice(0,4)]);step=0;firstTry={};show('game');renderQuestion()}
+    function optionsFor(target){const isSolid=SHAPES.indexOf(target)>=8;const others=shuffle(pool().filter(s=>s.id!==target.id&&(SHAPES.indexOf(s)>=8)===isSolid));return shuffle([target,...others.slice(0,mode==='find'?1:2)])}
     function renderQuestion(){
       locked=false;attempts=0;const target=deck[step];$('step-label').textContent=`Question ${step+1} of ${deck.length}`;$('progress-fill').style.width=`${step/deck.length*100}%`;$('game').querySelector('.progress').setAttribute('aria-valuenow',String(step));
-      $('mode-label').textContent=`${{find:'Find the shape',name:'Match the word',world:'Shapes around us'}[mode]} · ${{basic:'Starter 2D',more:'More 2D',solid:'3D solids'}[selectedSet]}`;
-      $('question').textContent=mode==='find'?`Find the ${target.name.toLowerCase()}`:mode==='name'?'What is this shape?':`What shape is the ${OBJECTS[target.id].name}?`;
+      $('mode-label').textContent={find:'Find the shape',name:'Match the word',world:'Shapes around us'}[mode];
+      $('question').textContent=mode==='find'?`Find the ${target.name.toLowerCase()}`:mode==='name'?'What is this shape?':`Which picture shows ${/^[aeiou]/i.test(target.name)?'an':'a'} ${target.name.toLowerCase()}?`;
       $('speak').setAttribute('aria-label',`Hear: ${$('question').textContent}`);
-      $('example').hidden=mode==='find';$('example').innerHTML=mode==='name'?shapeSVG(target.id):mode==='world'?objectSVG(target.id):'';
+      $('example').hidden=mode!=='name';$('example').innerHTML=mode==='name'?shapeSVG(target.id):'';
       $('answers').classList.toggle('two',mode==='find');$('answers').innerHTML='';
       for(const shape of optionsFor(target)){
         const button=document.createElement('button');button.className='answer';button.type='button';button.dataset.id=shape.id;
         if(mode==='find'){button.innerHTML=shapeSVG(shape.id);button.setAttribute('aria-label',shape.name)}
-        else button.textContent=shape.name;
+        else if(mode==='world'){
+          const asset=pickAsset(shape.id);button.classList.add('photo');button.dataset.objectName=asset.name;
+          const img=document.createElement('img');img.src=asset.src;img.alt='';img.loading='eager';button.append(img);
+          button.setAttribute('aria-label',`Picture of ${asset.name}`);
+        }else button.textContent=shape.name;
         button.addEventListener('click',()=>answer(shape.id,button));$('answers').append(button);
       }
       $('feedback').textContent='';$('feedback').className='feedback';$('next').hidden=true;
@@ -179,14 +144,13 @@
         return;
       }
       locked=true;button.classList.add('correct');for(const item of $('answers').children)item.disabled=true;
-      $('feedback').className='feedback success';$('feedback').textContent=(mode==='world'?OBJECTS[target.id].feature:target.feature);
+      $('feedback').className='feedback success';$('feedback').textContent=mode==='world'?`${button.dataset.objectName} → ${target.name}. ${target.feature}`:target.feature;
       $('next').textContent=step===deck.length-1?'See my shapes →':'Next →';$('next').hidden=false;speak(target.name);
     }
     function next(){clearTimer();if(!locked)return;step++;if(step===deck.length)finish();else renderQuestion()}
     function finish(){show('summary');$('result').textContent=`You knew ${Object.values(firstTry).filter(Boolean).length} of ${deck.length} on the first try. Every shape you practised counts!`;
-      const list=$('summary-list');list.innerHTML='';for(const shape of pool()){const indexes=deck.flatMap((item,i)=>item.id===shape.id?[i]:[]);const count=indexes.filter(i=>firstTry[i]).length;const el=document.createElement('div');el.className='summary-item';el.textContent=`${shape.name} ${count===indexes.length?'✓':'↗'}`;const small=document.createElement('small');small.textContent=count===indexes.length?'Great first tries':'Let’s practise again';el.append(small);list.append(el)}
+      const list=$('summary-list');list.innerHTML='';for(const shape of deck){const index=deck.indexOf(shape);const el=document.createElement('div');el.className='summary-item';el.textContent=`${shape.name} ${firstTry[index]?'✓':'↗'}`;const small=document.createElement('small');small.textContent=firstTry[index]?'Great first try':'Let’s practise again';el.append(small);list.append(el)}
     }
-    document.querySelectorAll('[data-set]').forEach(button=>button.addEventListener('click',()=>{selectedSet=button.dataset.set;document.querySelectorAll('[data-set]').forEach(item=>item.setAttribute('aria-pressed',String(item===button)))}));
     document.querySelectorAll('[data-mode]').forEach(button=>button.addEventListener('click',()=>start(button.dataset.mode)));
     $('speak').addEventListener('click',()=>speak($('question').textContent));$('next').addEventListener('click',next);
     $('change-mode').addEventListener('click',()=>{clearTimer();show('menu')});$('again').addEventListener('click',()=>start(mode));$('choose').addEventListener('click',()=>{clearTimer();show('menu')});

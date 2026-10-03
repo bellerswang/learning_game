@@ -1,0 +1,174 @@
+{
+  "circle": [
+    {
+      "name": "plate",
+      "src": "assets/circle-plate.webp"
+    },
+    {
+      "name": "bicycle wheel",
+      "src": "assets/circle-bicycle-wheel.webp"
+    },
+    {
+      "name": "wall clock",
+      "src": "assets/circle-wall-clock.webp"
+    },
+    {
+      "name": "coin",
+      "src": "assets/circle-coin.webp"
+    }
+  ],
+  "square": [
+    {
+      "name": "floor tile",
+      "src": "assets/square-floor-tile.webp"
+    },
+    {
+      "name": "window",
+      "src": "assets/square-window.webp"
+    },
+    {
+      "name": "sticky note",
+      "src": "assets/square-sticky-note.webp"
+    }
+  ],
+  "triangle": [
+    {
+      "name": "warning sign",
+      "src": "assets/triangle-warning-sign.webp"
+    },
+    {
+      "name": "set square",
+      "src": "assets/triangle-set-square.webp"
+    },
+    {
+      "name": "pennant",
+      "src": "assets/triangle-pennant.webp"
+    }
+  ],
+  "rectangle": [
+    {
+      "name": "door",
+      "src": "assets/rectangle-door.webp"
+    },
+    {
+      "name": "book cover",
+      "src": "assets/rectangle-book-cover.webp"
+    },
+    {
+      "name": "phone",
+      "src": "assets/rectangle-phone.webp"
+    },
+    {
+      "name": "postcard",
+      "src": "assets/rectangle-postcard.webp"
+    }
+  ],
+  "oval": [
+    {
+      "name": "hand mirror",
+      "src": "assets/oval-hand-mirror.webp"
+    },
+    {
+      "name": "rug",
+      "src": "assets/oval-rug.webp"
+    }
+  ],
+  "pentagon": [
+    {
+      "name": "badge",
+      "src": "assets/pentagon-badge.webp"
+    },
+    {
+      "name": "wooden tile",
+      "src": "assets/pentagon-wooden-tile.webp"
+    }
+  ],
+  "hexagon": [
+    {
+      "name": "honeycomb cell",
+      "src": "assets/hexagon-honeycomb-cell.webp"
+    },
+    {
+      "name": "metal nut",
+      "src": "assets/hexagon-metal-nut.webp"
+    }
+  ],
+  "octagon": [
+    {
+      "name": "stop sign",
+      "src": "assets/octagon-stop-sign.webp"
+    },
+    {
+      "name": "tabletop",
+      "src": "assets/octagon-tabletop.webp"
+    }
+  ],
+  "sphere": [
+    {
+      "name": "football",
+      "src": "assets/sphere-football.webp"
+    },
+    {
+      "name": "orange",
+      "src": "assets/sphere-orange.webp"
+    },
+    {
+      "name": "marble",
+      "src": "assets/sphere-marble.webp"
+    },
+    {
+      "name": "globe",
+      "src": "assets/sphere-globe.webp"
+    }
+  ],
+  "cube": [
+    {
+      "name": "gift box",
+      "src": "assets/cube-gift-box.webp"
+    },
+    {
+      "name": "wooden block",
+      "src": "assets/cube-wooden-block.webp"
+    }
+  ],
+  "cuboid": [
+    {
+      "name": "cereal box",
+      "src": "assets/cuboid-cereal-box.webp"
+    },
+    {
+      "name": "shoe box",
+      "src": "assets/cuboid-shoe-box.webp"
+    }
+  ],
+  "cone": [
+    {
+      "name": "traffic cone",
+      "src": "assets/cone-traffic-cone.webp"
+    },
+    {
+      "name": "party hat",
+      "src": "assets/cone-party-hat.webp"
+    }
+  ],
+  "cylinder": [
+    {
+      "name": "tin can",
+      "src": "assets/cylinder-tin-can.webp"
+    },
+    {
+      "name": "battery",
+      "src": "assets/cylinder-battery.webp"
+    }
+  ],
+  "pyramid": [
+    {
+      "name": "stone pyramid",
+      "src": "assets/pyramid-stone-pyramid.webp"
+    },
+    {
+      "name": "paperweight",
+      "src": "assets/pyramid-paperweight.webp"
+    }
+  ]
+}

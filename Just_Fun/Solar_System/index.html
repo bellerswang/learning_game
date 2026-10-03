@@ -215,13 +215,12 @@
               {/* Header UI */}
               <div className="absolute top-0 left-0 right-0 p-6 flex justify-between items-start pointer-events-none">
                 <div className="pointer-events-auto flex items-center gap-4">
-                  <button 
-                    onClick={() => window.location.href = '../../index.html'}
+                  <a href="../../index.html"
                     className="w-12 h-12 bg-slate-800/80 backdrop-blur border border-slate-700 rounded-full flex items-center justify-center text-white active:scale-90 transition-transform hover:bg-slate-700"
-                    title="Go to Home"
+                    title="Go to Home" aria-label="Back to games"
                   >
                     <div className="w-6 h-6"><Icons.Home /></div>
-                  </button>
+                  </a>
                   <div>
                     <h1 className="text-3xl font-bold bg-gradient-to-r from-yellow-300 to-orange-500 bg-clip-text text-transparent">
                       Magic Space Adventure

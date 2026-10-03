@@ -29,10 +29,10 @@
     return `${minutes} ${m <= 30 ? "past" : "to"} ${hour}`;
   }
   const stops = {
-    1: { name: "First Stop", title: "Meet the two hands", copy: "The short blue hand shows the hour. The long red hand points to 12 for o'clock, or 6 for half past.", example: "Example: red at 12 and blue at 3 means 3:00. Red at 6 and blue between 3 and 4 means 3:30.", sample: [3, 0] },
-    2: { name: "Quarter Bridge", title: "A quarter of an hour", copy: "Red at 3 means quarter past. Red at 9 means quarter to the NEXT hour.", example: "Example: at 2:45, the blue hand is nearly at 3. We say quarter to three.", sample: [2, 45] },
-    3: { name: "Minute Mountain", title: "Count in fives", copy: "Follow the long red hand. Each big number adds five minutes. After 6, count how many minutes are left until the next hour.", example: "Example: red at 4 means 20 minutes past. If blue is just after 4, the time is 4:20.", sample: [4, 20] },
-    4: { name: "Word Town", title: "Say what you see", copy: "Tell the time in words. Before half past, say past this hour. After half past, say to the next hour.", example: "Example: 8:45 is quarter to nine—not quarter to eight.", sample: [8, 45] }
+    1: { name: "First Stop", title: "Meet the two hands", story: "👾 The train is ready to leave. Help Time Monster read the station clock!", copy: "The short blue hand shows the hour. The long red hand points to 12 for o'clock, or 6 for half past.", example: "Example: red at 12 and blue at 3 means 3:00. Red at 6 and blue between 3 and 4 means 3:30.", sample: [3, 0], realLife: "Can you find an o'clock or half-past time on a clock at home?" },
+    2: { name: "Quarter Bridge", title: "A quarter of an hour", story: "🌉 The bridge opens at quarter time. Read the clock to help the train cross!", copy: "Red at 3 means quarter past. Red at 9 means quarter to the NEXT hour.", example: "Example: at 2:45, the blue hand is nearly at 3. We say quarter to three.", sample: [2, 45], realLife: "What do you do a quarter of an hour before dinner?" },
+    3: { name: "Minute Mountain", title: "Count in fives", story: "⛰️ The mountain has a marker every five minutes. Count them with Time Monster!", copy: "Follow the long red hand. Each big number adds five minutes. After 6, count how many minutes are left until the next hour.", example: "Example: red at 4 means 20 minutes past. If blue is just after 4, the time is 4:20.", sample: [4, 20], realLife: "Find a real clock. How many minutes will pass when the red hand moves one big number?" },
+    4: { name: "Word Town", title: "Say what you see", story: "🏘️ The conductor speaks in time words. Help the train find its way home!", copy: "Tell the time in words. Before half past, say past this hour. After half past, say to the next hour.", example: "Example: 8:45 is quarter to nine—not quarter to eight.", sample: [8, 45], realLife: "Tell someone the time in words when you next see a clock." }
   };
   function readProgress() {
     try {
@@ -180,6 +180,7 @@
     if (run) return renderQuestion();
     showOnly("intro");
     $("introTitle").textContent = stops[n].title;
+    $("introStory").textContent = stops[n].story;
     $("introCopy").textContent = stops[n].copy;
     $("introExample").textContent = stops[n].example;
     $("startButton").textContent = progress.best[n] != null ? "Try 5 more questions →" : "Start 5 questions →";
@@ -235,6 +236,7 @@
       playSound("try");
       if (run.mistakes >= 2) {
         run.answered = true;
+        progress.stars++;
         [...$("choicesGrid").children].forEach(b => {
           b.disabled = true;
           if (b.textContent === item.answer) b.classList.add("correct");
@@ -248,7 +250,8 @@
       run.answered = true;
       button.classList.add("correct");
       [...$("choicesGrid").children].forEach(b => b.disabled = true);
-      if (run.mistakes === 0 && !run.clue) { run.score++; progress.stars++; }
+      if (run.mistakes === 0 && !run.clue) run.score++;
+      progress.stars++;
       playSound("correct");
       $("hintButton").classList.add("hidden");
       $("continueButton").classList.remove("hidden");
@@ -257,6 +260,7 @@
       ticket();
     }
     save();
+    ticket();
     $("feedback").scrollIntoView({ block: "nearest", behavior: "smooth" });
   }
   function finishTrip() {
@@ -271,7 +275,9 @@
     const heading = document.createElement("h2"), detail = document.createElement("p"), next = document.createElement("p"), actions = document.createElement("div");
     heading.textContent = "🚉 Stop reached!";
     detail.textContent = `You tried all 5 clocks. You read ${run.score} on your own, first try. Clues and second tries helped with the others.`;
-    next.textContent = level < 4 ? `The next stop, ${stops[level + 1].name}, is open. You can also practise here again.` : "You have visited every stop! Come back for another short trip tomorrow.";
+    next.textContent = level < 4 ? `The next stop, ${stops[level + 1].name}, is open. You can also practise here again.` : "You have visited every stop! A new short trip is waiting whenever you return.";
+    const transfer = document.createElement("p");
+    transfer.textContent = `Try it in real life: ${stops[level].realLife}`;
     actions.className = "learning-actions";
     const replay = document.createElement("button");
     replay.className = "quiet-action"; replay.type = "button"; replay.textContent = "Practise this stop";
@@ -283,7 +289,7 @@
       onward.addEventListener("click", () => selectLevel(level + 1));
       actions.append(onward);
     }
-    summary.append(heading, detail, next, actions);
+    summary.append(heading, detail, next, transfer, actions);
   }
   function showGuide() { $("guideModal").classList.add("open"); $("closeGuide").focus(); }
   function closeGuide() { $("guideModal").classList.remove("open"); $("guideButton").focus(); }

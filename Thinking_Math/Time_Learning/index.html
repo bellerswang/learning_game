@@ -483,6 +483,7 @@
         .station-card { margin:12px 0; padding:15px; border:2px solid #f3ca78; border-radius:22px; background:#fffaf0 }
         .station-card h2 { margin:0 0 7px; font-size:1.45rem }
         .station-card p { margin:6px 0; line-height:1.35; font-size:1.08rem }
+        .station-card .story { background:#e7f4f0; color:#265d5a; border-radius:13px; padding:10px 12px; font-weight:700 }
         .station-card .example { background:white; padding:12px; border-radius:13px; color:#334155 }
         .primary-action { min-height:52px; border:0; border-radius:15px; background:#be3e86; color:white; padding:10px 20px; font-weight:700; font-size:1.08rem; cursor:pointer }
         .primary-action:hover { background:#a52c70 }
@@ -535,7 +536,7 @@
         <nav class="topbar" aria-label="Clock game controls">
             <a class="home-link" href="../../index.html">Home</a>
             <button class="guide-btn" type="button" id="guideButton">How to read</button>
-            <div class="stars" aria-live="polite">⭐ <span id="starCounter">0</span></div>
+            <div class="stars" aria-live="polite">⭐ Effort <span id="starCounter">0</span></div>
         </nav>
         <header class="journey-head">
             <h1><span class="monster" aria-hidden="true">👾</span> Time Monster's Train</h1>
@@ -551,6 +552,7 @@
         </div>
         <section class="station-card" id="stationIntro" aria-labelledby="introTitle">
             <h2 id="introTitle"></h2>
+            <p class="story" id="introStory"></p>
             <p id="introCopy"></p>
             <p class="example" id="introExample"></p>
             <button class="primary-action" type="button" id="startButton">Start 5 questions →</button>

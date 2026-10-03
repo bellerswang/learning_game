@@ -15,7 +15,8 @@ const APP_CONFIG = {
         moneyShop: true,      // UK Money Shop Game
         timeLearning: true,   // Time Monster's Train
         factFamily: true,    // Fact Family Quest
-        memoryMatch: true    // Memory Match
+        memoryMatch: true,   // Memory Match
+        factsPortal: true    // Facts Portal
     },
 
 };

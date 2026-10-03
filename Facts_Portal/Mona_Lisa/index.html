@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f7f1e7">
+  <title>Mona Lisa · Facts Portal</title>
+  <link rel="icon" href="../../favicon.png">
+  <style>
+    :root{font-family:ui-rounded,"Avenir Next",Nunito,system-ui,sans-serif;color:#26384b;background:#f7f1e7}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 90% 4%,#e8dfed,transparent 38%),radial-gradient(circle at 8% 90%,#dfeadb,transparent 40%),#f7f1e7}
+    button{font:inherit;cursor:pointer;touch-action:manipulation}a{color:inherit}button:focus-visible,a:focus-visible{outline:4px solid #6651b4;outline-offset:4px}button:disabled{opacity:.38;cursor:default}
+    .shell{width:min(1120px,100%);margin:auto;padding:calc(16px + env(safe-area-inset-top)) max(18px,env(safe-area-inset-right)) calc(30px + env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left))}
+    .top{display:flex;align-items:center;justify-content:space-between;gap:10px}.back{background:white;text-decoration:none;border:2px solid #e8dece;border-radius:999px;padding:10px 16px;font-weight:900;white-space:nowrap;box-shadow:0 4px 0 #e8dece}.series{font-weight:900;color:#796a91;text-align:right}
+    .track{display:flex;gap:7px;margin:22px 0 14px}.dot{flex:1;height:10px;border:0;border-radius:999px;background:#ddd3c9;padding:0}.dot[aria-current="step"]{background:#765cb4}.dot.done{background:#b8a6dc}
+    .status{display:flex;align-items:center;justify-content:space-between;gap:12px;font-weight:900;color:#706486;font-size:.86rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:15px}
+    .slide{background:#fffcf7;border:2px solid #e7ddcc;border-radius:32px;box-shadow:0 13px 0 #e9decb,0 25px 50px #4f3d2a1c;min-height:min(650px,75vh);overflow:hidden}.slide[hidden]{display:none}
+    .split{display:grid;grid-template-columns:minmax(0,44%) 1fr;min-height:610px}.painting-side{background:#3a463e;display:flex;align-items:center;justify-content:center;padding:24px;position:relative}.painting-side img{display:block;max-width:100%;width:auto;height:min(530px,58vh);object-fit:contain;border:8px solid #bd9b5f;box-shadow:0 15px 30px #0007;background:#3b3a2e}.painting-side .caption{position:absolute;bottom:18px;left:18px;right:18px;color:white;text-align:center;background:#18251dbb;border-radius:999px;padding:7px 12px;font-size:.8rem;font-weight:700}
+    .text-side{padding:clamp(26px,5vw,55px);display:flex;flex-direction:column;justify-content:center;gap:17px}.kicker{margin:0;text-transform:uppercase;letter-spacing:.15em;color:#8067a4;font-size:.84rem;font-weight:900}.text-side h1,.text-side h2,.wide h2{font-size:clamp(2.45rem,5.6vw,4.5rem);line-height:1.04;letter-spacing:-.05em;margin:0}.text-side p,.wide .lead{font-size:clamp(1.14rem,2.25vw,1.45rem);line-height:1.42;margin:0;color:#4b5b68}.highlight{color:#7560ae}.label{display:inline-block;align-self:flex-start;background:#efe9f8;color:#60499b;border-radius:999px;padding:9px 14px;font-weight:900;font-size:.9rem}.question{background:#f5f0df;border-radius:18px;padding:16px 18px;font-size:1.1rem;font-weight:800;line-height:1.35;color:#566045}
+    .wide{padding:clamp(24px,5vw,50px);min-height:610px;display:flex;flex-direction:column;gap:16px}.wide h2{max-width:890px}.wide .lead{max-width:780px}.two{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:8px}.fact{background:#f2f0eb;border-radius:24px;padding:23px;border:2px solid #e9e5db;min-height:155px}.fact .icon{font-size:2.5rem;display:block;margin-bottom:10px}.fact strong{display:block;font-size:1.6rem;line-height:1.1}.fact p{font-size:1.08rem;line-height:1.4;margin:8px 0 0;color:#566575}
+    .portrait-strip{display:grid;grid-template-columns:minmax(0,38%) 1fr;gap:20px;align-items:stretch;margin-top:8px}.face-crop{height:320px;border-radius:26px;overflow:hidden;background:#5b624e;border:5px solid #c3ad81}.face-crop img{display:block;width:100%;height:100%;object-fit:cover;object-position:center 17%}.portrait-strip .two{grid-template-columns:1fr;margin:0}
+    .smile-layout{display:grid;grid-template-columns:minmax(0,52%) 1fr;gap:22px;align-items:center;margin-top:4px}.smile-crop{height:340px;overflow:hidden;border-radius:28px;background:#475447;border:5px solid #c4ac7b}.smile-crop img{width:100%;height:100%;object-fit:cover;object-position:center 18%}.side-notes{display:grid;gap:16px}.word{background:#ede6fa;border-radius:22px;padding:20px;font-size:1.15rem;line-height:1.4}.word strong{font-size:1.5rem;color:#6750a0}.look{background:#e8f1e9;border-radius:22px;padding:20px;font-size:1.16rem;font-weight:800;line-height:1.4}
+    .landscape-layout{display:grid;grid-template-columns:minmax(0,42%) 1fr;gap:24px;align-items:center;margin-top:4px}.landscape-layout img{display:block;width:auto;max-width:100%;height:390px;object-fit:contain;margin:auto;border:7px solid #b79a65;background:#4d5140;box-shadow:0 12px 28px #3335}.landscape-cues{display:grid;gap:14px}.cue{background:#eef3ed;padding:20px 22px;border-radius:22px;font-size:1.35rem;font-weight:900}.cue span{display:block;font-size:1rem;font-weight:600;color:#526176;margin-top:5px}
+    .protection{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:14px}.protection .fact{min-height:245px;background:#f2efe9}.measure{display:inline-flex;align-items:center;gap:14px;margin-top:auto;background:#e9f0e6;border-radius:19px;padding:14px 18px;font-weight:900;font-size:1.1rem}.mini-panel{width:36px;height:52px;background:linear-gradient(90deg,#b88d64,#d6b490,#b88d64);border:3px solid #9b7251;border-radius:2px;flex:none}
+    .timeline{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:28px}.event{background:#f4efe9;border:2px solid #e6dace;border-radius:23px;padding:20px;min-height:212px}.event .year{display:inline-block;background:#7b65ae;color:white;padding:8px 13px;border-radius:999px;font-size:1.16rem;font-weight:900}.event strong{display:block;font-size:1.38rem;margin:15px 0 7px}.event p{margin:0;font-size:1.05rem;color:#566575;line-height:1.4}.happy{align-self:flex-start;margin-top:auto;padding:12px 17px;background:#e4f1e5;border-radius:17px;font-weight:900;color:#3e7050}
+    .memory-options{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:12px}.memory{border:3px solid #e3d8c8;background:#f4f0e9;border-radius:24px;padding:22px;text-align:left;font-weight:900;font-size:1.25rem;min-height:100px;color:#344458}.memory[aria-pressed="true"]{border-color:#7e67b9;background:#eee8fa;box-shadow:inset 0 0 0 2px #fff}.memory span{font-size:1.8rem;margin-right:10px}.saved{font-weight:900;color:#5f4d94;min-height:1.5em;margin:0}
+    .controls{display:flex;align-items:center;justify-content:space-between;gap:15px;margin:30px 0 0}.nav{min-width:135px;min-height:54px;border:2px solid #55418f;border-radius:17px;background:#765cb5;color:#fff;font-size:1.05rem;font-weight:900;box-shadow:0 5px 0 #55418f}.nav.secondary{background:#fff;color:#584884;border-color:#ddd1eb;box-shadow:0 5px 0 #ddd1eb}.controls .tip{font-size:.94rem;color:#756e76;text-align:center}.credits{text-align:center;font-size:.8rem;color:#7c7a79;line-height:1.5;margin:26px 0 0}.credits a{text-underline-offset:3px}
+    @media(max-width:750px){.slide{min-height:0}.split{grid-template-columns:1fr;min-height:0}.painting-side{min-height:260px;padding:15px}.painting-side img{height:255px;border-width:6px}.painting-side .caption{font-size:.72rem;padding:5px}.text-side{padding:24px;gap:12px}.wide{min-height:0;padding:24px;gap:13px}.portrait-strip,.smile-layout,.landscape-layout{grid-template-columns:1fr;gap:16px}.face-crop,.smile-crop{height:240px}.portrait-strip .two{grid-template-columns:repeat(2,1fr)}.fact{padding:16px;min-height:0}.fact strong{font-size:1.35rem}.fact p{font-size:.99rem}.smile-layout .side-notes{grid-template-columns:repeat(2,1fr)}.word,.look{padding:15px;font-size:1rem}.landscape-layout img{height:250px}.landscape-cues{grid-template-columns:1fr 1fr}.cue{padding:15px;font-size:1.1rem}.protection .fact{min-height:200px}.timeline{gap:10px;margin-top:8px}.event{padding:13px;min-height:180px}.event strong{font-size:1.1rem}.event p{font-size:.93rem}.event .year{font-size:.94rem}.nav{min-width:105px}.controls{position:sticky;bottom:calc(8px + env(safe-area-inset-bottom));z-index:2;padding:9px 5px;border-radius:18px;background:#f7f1e7e8;backdrop-filter:blur(10px)}.controls .tip{display:none}}
+    @media(max-width:480px){.series{font-size:.8rem}.wide h2,.text-side h1,.text-side h2{font-size:clamp(2.3rem,9vw,3rem)}.portrait-strip .two,.smile-layout .side-notes{grid-template-columns:1fr}.timeline{grid-template-columns:1fr}.event{min-height:0}.memory-options{grid-template-columns:1fr 1fr;gap:9px}.memory{font-size:1rem;padding:13px;min-height:90px}.memory span{display:block;margin:0 0 5px}.protection{gap:10px}.protection .fact{padding:13px}.measure{font-size:.95rem}.top .back{font-size:.9rem;padding:9px 12px}}
+    @media(prefers-reduced-motion:no-preference){.slide{animation:arrive .24s ease both}@keyframes arrive{from{opacity:.5;transform:translateY(6px)}to{opacity:1;transform:none}}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <nav class="top" aria-label="Breadcrumb"><a class="back" href="../index.html">← Facts Portal</a><span class="series">🎨 Art story · The Louvre</span></nav>
+    <div class="track" aria-label="Card progress" id="track"></div>
+    <div class="status"><span id="card-number">Card 1 of 7</span><span>Mona Lisa</span></div>
+
+    <section class="slide split" aria-labelledby="title-1">
+      <div class="painting-side"><img src="mona-lisa.webp" alt="The whole Mona Lisa portrait by Leonardo da Vinci" width="960" height="1435"><span class="caption">The real painting you saw at the Louvre</span></div>
+      <div class="text-side"><p class="kicker">Our Louvre discovery</p><h1 id="title-1">Meet <span class="highlight">Mona Lisa</span></h1><p>This is a <strong>portrait</strong>: a painting of a person.</p><span class="label">Painted by Leonardo da Vinci</span><div class="question">Look at her eyes. Where do you think she is looking?</div></div>
+    </section>
+
+    <section class="slide wide" aria-labelledby="title-2" hidden>
+      <p class="kicker">01 · A real person</p><h2 id="title-2">Her name was <span class="highlight">Lisa</span></h2><p class="lead">Mona Lisa shows a real woman called Lisa Gherardini.</p>
+      <div class="portrait-strip"><div class="face-crop"><img src="mona-lisa.webp" alt="Close view of Lisa's face and shoulders" width="960" height="1435"></div><div class="two"><div class="fact"><span class="icon" aria-hidden="true">👩</span><strong>Lisa Gherardini</strong><p>The person in the painting.</p></div><div class="fact"><span class="icon" aria-hidden="true">🎨</span><strong>Leonardo da Vinci</strong><p>The artist who painted her more than 500 years ago.</p></div></div></div>
+      <div class="question">A portrait is a picture of a person. Who would you paint?</div>
+    </section>
+
+    <section class="slide wide" aria-labelledby="title-3" hidden>
+      <p class="kicker">02 · Look closely</p><h2 id="title-3">The little <span class="highlight">smile</span></h2><p class="lead">Is she smiling? Her expression can seem different each time you look.</p>
+      <div class="smile-layout"><div class="smile-crop"><img src="mona-lisa.webp" alt="Close view of the Mona Lisa's smile" width="960" height="1435"></div><div class="side-notes"><div class="word"><strong>Sfumato</strong><br>Leonardo made the edges soft and smoky, almost like mist.</div><div class="look">👀 Look at the corners of her mouth. Do they have sharp lines?</div></div></div>
+    </section>
+
+    <section class="slide wide" aria-labelledby="title-4" hidden>
+      <p class="kicker">03 · Look behind Lisa</p><h2 id="title-4">A world in the <span class="highlight">background</span></h2><p class="lead">Leonardo painted a dreamy landscape behind her.</p>
+      <div class="landscape-layout"><img src="mona-lisa.webp" alt="Mona Lisa with mountains and water behind her" width="960" height="1435"><div class="landscape-cues"><div class="cue">⛰️ Mountains<span>Can you spot the faraway hills?</span></div><div class="cue">💧 Water<span>Look on both sides of Lisa.</span></div></div></div>
+      <div class="question">Which part did you notice when we saw the painting?</div>
+    </section>
+
+    <section class="slide wide" aria-labelledby="title-5" hidden>
+      <p class="kicker">04 · A painting to protect</p><h2 id="title-5"><span class="highlight">Wood</span> behind glass</h2><p class="lead">Leonardo painted on a flat piece of poplar wood. At the Louvre, a special glass case helps protect it.</p>
+      <div class="protection"><div class="fact"><span class="icon" aria-hidden="true">🪵</span><strong>Wood panel</strong><p>The paint is on wood. A panel is a flat piece of wood.</p></div><div class="fact"><span class="icon" aria-hidden="true">🛡️</span><strong>Glass case</strong><p>It helps keep the old painting safe.</p></div></div>
+      <div class="measure"><span class="mini-panel" aria-hidden="true"></span><span>77 cm tall × 53 cm wide<br><small>Smaller than many people expect!</small></span></div>
+    </section>
+
+    <section class="slide wide" aria-labelledby="title-6" hidden>
+      <p class="kicker">05 · A true museum mystery</p><h2 id="title-6">The painting <span class="highlight">disappeared!</span></h2><p class="lead">Someone stole it from the Louvre. The museum found it again more than two years later.</p>
+      <div class="timeline"><div class="event"><span class="year">1500s</span><strong>Painted</strong><p>Leonardo painted Lisa.</p></div><div class="event"><span class="year">1911</span><strong>Missing!</strong><p>The painting was stolen.</p></div><div class="event"><span class="year">1913</span><strong>Found again</strong><p>It returned to the Louvre.</p></div></div>
+      <div class="happy">🔎 We saw it at the Louvre in Paris!</div>
+    </section>
+
+    <section class="slide wide" aria-labelledby="title-7" hidden>
+      <p class="kicker">06 · Your detective notes</p><h2 id="title-7">What do <span class="highlight">you</span> remember?</h2><p class="lead">Pick the parts you remember from our visit. You can choose more than one.</p>
+      <div class="memory-options" aria-label="Things I remember"><button class="memory" data-memory="smile" aria-pressed="false"><span aria-hidden="true">😊</span>The little smile</button><button class="memory" data-memory="landscape" aria-pressed="false"><span aria-hidden="true">⛰️</span>The landscape</button><button class="memory" data-memory="glass" aria-pressed="false"><span aria-hidden="true">🛡️</span>The glass case</button><button class="memory" data-memory="people" aria-pressed="false"><span aria-hidden="true">👀</span>Looking at it together</button></div>
+      <p class="saved" id="memory-message" aria-live="polite">Tap a memory to keep it on this device.</p>
+      <div class="question">Tell someone one new thing you learned about Mona Lisa.</div>
+    </section>
+
+    <nav class="controls" aria-label="Story controls"><button class="nav secondary" id="previous" type="button">← Back</button><span class="tip">Tap to turn a card</span><button class="nav" id="next" type="button">Next →</button></nav>
+    <footer class="credits">Facts: <a href="https://www.louvre.fr/en/explore/the-palace/from-the-mona-lisa-to-the-wedding-feast-at-cana" target="_blank" rel="noopener">Musée du Louvre</a> · Image: <a href="https://commons.wikimedia.org/wiki/File:Leonardo_da_Vinci_-_Mona_Lisa.jpg" target="_blank" rel="noopener">Wikimedia Commons, public domain</a></footer>
+  </main>
+  <script>
+    const slides=[...document.querySelectorAll('.slide')];
+    const track=document.getElementById('track'), counter=document.getElementById('card-number');
+    const previous=document.getElementById('previous'), next=document.getElementById('next');
+    let current=0;
+    slides.forEach((_,index)=>{const button=document.createElement('button');button.type='button';button.className='dot';button.setAttribute('aria-label',`Go to card ${index+1}`);button.addEventListener('click',()=>show(index));track.append(button)});
+    function show(index){
+      current=(index+slides.length)%slides.length;
+      slides.forEach((slide,i)=>{slide.hidden=i!==current});
+      [...track.children].forEach((dot,i)=>{dot.classList.toggle('done',i<current);if(i===current)dot.setAttribute('aria-current','step');else dot.removeAttribute('aria-current')});
+      counter.textContent=`Card ${current+1} of ${slides.length}`;
+      previous.disabled=current===0;
+      next.textContent=current===slides.length-1?'Read again ↺':'Next →';
+      window.scrollTo({top:0,behavior:'auto'});
+    }
+    previous.addEventListener('click',()=>show(current-1));
+    next.addEventListener('click',()=>show(current===slides.length-1?0:current+1));
+    document.addEventListener('keydown',event=>{if(event.key==='ArrowRight')show(current===slides.length-1?0:current+1);if(event.key==='ArrowLeft'&&current>0)show(current-1)});
+    const memoryKey='facts-portal-mona-lisa-memory-v1';
+    let selected=[];
+    try{selected=JSON.parse(localStorage.getItem(memoryKey)||'[]');if(!Array.isArray(selected))selected=[]}catch{selected=[]}
+    const memoryButtons=[...document.querySelectorAll('[data-memory]')],message=document.getElementById('memory-message');
+    function renderMemory(){memoryButtons.forEach(button=>button.setAttribute('aria-pressed',String(selected.includes(button.dataset.memory))));message.textContent=selected.length?`${selected.length} memory sticker${selected.length===1?'':'s'} saved on this device. 🌟`:'Tap a memory to keep it on this device.'}
+    memoryButtons.forEach(button=>button.addEventListener('click',()=>{const id=button.dataset.memory;selected=selected.includes(id)?selected.filter(item=>item!==id):[...selected,id];try{localStorage.setItem(memoryKey,JSON.stringify(selected))}catch{}renderMemory()}));
+    renderMemory();show(0);
+  </script>
+</body>
+</html>

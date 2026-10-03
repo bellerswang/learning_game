@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f7f1e7">
+  <title>Facts Portal · Magic Learning Toolbox</title>
+  <link rel="icon" href="../favicon.png">
+  <style>
+    :root{font-family:ui-rounded,"Avenir Next",Nunito,system-ui,sans-serif;color:#27384a;background:#f7f1e7}
+    *{box-sizing:border-box} body{margin:0;min-height:100vh;background:radial-gradient(circle at 90% 0%,#eaddec 0,transparent 38%),radial-gradient(circle at 0% 80%,#deeadc 0,transparent 36%),#f7f1e7}
+    a{color:inherit;text-decoration:none} button,a{touch-action:manipulation} a:focus-visible{outline:4px solid #6858c8;outline-offset:4px}
+    .shell{width:min(1050px,100%);margin:auto;padding:calc(18px + env(safe-area-inset-top)) max(20px,env(safe-area-inset-right)) calc(50px + env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left))}
+    .top{display:flex;align-items:center;justify-content:space-between;gap:16px}.back{display:inline-flex;align-items:center;gap:8px;background:#fff;border:2px solid #e7ded0;border-radius:999px;padding:10px 16px;font-weight:800;box-shadow:0 4px 0 #e7ded0}.brand{font-weight:900;color:#6b618a;letter-spacing:.03em}
+    .intro{padding:clamp(32px,7vw,68px) 0 28px}.eyebrow{color:#7b668f;font-size:.84rem;font-weight:900;text-transform:uppercase;letter-spacing:.18em;margin:0 0 14px}.intro h1{font-size:clamp(2.9rem,9vw,5.7rem);line-height:.98;letter-spacing:-.05em;margin:0 0 20px;color:#2f4056}.intro h1 span{color:#7e67af}.intro p:last-child{font-size:clamp(1.12rem,2.4vw,1.35rem);line-height:1.48;max-width:40rem;margin:0;color:#506174}
+    .shelf-title{font-size:1.15rem;font-weight:900;margin:20px 0 15px}.topic{display:grid;grid-template-columns:minmax(165px,38%) 1fr;min-height:310px;overflow:hidden;border:2px solid #e4d9c7;border-radius:32px;background:#fffdf8;box-shadow:0 15px 0 #eadfce,0 27px 48px #51442e1c;transition:transform .18s,box-shadow .18s}.topic:hover{transform:translateY(-4px);box-shadow:0 19px 0 #eadfce,0 32px 52px #51442e24}.art{background:#3d453a;display:flex;align-items:center;justify-content:center;padding:18px}.art img{display:block;width:auto;max-width:100%;height:275px;object-fit:contain;box-shadow:0 12px 28px #0006;border:8px solid #bd9d64;background:#645e47}.copy{padding:clamp(24px,5vw,48px);display:flex;flex-direction:column;justify-content:center;gap:12px}.label{display:inline-block;width:max-content;padding:7px 12px;border-radius:999px;background:#efe8fa;color:#70549c;font-size:.82rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.copy h2{font-size:clamp(2rem,5vw,3.5rem);line-height:1.05;letter-spacing:-.04em;margin:0}.copy p{margin:0;color:#64717e;font-size:1.1rem;line-height:1.45}.cta{align-self:flex-start;display:inline-block;margin-top:12px;padding:12px 20px;background:#785fc1;color:white;border-radius:14px;font-weight:900;box-shadow:0 5px 0 #594397}.hint{color:#737e87;margin:35px 0 0;font-size:.95rem}
+    @media(max-width:640px){.shell{padding-left:18px;padding-right:18px}.topic{grid-template-columns:1fr}.art{padding:16px;max-height:230px}.art img{height:220px}.copy{padding:24px}.intro{padding-top:48px}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <nav class="top" aria-label="Breadcrumb"><a class="back" href="../index.html">← Game shelf</a><span class="brand">✦ Magic Learning Toolbox</span></nav>
+    <header class="intro"><p class="eyebrow">Our little library of discoveries</p><h1>Facts <span>Portal</span></h1><p>Places we visited. Things we learned. Little stories to open again, one picture card at a time.</p></header>
+    <section aria-labelledby="stories-title"><h2 class="shelf-title" id="stories-title">Explore a story</h2>
+      <a class="topic" href="./Mona_Lisa/index.html" aria-label="Open Mona Lisa, seven picture cards">
+        <div class="art"><img src="./Mona_Lisa/mona-lisa.webp" alt="Leonardo da Vinci's Mona Lisa" width="960" height="1435"></div>
+        <div class="copy"><span class="label">Art · Louvre, Paris</span><h2>Mona Lisa</h2><p>Who was she? Why is her smile so famous? Look closely at the painting we saw together.</p><span class="cta">Open 7 cards →</span></div>
+      </a>
+    </section>
+    <p class="hint">More discoveries can join this shelf after your next adventure.</p>
+  </main>
+</body>
+</html>

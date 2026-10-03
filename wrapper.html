@@ -13,7 +13,7 @@
       && !requestedGame.startsWith("/")
       && !requestedGame.includes("..")
       && !requestedGame.includes("\\")
-      && !/^[a-z][a-z\\d+.-]*:/i.test(requestedGame);
+      && !/^[a-z][a-z\d+.-]*:/i.test(requestedGame);
     window.location.replace(isSafeRelativePath ? requestedGame : "index.html");
   </script>
 </body>

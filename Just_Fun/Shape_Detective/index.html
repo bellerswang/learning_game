@@ -127,7 +127,7 @@
         if(mode==='find'){button.innerHTML=shapeSVG(shape.id);button.setAttribute('aria-label',shape.name)}
         else if(mode==='world'){
           const asset=pickAsset(shape.id);button.classList.add('photo');button.dataset.objectName=asset.name;
-          const img=document.createElement('img');img.src=asset.src;img.alt='';img.loading='eager';button.append(img);
+          const img=document.createElement('img');img.src=asset.src+'?v=2';img.alt='';img.loading='eager';button.append(img);
           button.setAttribute('aria-label',`Picture of ${asset.name}`);
         }else button.textContent=shape.name;
         button.addEventListener('click',()=>answer(shape.id,button));$('answers').append(button);

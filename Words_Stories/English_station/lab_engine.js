@@ -178,11 +178,6 @@ function setupEventListeners() {
     const resetDataBtn = document.getElementById('reset-data-btn');
     if (resetDataBtn) resetDataBtn.addEventListener('click', confirmResetData);
 
-    const homeBtn = document.getElementById('home-btn');
-    if (homeBtn) homeBtn.addEventListener('click', () => {
-        window.location.href = '../../index.html';
-    });
-
     // Modal buttons
     const successCloseBtn = document.getElementById('success-close-btn');
     if (successCloseBtn) successCloseBtn.addEventListener('click', closeSuccessModal);

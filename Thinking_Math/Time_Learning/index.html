@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="manifest" href="../../site.webmanifest">
-    <title>Clock Math Lab</title>
+    <title>Time Monster's Train · Learn to tell the time</title>
     <link rel="icon" type="image/png" href="../../favicon.png">
     <link rel="apple-touch-icon" href="../../apple-touch-icon.png">
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
@@ -470,6 +470,40 @@
             font-weight: 600;
         }
 
+        .journey-head { text-align:center; padding: 14px 8px 4px }
+        .journey-head h1 { margin:0; font-size:clamp(1.65rem,5vw,2.5rem); line-height:1.05 }
+        .journey-head p { margin:7px 0; color:#506078; font-size:1.05rem }
+        .monster { display:inline-block; font-size:2rem; vertical-align:middle; transform:rotate(-9deg) }
+        .ticket { margin:10px auto 3px; padding:9px 13px; border-radius:15px; background:#fff7dc; color:#6b4b13; font-weight:700; width:fit-content }
+        .level-tabs { position:relative }
+        .level-tab { padding:5px; font-size:.95rem }
+        .level-tab small { display:block; font-size:.7rem; line-height:1.1; opacity:.78 }
+        .level-tab.locked { opacity:.55; background:#f1f5f9; color:#475569; border-color:#cbd5e1 }
+        .level-tab:focus-visible, button:focus-visible, a:focus-visible { outline:4px solid #1d4ed8; outline-offset:3px }
+        .station-card { margin:12px 0; padding:15px; border:2px solid #f3ca78; border-radius:22px; background:#fffaf0 }
+        .station-card h2 { margin:0 0 7px; font-size:1.45rem }
+        .station-card p { margin:6px 0; line-height:1.35; font-size:1.08rem }
+        .station-card .example { background:white; padding:12px; border-radius:13px; color:#334155 }
+        .primary-action { min-height:52px; border:0; border-radius:15px; background:#be3e86; color:white; padding:10px 20px; font-weight:700; font-size:1.08rem; cursor:pointer }
+        .primary-action:hover { background:#a52c70 }
+        .progress-text { margin:7px 0 0; color:#505d71; font-weight:700 }
+        .feedback { min-height:60px; border-radius:17px; padding:12px 15px; margin:12px 0; background:#e8f5f1; font-size:1.04rem; line-height:1.3 }
+        .feedback.mistake { background:#fff2da; color:#5c4315 }
+        .feedback strong { display:block; margin-bottom:3px }
+        .learning-actions { display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin:12px 0 }
+        .quiet-action { min-height:48px; padding:8px 18px; border:2px solid #a3b4c9; border-radius:14px; background:white; color:#30445e; font-weight:700; cursor:pointer }
+        .summary { text-align:center; padding:22px 16px; background:#fffaf0; border:2px solid #f3ca78; border-radius:22px; margin:12px 0 }
+        .summary h2 { margin:4px 0; font-size:1.9rem }
+        .summary p { font-size:1.12rem; line-height:1.4 }
+        .summary .learning-actions { margin-top:18px }
+        .choice-btn:disabled { cursor:default }
+        .choice-btn.incorrect { background:#fff1dc; color:#6d4f1e; border-color:#e6ad4b; opacity:1 }
+        .clock.simplify .clock-number:not(.landmark) { opacity:.32 }
+        .clock.simplify::before, .clock.simplify::after { display:none }
+        .clock .clock-number.landmark { color:#1d4ed8 }
+        .clock::before, .clock::after { opacity:.6 }
+        .hidden { display:none !important }
+        @media (prefers-reduced-motion:reduce) { .hand,.choice-btn { transition:none } .confetti { display:none } }
         @media (max-width: 420px) {
             body { padding: 8px; }
             .app { padding: 10px; border-radius: 24px; }
@@ -477,9 +511,11 @@
             .home-link { width: 50px; font-size: 0.88rem; }
             .guide-btn, .stars { padding-inline: 10px; }
             .level-tabs { grid-template-columns: repeat(2, 1fr); gap: 6px; }
-            .level-tab { min-height: 44px; font-size: 0.88rem; }
+            .level-tab { min-height: 53px; font-size: 0.78rem; }
             .question { min-height: 66px; }
             .choice-btn { min-height: 58px; }
+            .clock { width:min(76vw,350px) }
+            .journey-head h1 { font-size:1.6rem }
         }
     </style>
 </head>
@@ -487,566 +523,70 @@
     <main class="app">
         <nav class="topbar" aria-label="Clock game controls">
             <a class="home-link" href="../../index.html">Home</a>
-            <button class="guide-btn" type="button" id="guideButton">Study Guide</button>
-            <div class="stars" aria-live="polite">Stars: <span id="starCounter">0</span></div>
+            <button class="guide-btn" type="button" id="guideButton">How to read</button>
+            <div class="stars" aria-live="polite">⭐ <span id="starCounter">0</span></div>
         </nav>
+        <header class="journey-head">
+            <h1><span class="monster" aria-hidden="true">👾</span> Time Monster's Train</h1>
+            <p>Learn one little step. Help the train reach its next stop!</p>
+            <div class="ticket" id="dailyTicket" aria-live="polite">Your train ticket is ready.</div>
+        </header>
 
-        <div class="level-tabs" role="tablist" aria-label="Difficulty">
-            <button class="level-tab active" type="button" data-level="1">Minutes</button>
-            <button class="level-tab" type="button" data-level="2">Easy Time</button>
-            <button class="level-tab" type="button" data-level="3">Full Clock</button>
-            <button class="level-tab" type="button" data-level="4">Time Words</button>
+        <div class="level-tabs" aria-label="Train stops">
+            <button class="level-tab active" type="button" data-level="1">1 · First Stop<small>o'clock &amp; half past</small></button>
+            <button class="level-tab" type="button" data-level="2">2 · Quarter Bridge<small>quarter past &amp; to</small></button>
+            <button class="level-tab" type="button" data-level="3">3 · Minute Mountain<small>count in fives</small></button>
+            <button class="level-tab" type="button" data-level="4">4 · Word Town<small>say the time</small></button>
         </div>
-
-        <section class="question-wrap" aria-live="polite">
-            <p class="level-name" id="levelName">Level 1: Minute hand math</p>
-            <div class="question" id="questionText">Look at the clock.</div>
+        <section class="station-card" id="stationIntro" aria-labelledby="introTitle">
+            <h2 id="introTitle"></h2>
+            <p id="introCopy"></p>
+            <p class="example" id="introExample"></p>
+            <button class="primary-action" type="button" id="startButton">Start 5 questions →</button>
         </section>
 
-        <section class="play-area">
+        <section class="question-wrap hidden" id="questionWrap" aria-live="polite">
+            <p class="level-name" id="levelName"></p>
+            <div class="question" id="questionText"></div>
+            <p class="progress-text" id="tripProgress"></p>
+        </section>
+
+        <section class="play-area" id="playArea">
             <div class="clock" id="clock" aria-label="Analog clock">
                 <div class="half-to"></div>
                 <div class="half-past"></div>
                 <div class="hand hour-hand" id="hourHand"></div>
                 <div class="hand minute-hand" id="minuteHand"></div>
                 <div class="hand second-hand" id="secondHand"></div>
-                <button class="clock-center" id="clockCenter" type="button" aria-label="Toggle second hand"></button>
+                <button class="clock-center" id="clockCenter" type="button" aria-label="Show or hide a ticking second hand"></button>
             </div>
 
-            <div class="choices" id="choicesGrid" aria-label="Answer choices"></div>
+            <div class="choices hidden" id="choicesGrid" aria-label="Answer choices"></div>
         </section>
+        <div class="feedback hidden" id="feedback" role="status" aria-live="polite"></div>
+        <div class="learning-actions hidden" id="questionActions">
+            <button class="quiet-action" type="button" id="hintButton">💡 Show a clue</button>
+            <button class="primary-action hidden" type="button" id="continueButton">Next question →</button>
+        </div>
+        <section class="summary hidden" id="summary" aria-live="polite"></section>
     </main>
 
     <div class="modal" id="guideModal" role="dialog" aria-modal="true" aria-labelledby="guideTitle">
         <div class="guide-card">
             <div class="guide-head">
-                <h2 id="guideTitle">Clock Math Guide</h2>
+                <h2 id="guideTitle">How to read this clock</h2>
                 <button class="close-btn" type="button" id="closeGuide" aria-label="Close study guide">X</button>
             </div>
             <div class="guide-grid">
-                <div class="guide-item">Minute hand <span>Each number is 5 minutes.</span></div>
-                <div class="guide-item">Hour hand <span>Short blue hand shows the hour.</span></div>
-                <div class="guide-item">Past <span>Right half: count after the hour.</span></div>
-                <div class="guide-item">To <span>Left half: count until the next hour.</span></div>
+                <div class="guide-item">🔴 Long red hand <span>Points to minutes. Each big number is 5 minutes.</span></div>
+                <div class="guide-item">🔵 Short blue hand <span>Shows the hour. It moves between numbers as time passes.</span></div>
+                <div class="guide-item">Past <span>From 12 to 6: minutes after the hour.</span></div>
+                <div class="guide-item">To <span>From 6 to 12: minutes until the next hour.</span></div>
             </div>
-            <p class="guide-note">Use math first: 1 = 5 minutes, 2 = 10 minutes, 3 = 15 minutes. On the left side, subtract from 60 to find how many minutes are left before the next hour.</p>
+            <p class="guide-note">Try a clue any time. A wrong answer is a chance to look again—there is no timer. The little button in the middle lets you watch a second hand tick; it does not change the answer.</p>
         </div>
     </div>
 
-    <script>
-        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-        let audioContext;
-
-        function initAudio() {
-            try {
-                if (!AudioContextClass) return;
-                if (!audioContext) audioContext = new AudioContextClass();
-                if (audioContext.state === "suspended") audioContext.resume();
-            } catch (error) {
-                console.warn("Audio unavailable:", error);
-            }
-        }
-
-        function playSound(type) {
-            try {
-                initAudio();
-                if (!audioContext) return;
-
-                const osc = audioContext.createOscillator();
-                const gain = audioContext.createGain();
-                osc.connect(gain);
-                gain.connect(audioContext.destination);
-
-                if (type === "success") {
-                    osc.type = "triangle";
-                    osc.frequency.setValueAtTime(420, audioContext.currentTime);
-                    osc.frequency.setValueAtTime(660, audioContext.currentTime + 0.1);
-                    osc.frequency.setValueAtTime(840, audioContext.currentTime + 0.2);
-                    gain.gain.setValueAtTime(0.22, audioContext.currentTime);
-                    gain.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.45);
-                    osc.start();
-                    osc.stop(audioContext.currentTime + 0.45);
-                } else if (type === "fail") {
-                    osc.type = "sawtooth";
-                    osc.frequency.setValueAtTime(220, audioContext.currentTime);
-                    osc.frequency.linearRampToValueAtTime(150, audioContext.currentTime + 0.25);
-                    gain.gain.setValueAtTime(0.12, audioContext.currentTime);
-                    gain.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.25);
-                    osc.start();
-                    osc.stop(audioContext.currentTime + 0.25);
-                } else {
-                    osc.type = "sine";
-                    osc.frequency.setValueAtTime(600, audioContext.currentTime);
-                    gain.gain.setValueAtTime(0.05, audioContext.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.04);
-                    osc.start();
-                    osc.stop(audioContext.currentTime + 0.04);
-                }
-            } catch (error) {
-                console.warn("Sound failed:", error);
-            }
-        }
-
-        const clock = document.getElementById("clock");
-        const hourHand = document.getElementById("hourHand");
-        const minuteHand = document.getElementById("minuteHand");
-        const secondHand = document.getElementById("secondHand");
-        const questionText = document.getElementById("questionText");
-        const choicesGrid = document.getElementById("choicesGrid");
-        const starCounter = document.getElementById("starCounter");
-        const levelName = document.getElementById("levelName");
-        const guideModal = document.getElementById("guideModal");
-        const tabs = Array.from(document.querySelectorAll(".level-tab"));
-
-        const levelNames = {
-            1: "Level 1: Minute hand math",
-            2: "Level 2: Exact and half-hour time",
-            3: "Level 3: Full clock math",
-            4: "Level 4: Time words"
-        };
-
-        const state = {
-            level: 1,
-            hour: 12,
-            minute: 0,
-            answer: "",
-            busy: false,
-            stars: { 1: 0, 2: 0, 3: 0, 4: 0 },
-            secondTimer: null,
-            second: 0
-        };
-
-        buildClockFace();
-        bindEvents();
-        selectLevel(1);
-
-        function buildClockFace() {
-            for (let i = 0; i < 60; i++) {
-                const angle = (i * 6 - 90) * Math.PI / 180;
-                const radius = i % 5 === 0 ? 45 : 46;
-                const tick = document.createElement("div");
-                tick.className = i % 5 === 0 ? "tick major" : "tick";
-                tick.style.left = `${50 + radius * Math.cos(angle)}%`;
-                tick.style.top = `${50 + radius * Math.sin(angle)}%`;
-                tick.style.transform = `rotate(${i * 6}deg)`;
-                clock.appendChild(tick);
-            }
-
-            for (let i = 1; i <= 12; i++) {
-                const angle = (i * 30 - 90) * Math.PI / 180;
-                const number = document.createElement("div");
-                number.className = "clock-number";
-                number.style.left = `${50 + 40 * Math.cos(angle)}%`;
-                number.style.top = `${50 + 40 * Math.sin(angle)}%`;
-                number.textContent = i;
-                clock.appendChild(number);
-            }
-        }
-
-        function bindEvents() {
-            document.addEventListener("click", initAudio, { once: true });
-            document.addEventListener("touchstart", initAudio, { once: true });
-
-            tabs.forEach(tab => {
-                tab.addEventListener("click", () => selectLevel(Number(tab.dataset.level)));
-            });
-
-            document.getElementById("guideButton").addEventListener("click", () => {
-                initAudio();
-                guideModal.classList.add("open");
-            });
-
-            document.getElementById("closeGuide").addEventListener("click", () => {
-                guideModal.classList.remove("open");
-            });
-
-            guideModal.addEventListener("click", event => {
-                if (event.target === guideModal) guideModal.classList.remove("open");
-            });
-
-            document.getElementById("clockCenter").addEventListener("click", toggleSecondHand);
-        }
-
-        function selectLevel(level) {
-            if (state.busy) return;
-            state.level = level;
-            tabs.forEach(tab => tab.classList.toggle("active", Number(tab.dataset.level) === level));
-            levelName.textContent = levelNames[level];
-            generateQuestion();
-        }
-
-        function generateQuestion() {
-            state.busy = false;
-            starCounter.textContent = state.stars[state.level] || 0;
-
-            const oldKey = `${state.hour}:${state.minute}`;
-            let next;
-            do {
-                next = pickTimeForLevel(state.level);
-            } while (`${next.hour}:${next.minute}` === oldKey);
-
-            state.hour = next.hour;
-            state.minute = next.minute;
-            updateClock(state.hour, state.minute);
-
-            const item = buildQuestion(state.level, state.hour, state.minute);
-            state.answer = item.answer;
-            questionText.innerHTML = item.prompt;
-            renderChoices(item.options);
-        }
-
-        function pickTimeForLevel(level) {
-            const hour = randomInt(1, 12);
-            if (level === 1) {
-                return { hour, minute: randomFrom([0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55]) };
-            }
-            if (level === 2) {
-                return { hour, minute: randomFrom([0, 30]) };
-            }
-            if (level === 4) {
-                return { hour, minute: randomFrom([0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55]) };
-            }
-            return { hour, minute: randomInt(0, 11) * 5 };
-        }
-
-        function buildQuestion(level, hour, minute) {
-            if (level === 1) {
-                return buildMinuteQuestion(minute);
-            }
-
-            if (level === 2) {
-                const answer = formatDigital(hour, minute);
-                return {
-                    prompt: `What time is this? <span class="blank">?</span>`,
-                    answer,
-                    options: makeDigitalOptions(answer, hour, minute, [0, 30])
-                };
-            }
-
-            if (level === 4) {
-                return buildTimeWordsQuestion(hour, minute);
-            }
-
-            const mode = randomFrom(minute === 0 ? ["digital", "pastTo"] : ["digital", "pastTo", "nextHour"]);
-            if (mode === "digital") {
-                const answer = formatDigital(hour, minute);
-                return {
-                    prompt: `Choose the matching number time.`,
-                    answer,
-                    options: makeDigitalOptions(answer, hour, minute, null)
-                };
-            }
-            if (mode === "nextHour") {
-                const answer = String(minutesToNextHour(minute));
-                return {
-                    prompt: `How many minutes until ${nextHour(hour)}:00?`,
-                    answer,
-                    options: makeNumberOptions(Number(answer), [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60])
-                };
-            }
-            return buildMinuteQuestion(minute);
-        }
-
-        function buildTimeWordsQuestion(hour, minute) {
-            const phrase = getTimePhrase(hour, minute);
-            const mode = randomFrom(["minute", "hour", "both"]);
-
-            if (mode === "minute") {
-                return {
-                    prompt: `It is <span class="blank">?</span> ${phrase.hourWord}.`,
-                    answer: phrase.minutePhrase,
-                    options: makeWordOptions(phrase.minutePhrase, getMinutePhrasePool())
-                };
-            }
-
-            if (mode === "hour") {
-                return {
-                    prompt: `It is ${phrase.minutePhrase} <span class="blank">?</span>.`,
-                    answer: phrase.hourWord,
-                    options: makeWordOptions(phrase.hourWord, getHourWordPool())
-                };
-            }
-
-            return {
-                prompt: `Say the time: <span class="blank">?</span>`,
-                answer: phrase.fullPhrase,
-                options: makeFullPhraseOptions(phrase.fullPhrase, hour, minute)
-            };
-        }
-
-        function getTimePhrase(hour, minute) {
-            const relation = minute <= 30 ? "past" : "to";
-            const minuteValue = minute <= 30 ? minute : 60 - minute;
-            const phraseHour = minute <= 30 ? hour : nextHour(hour);
-            const hourWord = getHourWord(phraseHour);
-
-            if (minute === 0) {
-                return {
-                    minutePhrase: "o'clock",
-                    hourWord,
-                    fullPhrase: `${hourWord} o'clock`
-                };
-            }
-
-            let minutePhrase;
-            if (minuteValue === 15) {
-                minutePhrase = `quarter ${relation}`;
-            } else if (minuteValue === 30) {
-                minutePhrase = "half past";
-            } else {
-                minutePhrase = `${getMinuteWord(minuteValue)} minutes ${relation}`;
-            }
-
-            return {
-                minutePhrase,
-                hourWord,
-                fullPhrase: `${minutePhrase} ${hourWord}`
-            };
-        }
-
-        function getMinutePhrasePool() {
-            return [
-                "o'clock",
-                "five minutes past",
-                "ten minutes past",
-                "quarter past",
-                "twenty minutes past",
-                "twenty-five minutes past",
-                "half past",
-                "twenty-five minutes to",
-                "twenty minutes to",
-                "quarter to",
-                "ten minutes to",
-                "five minutes to"
-            ];
-        }
-
-        function getHourWordPool() {
-            return Array.from({ length: 12 }, (_, index) => getHourWord(index + 1));
-        }
-
-        function makeWordOptions(answer, pool) {
-            const wrong = pool.filter(item => item !== answer);
-            shuffle(wrong);
-            return shuffle([answer, ...wrong.slice(0, 3)]);
-        }
-
-        function makeFullPhraseOptions(answer, hour, minute) {
-            const nearbyTimes = [
-                { hour, minute: minute <= 30 ? Math.min(55, minute + 5) : Math.max(0, minute - 5) },
-                { hour: nextHour(hour), minute },
-                { hour: hour === 1 ? 12 : hour - 1, minute },
-                { hour, minute: minute === 15 ? 45 : 15 },
-                { hour, minute: minute === 30 ? 0 : 30 }
-            ];
-            const wrong = unique(nearbyTimes.map(time => getTimePhrase(time.hour, time.minute).fullPhrase))
-                .filter(item => item !== answer);
-            shuffle(wrong);
-            return shuffle([answer, ...wrong.slice(0, 3)]);
-        }
-
-        function buildMinuteQuestion(minute) {
-            if (minute === 0) {
-                return {
-                    prompt: `The minute hand shows <span class="blank">?</span> minutes.`,
-                    answer: "0",
-                    options: makeNumberOptions(0, [0, 5, 10, 15, 30])
-                };
-            }
-
-            if (minute <= 30) {
-                return {
-                    prompt: `How many minutes past the hour?`,
-                    answer: String(minute),
-                    options: makeNumberOptions(minute, [5, 10, 15, 20, 25, 30])
-                };
-            }
-
-            const answer = 60 - minute;
-            return {
-                prompt: `How many minutes to the next hour?`,
-                answer: String(answer),
-                options: makeNumberOptions(answer, [5, 10, 15, 20, 25, 30])
-            };
-        }
-
-        function makeNumberOptions(answer, pool) {
-            const normalized = String(answer);
-            const choices = unique(pool.map(String)).filter(item => item !== normalized);
-            shuffle(choices);
-            return shuffle([normalized, ...choices.slice(0, 3)]);
-        }
-
-        function makeDigitalOptions(answer, hour, minute, minutePool) {
-            const candidates = [];
-            const minutes = minutePool || [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
-            const nearbyHours = [hour, nextHour(hour), hour === 1 ? 12 : hour - 1];
-            const nearbyMinutes = minutePool
-                ? minutes
-                : unique([minute, Math.max(0, minute - 5), Math.min(55, minute + 5), ...minutes]);
-
-            nearbyHours.forEach(h => {
-                nearbyMinutes.forEach(m => candidates.push(formatDigital(h, m)));
-            });
-
-            const wrong = unique(candidates).filter(item => item !== answer);
-            shuffle(wrong);
-            return shuffle([answer, ...wrong.slice(0, 3)]);
-        }
-
-        function renderChoices(options) {
-            choicesGrid.innerHTML = "";
-            options.forEach(option => {
-                const button = document.createElement("button");
-                button.className = "choice-btn";
-                button.type = "button";
-                button.textContent = option;
-                button.addEventListener("click", () => selectOption(button, option));
-                choicesGrid.appendChild(button);
-            });
-        }
-
-        function selectOption(button, value) {
-            if (state.busy) return;
-
-            if (value === state.answer) {
-                state.busy = true;
-                playSound("success");
-                button.classList.add("correct");
-                Array.from(choicesGrid.children).forEach(choice => choice.disabled = true);
-                state.stars[state.level] = (state.stars[state.level] || 0) + 1;
-                createConfetti();
-                showCelebration();
-                setTimeout(generateQuestion, 1200);
-            } else {
-                playSound("fail");
-                button.classList.add("incorrect");
-                button.disabled = true;
-            }
-        }
-
-        function updateClock(hour, minute) {
-            const hourAngle = hour * 30 + minute * 0.5;
-            const minuteAngle = minute * 6;
-            hourHand.style.transform = `rotate(${hourAngle}deg)`;
-            minuteHand.style.transform = `rotate(${minuteAngle}deg)`;
-        }
-
-        function toggleSecondHand() {
-            initAudio();
-            const isVisible = secondHand.style.display === "block";
-            if (isVisible) {
-                secondHand.style.display = "none";
-                clearInterval(state.secondTimer);
-                state.secondTimer = null;
-                showToast("Second hand hidden");
-                return;
-            }
-
-            secondHand.style.display = "block";
-            state.second = 0;
-            secondHand.style.transform = "rotate(0deg)";
-            showToast("Second hand on");
-            playSound("success");
-
-            clearInterval(state.secondTimer);
-            state.secondTimer = setInterval(() => {
-                state.second = (state.second + 1) % 60;
-                secondHand.style.transform = `rotate(${state.second * 6}deg)`;
-                playSound("tick");
-            }, 1000);
-        }
-
-        function showToast(message) {
-            const old = document.querySelector(".toast");
-            if (old) old.remove();
-            const toast = document.createElement("div");
-            toast.className = "toast";
-            toast.textContent = message;
-            document.body.appendChild(toast);
-            setTimeout(() => {
-                toast.style.opacity = "0";
-                toast.style.transition = "opacity 0.3s ease";
-                setTimeout(() => toast.remove(), 320);
-            }, 1500);
-        }
-
-        function showCelebration() {
-            const old = document.querySelector(".celebration");
-            if (old) old.remove();
-            const messages = ["Correct!", "Great job!", "You did it!", "Nice work!"];
-            const card = document.createElement("div");
-            card.className = "celebration";
-            card.textContent = randomFrom(messages);
-            document.body.appendChild(card);
-            setTimeout(() => {
-                card.style.opacity = "0";
-                card.style.transition = "opacity 0.25s ease";
-                setTimeout(() => card.remove(), 280);
-            }, 850);
-        }
-
-        function createConfetti() {
-            const colors = ["#f472b6", "#3b82f6", "#10b981", "#f59e0b", "#a855f7"];
-            for (let i = 0; i < 44; i++) {
-                const piece = document.createElement("div");
-                piece.className = "confetti";
-                piece.style.left = `${Math.random() * 100}vw`;
-                piece.style.background = randomFrom(colors);
-                piece.style.animationDuration = `${0.8 + Math.random() * 1.2}s`;
-                document.body.appendChild(piece);
-                setTimeout(() => piece.remove(), 2200);
-            }
-        }
-
-        function formatDigital(hour, minute) {
-            return `${hour}:${String(minute).padStart(2, "0")}`;
-        }
-
-        function getHourWord(hour) {
-            return [
-                "one", "two", "three", "four", "five", "six",
-                "seven", "eight", "nine", "ten", "eleven", "twelve"
-            ][hour - 1];
-        }
-
-        function getMinuteWord(minute) {
-            const words = {
-                5: "five",
-                10: "ten",
-                20: "twenty",
-                25: "twenty-five"
-            };
-            return words[minute] || String(minute);
-        }
-
-        function nextHour(hour) {
-            return hour === 12 ? 1 : hour + 1;
-        }
-
-        function minutesToNextHour(minute) {
-            return minute === 0 ? 60 : 60 - minute;
-        }
-
-        function randomInt(min, max) {
-            return Math.floor(Math.random() * (max - min + 1)) + min;
-        }
-
-        function randomFrom(items) {
-            return items[Math.floor(Math.random() * items.length)];
-        }
-
-        function unique(items) {
-            return Array.from(new Set(items));
-        }
-
-        function shuffle(items) {
-            for (let i = items.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [items[i], items[j]] = [items[j], items[i]];
-            }
-            return items;
-        }
-    </script>
+    <script src="./train.js" defer></script>
 </body>
 </html>

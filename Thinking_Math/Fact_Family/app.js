@@ -162,7 +162,8 @@
 
     function isFamilyCertified(table) { return familyProgress(table).completed === familyProgress(table).total; }
 
-    function isFamilyUnlocked(index) { return index <= state.highestUnlocked; }
+    // All times tables are open from the start; progress no longer gates access.
+    function isFamilyUnlocked(index) { return index >= 0 && index < FAMILY_ORDER.length; }
 
     function studyRecord(table) {
         if (!state.study[table]) state.study[table] = { seen: [], ready: false };
@@ -369,7 +370,7 @@
         const index = FAMILY_ORDER.indexOf(table);
         const nextTable = FAMILY_ORDER[index + 1];
         if (nextTable) {
-            els.nextUnlockTitle.textContent = isFamilyCertified(table) ? `×${table} is strong — next is ×${nextTable}` : `Make ×${table} strong to open ×${nextTable}`;
+            els.nextUnlockTitle.textContent = isFamilyCertified(table) ? `×${table} is strong — next is ×${nextTable}` : `Make ×${table} strong — then try ×${nextTable} whenever you like`;
             els.nextUnlockCopy.textContent = activeFamilyIndex > 0
                 ? `Multiplication → missing numbers → division. Earlier tables return as gentle memory bridges while you learn this one.`
                 : `Multiplication → missing numbers → division. Earlier tables will return as gentle memory bridges.`;

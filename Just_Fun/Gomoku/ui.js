@@ -10,12 +10,16 @@
   const firstSeg = document.getElementById('first-seg');
   const frameEl = document.getElementById('board-frame');
 
+  const L = window.GomokuLoupe;
+  const loupeEl = document.getElementById('loupe');
+  const sceneEl = document.getElementById('loupe-scene');
   const buttons = [];
   let game = null;
   let thinking = false;
   let timer = 0;
   let token = 0;
   let lastPlaced = -1;
+  let activePointer = null;
   const settings = {
     mode: 'pvp',
     difficulty: 'easy',
@@ -50,7 +54,11 @@
         const ghost = document.createElement('span');
         ghost.className = 'stone ghost';
         button.append(stone, ghost);
-        button.addEventListener('click', () => onPoint(r, c));
+        button.addEventListener('click', (event) => {
+          if (event.pointerType === 'touch' || event.pointerType === 'pen') return;
+          if (event.sourceCapabilities && event.sourceCapabilities.firesTouchEvents) return;
+          onPoint(r, c);
+        });
         pointsEl.append(button);
         buttons.push(button);
       }
@@ -96,6 +104,16 @@
       }
       render();
     }, delay);
+  }
+
+  function canAim() {
+    if (!game || thinking || game.winner || game.draw) return false;
+    if (game.mode === 'cpu' && game.turn !== game.humanColor) return false;
+    return true;
+  }
+
+  function canPlay(r, c) {
+    return canAim() && game.board[r][c] === G.EMPTY;
   }
 
   function onPoint(r, c) {
@@ -220,8 +238,121 @@
     startGame();
   });
 
+  function viewportMargins() {
+    const pad = window.getComputedStyle(document.querySelector('.app'));
+    const num = (value) => {
+      const parsed = parseFloat(value);
+      return Number.isFinite(parsed) ? Math.max(8, parsed) : 8;
+    };
+    return {
+      top: num(pad.paddingTop),
+      right: num(pad.paddingRight),
+      bottom: num(pad.paddingBottom),
+      left: num(pad.paddingLeft),
+    };
+  }
+
+  function markAim(cell) {
+    document.querySelectorAll('.point.is-aim').forEach((el) => el.classList.remove('is-aim'));
+    if (!cell || !canPlay(cell.r, cell.c)) return;
+    document.querySelectorAll(`.point[data-r="${cell.r}"][data-c="${cell.c}"]`).forEach((el) => {
+      el.classList.add('is-aim');
+    });
+  }
+
+  function buildLoupeClone() {
+    const rect = frameEl.getBoundingClientRect();
+    const clone = frameEl.cloneNode(true);
+    clone.removeAttribute('id');
+    clone.querySelectorAll('[id]').forEach((el) => el.removeAttribute('id'));
+    clone.style.width = `${rect.width}px`;
+    clone.style.height = `${rect.height}px`;
+    clone.style.maxWidth = 'none';
+    clone.style.maxHeight = 'none';
+    clone.style.transformOrigin = '0 0';
+    sceneEl.replaceChildren(clone);
+  }
+
+  function positionLoupe(clientX, clientY) {
+    const frame = frameEl.getBoundingClientRect();
+    const points = pointsEl.getBoundingClientRect();
+    const size = loupeEl.offsetWidth || 168;
+    const scale = L.magnification(points.width / G.SIZE, size);
+    const clone = sceneEl.querySelector('.board-frame');
+    if (clone) {
+      const tx = clientX - frame.left;
+      const ty = clientY - frame.top;
+      clone.style.transform = `translate(${size / 2 - tx * scale}px, ${size / 2 - ty * scale}px) scale(${scale})`;
+    }
+    const pos = L.placeLoupe({
+      x: clientX,
+      y: clientY,
+      size,
+      gap: 32,
+      vw: window.innerWidth,
+      vh: window.innerHeight,
+      margin: viewportMargins(),
+    });
+    loupeEl.style.left = `${pos.left}px`;
+    loupeEl.style.top = `${pos.top}px`;
+  }
+
+  function showLoupe(clientX, clientY) {
+    loupeEl.hidden = false;
+    buildLoupeClone();
+    const cell = L.cellFromPoint(clientX, clientY, pointsEl.getBoundingClientRect(), G.SIZE);
+    markAim(cell);
+    positionLoupe(clientX, clientY);
+  }
+
+  function moveLoupe(clientX, clientY) {
+    const cell = L.cellFromPoint(clientX, clientY, pointsEl.getBoundingClientRect(), G.SIZE);
+    markAim(cell);
+    positionLoupe(clientX, clientY);
+  }
+
+  function hideLoupe() {
+    markAim(null);
+    loupeEl.hidden = true;
+    sceneEl.replaceChildren();
+  }
+
+  function finishTouch(event, place) {
+    if (event.pointerId !== activePointer) return;
+    activePointer = null;
+    const cell = place ? L.cellFromPoint(event.clientX, event.clientY, pointsEl.getBoundingClientRect(), G.SIZE) : null;
+    const playable = Boolean(cell && canPlay(cell.r, cell.c));
+    hideLoupe();
+    if (playable) onPoint(cell.r, cell.c);
+  }
+
+  frameEl.addEventListener('pointerdown', (event) => {
+    if (event.pointerType === 'mouse' || event.button !== 0 || !canAim()) return;
+    event.preventDefault();
+    activePointer = event.pointerId;
+    try {
+      frameEl.setPointerCapture(event.pointerId);
+    } catch (err) {
+      /* The loupe still follows pointermove on the board. */
+    }
+    showLoupe(event.clientX, event.clientY);
+  }, { passive: false });
+
+  frameEl.addEventListener('pointermove', (event) => {
+    if (event.pointerId !== activePointer) return;
+    event.preventDefault();
+    moveLoupe(event.clientX, event.clientY);
+  }, { passive: false });
+
+  frameEl.addEventListener('pointerup', (event) => finishTouch(event, true));
+  frameEl.addEventListener('pointercancel', (event) => finishTouch(event, false));
+
   frameEl.addEventListener('touchmove', (event) => {
     event.preventDefault();
+  }, { passive: false });
+
+  document.addEventListener('touchmove', (event) => {
+    if (activePointer !== null) event.preventDefault();
   }, { passive: false });
 
   document.addEventListener('gesturestart', (event) => event.preventDefault());

@@ -49,12 +49,17 @@
         <div class="stage">
             <div class="board-frame" id="board-frame">
                 <svg class="grid-lines" id="grid-lines" viewBox="0 0 15 15" aria-hidden="true"></svg>
-                <div class="points" id="points" role="grid" aria-label="Gomoku board, 15 by 15"></div>
+                <div class="points" id="points" role="grid" aria-label="Gomoku board, 15 by 15. Press and slide, then lift to place a stone."></div>
             </div>
         </div>
     </div>
 
+    <div class="loupe" id="loupe" hidden aria-hidden="true">
+        <div class="loupe-scene" id="loupe-scene"></div>
+    </div>
+
     <script src="gomoku.js"></script>
+    <script src="loupe.js"></script>
     <script src="ui.js"></script>
 </body>
 

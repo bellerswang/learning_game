@@ -16,7 +16,8 @@ const APP_CONFIG = {
         timeLearning: true,   // Time Monster's Train
         factFamily: true,    // Fact Family Quest
         memoryMatch: true,   // Memory Match
-        factsPortal: true    // Facts Portal
+        factsPortal: true,   // Facts Portal
+        gomoku: true         // 五子棋 Gomoku
     },
 
 };

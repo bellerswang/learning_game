@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="google-site-verification" content="bpec6YRoSQnASJe_JJ99l46gR6VpI1HyRpT2P7X1nfU" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#fff7ed">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="icon" type="image/png" href="../../favicon.png">
+    <link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+    <title>五子棋 Gomoku</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app">
+        <header class="topbar">
+            <a class="home-link" href="../../index.html" aria-label="Back to games">🏠 <span>Games</span></a>
+            <div class="title-block">
+                <h1><span lang="zh-Hans">五子棋</span> <span>Gomoku</span></h1>
+            </div>
+            <div class="top-actions">
+                <button class="action-btn" id="undo-btn" type="button" aria-label="悔棋 Undo">↩ <span lang="zh-Hans">悔棋</span> <span class="action-en">Undo</span></button>
+                <button class="action-btn action-strong" id="restart-btn" type="button" aria-label="重来 Restart">↻ <span lang="zh-Hans">重来</span> <span class="action-en">Restart</span></button>
+            </div>
+        </header>
+
+        <div class="toolbar">
+            <div class="seg" id="mode-seg" role="group" aria-label="Mode">
+                <button type="button" data-mode="pvp" aria-pressed="true"><span lang="zh-Hans">两人</span><span class="seg-en">Two players</span></button>
+                <button type="button" data-mode="cpu" aria-pressed="false"><span lang="zh-Hans">对电脑</span><span class="seg-en">vs Computer</span></button>
+            </div>
+            <div class="seg" id="difficulty-seg" role="group" aria-label="Difficulty" hidden>
+                <button type="button" data-difficulty="easy" aria-pressed="true"><span lang="zh-Hans">简单</span><span class="seg-en">Easy</span></button>
+                <button type="button" data-difficulty="normal" aria-pressed="false"><span lang="zh-Hans">普通</span><span class="seg-en">Normal</span></button>
+            </div>
+            <div class="seg" id="first-seg" role="group" aria-label="Who goes first" hidden>
+                <button type="button" data-first="human" aria-pressed="true"><span lang="zh-Hans">我先</span><span class="seg-en">I go first</span></button>
+                <button type="button" data-first="computer" aria-pressed="false"><span lang="zh-Hans">电脑先</span><span class="seg-en">Computer first</span></button>
+            </div>
+        </div>
+
+        <p class="status" id="status" role="status" aria-live="polite"></p>
+
+        <div class="stage">
+            <div class="board-frame" id="board-frame">
+                <svg class="grid-lines" id="grid-lines" viewBox="0 0 15 15" aria-hidden="true"></svg>
+                <div class="points" id="points" role="grid" aria-label="Gomoku board, 15 by 15"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="gomoku.js"></script>
+    <script src="ui.js"></script>
+</body>
+
+</html>
